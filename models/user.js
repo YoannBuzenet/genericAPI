@@ -46,6 +46,9 @@ module.exports = (sequelize, DataTypes) => {
       temporaryLastProductPaid: {
         type: DataTypes.STRING,
       },
+      temporaryChallenge: {
+        type: DataTypes.STRING,
+      },
       hasAlreadyConnected: {
         type: DataTypes.INTEGER,
         defaultValue: 0,
