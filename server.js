@@ -7,6 +7,9 @@ fastify.get("/api", async (request, reply) => {
 });
 
 fastify.register(require("./routes/users"), { prefix: "/api/users" });
+fastify.register(require("./routes/contentGeneration"), {
+  prefix: "/api/service",
+});
 
 // Run the server!
 const start = async () => {
