@@ -2,9 +2,11 @@
 const fastify = require("fastify")({ logger: true });
 
 // Declare a route
-fastify.get("/", async (request, reply) => {
+fastify.get("/api", async (request, reply) => {
   return { hello: "world" };
 });
+
+fastify.register(require("./routes/users"), { prefix: "/api/users" });
 
 // Run the server!
 const start = async () => {

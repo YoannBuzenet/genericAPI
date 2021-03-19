@@ -21,80 +21,11 @@ module.exports = {
         },
       })
       .then(function () {
-        queryInterface.bulkInsert("Formats", [
+        queryInterface.bulkInsert("Categories", [
           //todo insert all columns of priceguide
           {
-            name: "commander",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            name: "duel",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            name: "legacy",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            name: "modern",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            name: "vintage",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            name: "penny",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            name: "pauper",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            name: "historic",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            name: "pioneer",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            name: "brawl",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            name: "future",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            name: "standard",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            name: "oldschool",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            name: "premodern",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            name: "gladiator",
+            name: "priceDescription",
+            isShort: 1,
             createdAt: new Date(),
             updatedAt: new Date(),
           },
