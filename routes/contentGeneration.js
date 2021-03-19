@@ -1,3 +1,5 @@
+const { generateContent } = require("../controllers/contentGeneration");
+
 module.exports = function (fastify, opts, done) {
   fastify.post(
     "/",
@@ -5,13 +7,25 @@ module.exports = function (fastify, opts, done) {
       schema: {
         body: {
           type: "object",
-          required: ["name"],
-          properties: { name: { type: "string" } },
+          required: ["category", "lang", "userInput"],
+          properties: {
+            categoryId: { type: "integer" },
+            lang: { type: "string" },
+            userInput: { type: "string" },
+          },
         },
       },
     },
-    () => {
-      return { hello: "content" };
+    (req, res) => {
+      // 1. Escape user input
+
+      // 2. L'envoyer dans la fonction de génération de string
+      const aiResponse = generateContent(
+        req.body.categoryId,
+        req.body.lang,
+        req.body.userInput
+      );
+      return { response: aiResponse };
     }
   );
 

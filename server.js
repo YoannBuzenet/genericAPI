@@ -1,3 +1,11 @@
+const path = require("path");
+const result = require("dotenv").config({
+  path: path.resolve(process.cwd(), "./.env.local"),
+});
+if (result.error) {
+  throw result.error;
+}
+
 // Require the framework and instantiate it
 const fastify = require("fastify")({ logger: true });
 
