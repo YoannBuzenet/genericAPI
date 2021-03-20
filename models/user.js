@@ -28,11 +28,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   User.init(
     {
-      id: {
-        type: DataTypes.INTEGER,
-        unique: true,
-        validate: { isNumeric: true },
-      },
       email: {
         allowNull: false,
         type: DataTypes.STRING,

@@ -1,5 +1,4 @@
 "use strict";
-const { arrayOf } = require("prop-types");
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Order extends Model {
@@ -15,9 +14,10 @@ module.exports = (sequelize, DataTypes) => {
   }
   Order.init(
     {
-      idShop: {
+      idUser: {
         type: DataTypes.INTEGER,
         validate: { isNumeric: true },
+        allowNull: false,
       },
       idInvoice: {
         type: DataTypes.INTEGER,

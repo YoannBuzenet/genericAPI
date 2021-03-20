@@ -14,18 +14,13 @@ module.exports = (sequelize, DataTypes) => {
   }
   Snippet.init(
     {
-      id: {
-        type: DataTypes.INTEGER,
-        unique: true,
-        validate: { isNumeric: true },
-      },
       fr: {
         type: DataTypes.STRING,
       },
       en: {
         type: DataTypes.STRING,
       },
-      category: {
+      categoryId: {
         type: DataTypes.STRING,
       },
     },

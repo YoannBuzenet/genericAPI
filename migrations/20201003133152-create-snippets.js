@@ -10,15 +10,15 @@ module.exports = {
           type: Sequelize.INTEGER,
         },
         categoryId: {
-          type: DataTypes.INTEGER,
+          type: Sequelize.INTEGER,
           allowNull: false,
           references: {
             model: "Categories",
             key: "id",
           },
         },
-        fr: { type: Sequelize.STRING, allowNull: false },
-        en: { type: Sequelize.STRING, allowNull: false },
+        fr: { type: Sequelize.STRING(2000), allowNull: false },
+        en: { type: Sequelize.STRING(2000), allowNull: false },
         createdAt: {
           allowNull: false,
           type: Sequelize.DATE,

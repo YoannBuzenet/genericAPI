@@ -1,5 +1,4 @@
 "use strict";
-const { arrayOf } = require("prop-types");
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Invoice extends Model {

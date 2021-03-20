@@ -14,11 +14,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   Category.init(
     {
-      id: {
-        type: DataTypes.INTEGER,
-        unique: true,
-        validate: { isNumeric: true },
-      },
       name: { type: DataTypes.STRING, allowNull: false },
       isShort: { type: DataTypes.INTEGER, allowNull: false },
     },
