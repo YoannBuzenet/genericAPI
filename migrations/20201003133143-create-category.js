@@ -35,6 +35,12 @@ module.exports = {
             createdAt: new Date(),
             updatedAt: new Date(),
           },
+          {
+            name: "blogTitle",
+            isShort: 1,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
         ]);
       });
   },
