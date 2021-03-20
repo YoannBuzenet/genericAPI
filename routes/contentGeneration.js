@@ -22,8 +22,6 @@ module.exports = function (fastify, opts, done) {
       // To check : should we escape user Input ? As it's sent directly to an API, XSS seems impossible there ?
       // if needed : npm install validator
 
-      // YO : pourquoi les 2 checks ne se font pas ?
-
       // Check if category exists
       const categoryIdChecked = await db.Category.findOne({
         where: { id: req.body.category },
@@ -40,7 +38,7 @@ module.exports = function (fastify, opts, done) {
         return;
       }
 
-      const aiResponse = generateContent(
+      const aiResponse = await generateContent(
         req.body.category,
         req.body.lang,
         req.body.userInput
