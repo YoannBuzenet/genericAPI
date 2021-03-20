@@ -22,16 +22,19 @@ module.exports = function (fastify, opts, done) {
       // To check : should we escape user Input ? As it's sent directly to an API, XSS seems impossible there ?
       // if needed : npm install validator
 
+      // YO : pourquoi les 2 checks ne se font pas ?
+
       // Check if category exists
       const categoryIdChecked = await db.Category.findOne({
         where: { id: req.body.category },
       });
+
       if (categoryIdChecked === null) {
         reply.code(406).send("Category doesn't exist.");
         return;
       }
 
-      if (!req.body.lang in Object.keys(langReverted)) {
+      if (!Object.keys(langReverted).includes(req.body.lang)) {
         // Check if lang is currently treated by our code
         reply.code(406).send("Lang is not treated currently.");
         return;
