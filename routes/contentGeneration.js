@@ -11,9 +11,9 @@ module.exports = function (fastify, opts, done) {
           type: "object",
           required: ["category", "lang", "userInput"],
           properties: {
-            categoryId: { type: "integer" },
-            lang: { type: "string" },
-            userInput: { type: "string" },
+            category: { type: "integer" },
+            lang: { type: "string", minLength: 2 },
+            userInput: { type: "string", minLength: 5 },
           },
         },
       },
@@ -24,7 +24,7 @@ module.exports = function (fastify, opts, done) {
 
       // Check if category exists
       const categoryIdChecked = await db.Category.findOne({
-        where: { id: req.body.categoryId },
+        where: { id: req.body.category },
       });
       if (categoryIdChecked === null) {
         reply.code(406).send("Category doesn't exist.");
@@ -38,7 +38,7 @@ module.exports = function (fastify, opts, done) {
       }
 
       const aiResponse = generateContent(
-        req.body.categoryId,
+        req.body.category,
         req.body.lang,
         req.body.userInput
       );
