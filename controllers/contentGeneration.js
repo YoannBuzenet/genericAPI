@@ -4,22 +4,24 @@ const { langReverted } = require("../services/langs");
 
 // TO DO
 // /!\ the cutting method should be linked to the category
-// /!\ the max length of token should be linked to the category
 // /!\ Toujours mettre une maj au premier charac de l'user input et passer le reste en lowercase
 // /!\ Toujours remove first space de la rep AI
 
-const generateContent = async (
-  categoryId,
-  lang,
-  userInput,
-  maxLength = 160
-) => {
+const generateContent = async (categoryId, lang, userInput) => {
   // 1. Searching for the right snippet
   const snippet = await db.Snippet.findOne({
     where: {
       categoryId,
     },
   });
+
+  const category = await db.Category.findOne({
+    where: {
+      id: categoryId,
+    },
+  });
+
+  console.log("category :", category);
 
   const currentSnippet = snippet.dataValues[langReverted[lang]];
 
@@ -28,7 +30,7 @@ const generateContent = async (
 
   const finalObject = {
     prompt: snippetWithUserInput,
-    max_tokens: maxLength,
+    max_tokens: category.dataValues.maxLengthTokens,
     temperature: 0.5,
   };
 

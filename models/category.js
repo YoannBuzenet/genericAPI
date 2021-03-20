@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: { type: DataTypes.STRING, allowNull: false },
       isShort: { type: DataTypes.INTEGER, allowNull: false },
+      maxLengthTokens: { type: DataTypes.INTEGER, defaultValue: 64 },
     },
     {
       sequelize,

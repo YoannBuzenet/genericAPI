@@ -11,6 +11,7 @@ module.exports = {
         },
         name: { type: Sequelize.STRING, allowNull: false },
         isShort: { type: Sequelize.INTEGER, allowNull: false },
+        maxLengthTokens: { type: Sequelize.INTEGER, defaultValue: 64 },
         createdAt: {
           allowNull: false,
           type: Sequelize.DATE,
@@ -26,18 +27,21 @@ module.exports = {
           {
             name: "productDescription",
             isShort: 1,
+            maxLengthTokens: 120,
             createdAt: new Date(),
             updatedAt: new Date(),
           },
           {
             name: "productDescription",
             isShort: 0,
+            maxLengthTokens: 120,
             createdAt: new Date(),
             updatedAt: new Date(),
           },
           {
             name: "blogTitle",
             isShort: 1,
+            maxLengthTokens: 40,
             createdAt: new Date(),
             updatedAt: new Date(),
           },
