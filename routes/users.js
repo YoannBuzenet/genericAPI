@@ -1,4 +1,5 @@
-import db from "../models/index";
+const db = require("../models/index");
+const crypto = require("crypto");
 
 module.exports = function (fastify, opts, done) {
   fastify.post(
@@ -16,6 +17,13 @@ module.exports = function (fastify, opts, done) {
     },
     async (req, reply) => {
       console.log("on a reçu un call");
+
+      const hashingAccessToken = crypto
+        .createHash("sha256")
+        .update(req.body.passphrase)
+        .digest("base64");
+
+      console.log("test", test);
 
       // Check si l'user existe en DB avec son ID
 
