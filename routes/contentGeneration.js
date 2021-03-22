@@ -34,7 +34,7 @@ module.exports = function (fastify, opts, done) {
 
       if (!Object.keys(langReverted).includes(req.body.lang)) {
         // Check if lang is currently treated by our code
-        reply.code(406).send("Lang is not treated currently.");
+        reply.code(406).send("This lang is not treated currently.");
         return;
       }
 

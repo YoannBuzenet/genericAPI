@@ -27,7 +27,7 @@ module.exports = {
           {
             name: "productDescription",
             isShort: 1,
-            maxLengthTokens: 120,
+            maxLengthTokens: 80,
             createdAt: new Date(),
             updatedAt: new Date(),
           },
@@ -41,7 +41,7 @@ module.exports = {
           {
             name: "blogTitle",
             isShort: 1,
-            maxLengthTokens: 40,
+            maxLengthTokens: 30,
             createdAt: new Date(),
             updatedAt: new Date(),
           },

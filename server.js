@@ -22,7 +22,7 @@ fastify.register(require("./routes/contentGeneration"), {
 // Run the server!
 const start = async () => {
   try {
-    await fastify.listen(3000);
+    await fastify.listen(3001);
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);
