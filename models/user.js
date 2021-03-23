@@ -1,7 +1,14 @@
 "use strict";
 const { Model } = require("sequelize");
-const crypto = require("crypto");
+const securityLayer = require("../services/securityLayer");
 const utils = require("../services/utils");
+
+// Specific function definition to handle UTC more easily
+Date.prototype.addHours = function (h) {
+  this.setTime(this.getTime() + h * 60 * 60 * 1000);
+  return this;
+};
+
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -35,10 +42,7 @@ module.exports = (sequelize, DataTypes) => {
         lastName: user.lastName,
         provider: "google",
         googleId: user.googleId,
-        googleAccessToken: crypto
-          .createHash("sha256")
-          .update(user.accessToken)
-          .digest("base64"),
+        googleAccessToken: securityLayer.hashPassword(user.accessToken),
         googleRefreshToken: user.googleRefreshToken,
         isLoggedUntil: new Date().addHours(1).toUTCString(),
         avatar: user.avatar,
@@ -61,10 +65,7 @@ module.exports = (sequelize, DataTypes) => {
           lastName: userFromGoogle.lastName,
           provider: "google",
           googleId: userFromGoogle.googleId,
-          googleAccessToken: crypto
-            .createHash("sha256")
-            .update(userFromGoogle.accessToken)
-            .digest("base64"),
+          googleAccessToken: securityLayer.hashPassword(user.accessToken),
           googleRefreshToken: userFromGoogle.googleRefreshToken,
           isLoggedUntil: new Date().addHours(1).toUTCString(),
           avatar: userFromGoogle.avatar,

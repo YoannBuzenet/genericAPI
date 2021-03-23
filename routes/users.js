@@ -56,18 +56,15 @@ module.exports = function (fastify, opts, done) {
         let userToReturn;
 
         if (userToFind !== null) {
-          // Si oui, on maj l'expiration du login/accessToken, puis on le return (avec les datas agrémentées du back)
-          // yo
+          // If user already exists, we just update its token and relevant infos
           const userToUpdate = await db.User.updateTokenFromGoogle(
             userToFind,
             req.body.user
           );
-          console.log("creating user");
           userToReturn = userToUpdate[0];
         } else {
-          console.log("updating user");
+          // If user doesn't exit in db, we register it
           const userCreated = await db.User.registerFromGoogle(req.body.user);
-          // Si non, on le register PUIS on le return (avec les datas agrémentées du back)
           userToReturn = userCreated;
         }
 
