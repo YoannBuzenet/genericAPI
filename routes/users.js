@@ -1,5 +1,4 @@
 const db = require("../models/index");
-const crypto = require("crypto");
 const utils = require("../services/utils");
 
 module.exports = function (fastify, opts, done) {
@@ -24,14 +23,7 @@ module.exports = function (fastify, opts, done) {
         return;
       }
 
-      // This endpoint is coded to work with google auth only. If other Oauth2 are added, add check on body prop depending on the provider
-
-      // Hashing directly the access Token
-      const hashingAccessToken = crypto
-        .createHash("sha256")
-        .update(req.body.accessToken)
-        .digest("base64");
-
+      // This endpoint is coded to work with google auth only for now.
       if (req.body.provider === "google") {
         // Checking for mandatory fields presence for google Auth
 
@@ -57,7 +49,7 @@ module.exports = function (fastify, opts, done) {
         // Checking if user already exists
         const userToFind = await db.User.findOne({
           where: {
-            googleId: req.body.googleId,
+            googleId: req.body.user.googleId,
           },
         });
 
@@ -66,12 +58,14 @@ module.exports = function (fastify, opts, done) {
         if (userToFind !== null) {
           // Si oui, on maj l'expiration du login/accessToken, puis on le return (avec les datas agrémentées du back)
           // yo
-          const userToUpdate = await db.User.updateTokenFromGoogle();
+          const userToUpdate = await db.User.updateTokenFromGoogle(
+            req.body.user
+          );
           console.log("creating user");
           userToReturn = { registerAndReturn: false };
         } else {
           console.log("updating user");
-          const userCreated = await db.User.registerFromGoogle();
+          const userCreated = await db.User.registerFromGoogle(req.body.user);
           // Si non, on le register PUIS on le return (avec les datas agrémentées du back)
           userToReturn = { registerAndReturn: true };
         }

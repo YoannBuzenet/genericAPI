@@ -1,5 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
+const crypto = require("crypto");
+const utils = require("../services/utils");
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -27,32 +29,38 @@ module.exports = (sequelize, DataTypes) => {
     }
     static async registerFromGoogle(user) {
       return User.create({
-        email: "",
-        fullName: "",
-        firstName: "",
-        lastName: "",
-        provider: "",
-        googleId: "",
-        googleAccessToken: "",
-        googleRefreshToken: "",
-        isLoggedUntil: "",
-        avatar: "",
-        userLocale: "",
+        email: user.email,
+        fullName: user.fullName,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        provider: "google",
+        googleId: user.googleId,
+        googleAccessToken: crypto
+          .createHash("sha256")
+          .update(user.accessToken)
+          .digest("base64"),
+        googleRefreshToken: user.googleRefreshToken,
+        isLoggedUntil: new Date().addHours(1).toUTCString(),
+        avatar: user.avatar,
+        userLocale: user.userLocale,
         isSubscribedUntil: "",
         temporarySecret: "",
         temporaryLastProductPaid: "",
-        rightsFrontWebApp: 0,
-        rightsCentralAPI: 0,
+        rightsFrontWebApp: 1,
+        rightsCentralAPI: 1,
         hasAlreadyConnected: 0,
-        lastConnection: new Date(),
+        lastConnection: new Date().toUTCString(),
       });
     }
     static async updateTokenFromGoogle(user) {
       return User.upsert(
         {
-          googleAccessToken: "",
-          isLoggedUntil: "",
-          lastConnection: new Date(),
+          googleAccessToken: crypto
+            .createHash("sha256")
+            .update(user.accessToken)
+            .digest("base64"),
+          isLoggedUntil: new Date().addHours(1).toUTCString(),
+          lastConnection: new Date().toUTCString(),
         },
         { fields: ["googleAccessToken", "isLoggedUntil", "lastConnection"] }
       );
@@ -68,14 +76,14 @@ module.exports = (sequelize, DataTypes) => {
       firstName: { type: DataTypes.STRING },
       lastName: { type: DataTypes.STRING },
       provider: { type: DataTypes.STRING },
-      googleId: { type: DataTypes.INTEGER },
+      googleId: { type: DataTypes.STRING },
       googleAccessToken: { type: DataTypes.STRING(300) },
       googleRefreshToken: { type: DataTypes.STRING(500) },
       isLoggedUntil: { type: DataTypes.STRING },
       avatar: { type: DataTypes.STRING },
       userLocale: { type: DataTypes.STRING },
       isSubscribedUntil: {
-        type: DataTypes.DATEONLY,
+        type: DataTypes.STRING,
       },
       temporarySecret: {
         type: DataTypes.STRING,
@@ -90,7 +98,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: 0,
       },
       lastConnection: {
-        type: DataTypes.DATE,
+        type: DataTypes.STRING,
       },
     },
     {

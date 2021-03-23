@@ -1,5 +1,6 @@
 "use strict";
 require("dotenv").config();
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("Users", {
@@ -13,7 +14,7 @@ module.exports = {
       firstName: { type: Sequelize.STRING },
       lastName: { type: Sequelize.STRING },
       provider: { type: Sequelize.STRING },
-      googleId: { type: Sequelize.INTEGER },
+      googleId: { type: Sequelize.STRING },
       googleAccessToken: { type: Sequelize.STRING(300) },
       googleRefreshToken: { type: Sequelize.STRING(500) },
       isLoggedUntil: { type: Sequelize.STRING },
@@ -24,7 +25,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       isSubscribedUntil: {
-        type: Sequelize.DATEONLY,
+        type: Sequelize.STRING,
       },
       temporarySecret: {
         type: Sequelize.STRING,
@@ -52,7 +53,7 @@ module.exports = {
       },
       lastConnection: {
         allowNull: false,
-        type: Sequelize.DATE,
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
