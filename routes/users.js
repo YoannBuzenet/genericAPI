@@ -59,6 +59,7 @@ module.exports = function (fastify, opts, done) {
           // Si oui, on maj l'expiration du login/accessToken, puis on le return (avec les datas agrémentées du back)
           // yo
           const userToUpdate = await db.User.updateTokenFromGoogle(
+            userToFind,
             req.body.user
           );
           console.log("creating user");

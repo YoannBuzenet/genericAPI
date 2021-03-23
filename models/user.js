@@ -52,14 +52,29 @@ module.exports = (sequelize, DataTypes) => {
         lastConnection: new Date().toUTCString(),
       });
     }
-    static async updateTokenFromGoogle(user) {
+    static async updateTokenFromGoogle(userInDB, userFromGoogle) {
       return User.upsert(
         {
+          email: userFromGoogle.email,
+          fullName: userFromGoogle.fullName,
+          firstName: userFromGoogle.firstName,
+          lastName: userFromGoogle.lastName,
+          provider: "google",
+          googleId: userFromGoogle.googleId,
           googleAccessToken: crypto
             .createHash("sha256")
-            .update(user.accessToken)
+            .update(userFromGoogle.accessToken)
             .digest("base64"),
+          googleRefreshToken: userFromGoogle.googleRefreshToken,
           isLoggedUntil: new Date().addHours(1).toUTCString(),
+          avatar: userFromGoogle.avatar,
+          userLocale: userFromGoogle.userLocale,
+          isSubscribedUntil: "",
+          temporarySecret: "",
+          temporaryLastProductPaid: "",
+          rightsFrontWebApp: userInDB.dataValues.rightsFrontWebApp,
+          rightsCentralAPI: userInDB.dataValues.rightsCentralAPI,
+          hasAlreadyConnected: 0,
           lastConnection: new Date().toUTCString(),
         },
         { fields: ["googleAccessToken", "isLoggedUntil", "lastConnection"] }
@@ -76,7 +91,7 @@ module.exports = (sequelize, DataTypes) => {
       firstName: { type: DataTypes.STRING },
       lastName: { type: DataTypes.STRING },
       provider: { type: DataTypes.STRING },
-      googleId: { type: DataTypes.STRING },
+      googleId: { type: DataTypes.STRING, unique: true },
       googleAccessToken: { type: DataTypes.STRING(300) },
       googleRefreshToken: { type: DataTypes.STRING(500) },
       isLoggedUntil: { type: DataTypes.STRING },

@@ -14,7 +14,7 @@ module.exports = {
       firstName: { type: Sequelize.STRING },
       lastName: { type: Sequelize.STRING },
       provider: { type: Sequelize.STRING },
-      googleId: { type: Sequelize.STRING },
+      googleId: { type: Sequelize.STRING, unique: true },
       googleAccessToken: { type: Sequelize.STRING(300) },
       googleRefreshToken: { type: Sequelize.STRING(500) },
       isLoggedUntil: { type: Sequelize.STRING },
