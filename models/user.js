@@ -47,6 +47,16 @@ module.exports = (sequelize, DataTypes) => {
         lastConnection: new Date(),
       });
     }
+    static async updateTokenFromGoogle(user) {
+      return User.upsert(
+        {
+          googleAccessToken: "",
+          isLoggedUntil: "",
+          lastConnection: new Date(),
+        },
+        { fields: ["googleAccessToken", "isLoggedUntil", "lastConnection"] }
+      );
+    }
   }
   User.init(
     {

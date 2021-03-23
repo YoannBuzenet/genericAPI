@@ -35,6 +35,12 @@ module.exports = function (fastify, opts, done) {
         return;
       }
 
+      // Hashing directly the access Token
+      const hashingAccessToken = crypto
+        .createHash("sha256")
+        .update(req.body.accessToken)
+        .digest("base64");
+
       // Checking if user already exists
       const userToFind = await db.User.findOne({
         where: {
@@ -44,18 +50,14 @@ module.exports = function (fastify, opts, done) {
 
       let userToReturn;
 
-      const hashingAccessToken = crypto
-        .createHash("sha256")
-        .update(req.body.accessToken)
-        .digest("base64");
-
       if (userToFind !== null) {
         // Si oui, on maj l'expiration du login/accessToken, puis on le return (avec les datas agrémentées du back)
         // yo
-        const userCreated = await db.User.registerFromGoogle();
+        const userToUpdate = await db.User.updateTokenFromGoogle();
 
         userToReturn = { registerAndReturn: false };
       } else {
+        const userCreated = await db.User.registerFromGoogle();
         // Si non, on le register PUIS on le return (avec les datas agrémentées du back)
         userToReturn = { registerAndReturn: true };
       }
