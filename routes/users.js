@@ -1,5 +1,6 @@
 const db = require("../models/index");
 const crypto = require("crypto");
+const utils = require("../services/utils");
 
 module.exports = function (fastify, opts, done) {
   fastify.post(
@@ -8,23 +9,11 @@ module.exports = function (fastify, opts, done) {
       schema: {
         body: {
           type: "object",
-          required: [
-            "passphrase",
-            "accessToken",
-            "expiresIn",
-            "firstName",
-            "lastName",
-            "avatar",
-            "googleId",
-          ],
+          required: ["passphrase", "provider", "user"],
           properties: {
             passphrase: { type: "string" },
-            accessToken: { type: "string" },
-            expiresIn: { type: "integer" },
-            firstName: { type: "string" },
-            lastName: { type: "string" },
-            avatar: { type: "string" },
-            avatar: { type: "googleId" },
+            provider: { type: "string" },
+            user: { type: "object" },
           },
         },
       },
@@ -35,34 +24,63 @@ module.exports = function (fastify, opts, done) {
         return;
       }
 
+      // This endpoint is coded to work with google auth only. If other Oauth2 are added, add check on body prop depending on the provider
+
       // Hashing directly the access Token
       const hashingAccessToken = crypto
         .createHash("sha256")
         .update(req.body.accessToken)
         .digest("base64");
 
-      // Checking if user already exists
-      const userToFind = await db.User.findOne({
-        where: {
-          googleId: req.body.googleId,
-        },
-      });
+      if (req.body.provider === "google") {
+        // Checking for mandatory fields presence for google Auth
 
-      let userToReturn;
+        if (
+          !utils.propCheckInObject(
+            [
+              "googleId",
+              "fullName",
+              "firstName",
+              "lastName",
+              "avatar",
+              "userLocale",
+              "accessToken",
+              "expiresIn",
+            ],
+            req.body.user
+          )
+        ) {
+          reply.code(400).send("Missing Parameters in Google Auth.");
+          return;
+        }
 
-      if (userToFind !== null) {
-        // Si oui, on maj l'expiration du login/accessToken, puis on le return (avec les datas agrémentées du back)
-        // yo
-        const userToUpdate = await db.User.updateTokenFromGoogle();
+        // Checking if user already exists
+        const userToFind = await db.User.findOne({
+          where: {
+            googleId: req.body.googleId,
+          },
+        });
 
-        userToReturn = { registerAndReturn: false };
+        let userToReturn;
+
+        if (userToFind !== null) {
+          // Si oui, on maj l'expiration du login/accessToken, puis on le return (avec les datas agrémentées du back)
+          // yo
+          const userToUpdate = await db.User.updateTokenFromGoogle();
+          console.log("creating user");
+          userToReturn = { registerAndReturn: false };
+        } else {
+          console.log("updating user");
+          const userCreated = await db.User.registerFromGoogle();
+          // Si non, on le register PUIS on le return (avec les datas agrémentées du back)
+          userToReturn = { registerAndReturn: true };
+        }
+
+        return userToReturn;
       } else {
-        const userCreated = await db.User.registerFromGoogle();
-        // Si non, on le register PUIS on le return (avec les datas agrémentées du back)
-        userToReturn = { registerAndReturn: true };
+        reply.code(406).send("Provider not handled.");
+        return;
       }
-
-      return userToReturn;
     }
   );
 
