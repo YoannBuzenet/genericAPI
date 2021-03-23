@@ -16,7 +16,7 @@ module.exports = {
       googleId: { type: Sequelize.INTEGER },
       googleAccessToken: { type: Sequelize.STRING(300) },
       googleRefreshToken: { type: Sequelize.STRING(500) },
-      accesstokenExpirationDate: { type: Sequelize.STRING },
+      isLoggedUntil: { type: Sequelize.STRING },
       avatar: { type: Sequelize.STRING },
       userLocale: { type: Sequelize.STRING },
       email: {
@@ -35,9 +35,6 @@ module.exports = {
       hasAlreadyConnected: {
         type: Sequelize.INTEGER,
         defaultValue: 0,
-      },
-      temporaryChallenge: {
-        type: Sequelize.STRING,
       },
       rightsFrontWebApp: {
         type: Sequelize.INTEGER,

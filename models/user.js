@@ -25,6 +25,28 @@ module.exports = (sequelize, DataTypes) => {
         hasAlreadyConnected: 1,
       });
     }
+    static async registerFromGoogle(user) {
+      return User.create({
+        email: "",
+        fullName: "",
+        firstName: "",
+        lastName: "",
+        provider: "",
+        googleId: "",
+        googleAccessToken: "",
+        googleRefreshToken: "",
+        isLoggedUntil: "",
+        avatar: "",
+        userLocale: "",
+        isSubscribedUntil: "",
+        temporarySecret: "",
+        temporaryLastProductPaid: "",
+        rightsFrontWebApp: 0,
+        rightsCentralAPI: 0,
+        hasAlreadyConnected: 0,
+        lastConnection: new Date(),
+      });
+    }
   }
   User.init(
     {
@@ -39,7 +61,7 @@ module.exports = (sequelize, DataTypes) => {
       googleId: { type: DataTypes.INTEGER },
       googleAccessToken: { type: DataTypes.STRING(300) },
       googleRefreshToken: { type: DataTypes.STRING(500) },
-      accesstokenExpirationDate: { type: DataTypes.STRING },
+      isLoggedUntil: { type: DataTypes.STRING },
       avatar: { type: DataTypes.STRING },
       userLocale: { type: DataTypes.STRING },
       isSubscribedUntil: {
@@ -49,9 +71,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
       },
       temporaryLastProductPaid: {
-        type: DataTypes.STRING,
-      },
-      temporaryChallenge: {
         type: DataTypes.STRING,
       },
       rightsFrontWebApp: { type: DataTypes.INTEGER },

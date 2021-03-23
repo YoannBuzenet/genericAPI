@@ -15,6 +15,7 @@ module.exports = function (fastify, opts, done) {
             "firstName",
             "lastName",
             "avatar",
+            "googleId",
           ],
           properties: {
             passphrase: { type: "string" },
@@ -23,6 +24,7 @@ module.exports = function (fastify, opts, done) {
             firstName: { type: "string" },
             lastName: { type: "string" },
             avatar: { type: "string" },
+            avatar: { type: "googleId" },
           },
         },
       },
@@ -32,19 +34,33 @@ module.exports = function (fastify, opts, done) {
         reply.code(406).send("Passphrase doesn't match.");
         return;
       }
-      console.log("on a reçu un call");
+
+      // Checking if user already exists
+      const userToFind = await db.User.findOne({
+        where: {
+          googleId: req.body.googleId,
+        },
+      });
+
+      let userToReturn;
 
       const hashingAccessToken = crypto
         .createHash("sha256")
         .update(req.body.accessToken)
         .digest("base64");
 
-      // Check si l'user existe en DB avec son ID
+      if (userToFind !== null) {
+        // Si oui, on maj l'expiration du login/accessToken, puis on le return (avec les datas agrémentées du back)
+        // yo
+        const userCreated = await db.User.registerFromGoogle();
 
-      // Si oui, on maj l'expiration du login/accessToken, puis on le return (avec les datas agrémentées du back)
+        userToReturn = { registerAndReturn: false };
+      } else {
+        // Si non, on le register PUIS on le return (avec les datas agrémentées du back)
+        userToReturn = { registerAndReturn: true };
+      }
 
-      // Si non, on le register PUIS on le return (avec les datas agrémentées du back)
-      return { hello: "users" };
+      return userToReturn;
     }
   );
 
