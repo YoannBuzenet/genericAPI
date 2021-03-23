@@ -60,6 +60,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         defaultValue: 0,
       },
+      lastConnection: {
+        type: DataTypes.DATE,
+      },
     },
     {
       sequelize,
