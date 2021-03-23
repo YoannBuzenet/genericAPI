@@ -63,15 +63,19 @@ module.exports = function (fastify, opts, done) {
             req.body.user
           );
           console.log("creating user");
-          userToReturn = { registerAndReturn: false };
+          userToReturn = userToUpdate[0];
         } else {
           console.log("updating user");
           const userCreated = await db.User.registerFromGoogle(req.body.user);
           // Si non, on le register PUIS on le return (avec les datas agrémentées du back)
-          userToReturn = { registerAndReturn: true };
+          userToReturn = userCreated;
         }
 
-        return userToReturn;
+        reply
+          .code(200)
+          .header("Content-Type", "application/json; charset=utf-8")
+          .send(userToReturn);
+        return;
       } else {
         reply.code(406).send("Provider not handled.");
         return;
