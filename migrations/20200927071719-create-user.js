@@ -39,6 +39,20 @@ module.exports = {
       temporaryChallenge: {
         type: Sequelize.STRING,
       },
+      rightsFrontWebApp: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "UserRights",
+          key: "id",
+        },
+      },
+      rightsCentralAPI: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "UserRights",
+          key: "id",
+        },
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

@@ -54,6 +54,8 @@ module.exports = (sequelize, DataTypes) => {
       temporaryChallenge: {
         type: DataTypes.STRING,
       },
+      rightsFrontWebApp: { type: DataTypes.INTEGER },
+      rightsCentralAPI: { type: DataTypes.INTEGER },
       hasAlreadyConnected: {
         type: DataTypes.INTEGER,
         defaultValue: 0,

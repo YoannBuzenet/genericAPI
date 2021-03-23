@@ -8,7 +8,14 @@ module.exports = function (fastify, opts, done) {
       schema: {
         body: {
           type: "object",
-          required: ["passphrase,accessToken"],
+          required: [
+            "passphrase",
+            "accessToken",
+            "expiresIn",
+            "firstName",
+            "lastName",
+            "avatar",
+          ],
           properties: {
             passphrase: { type: "string" },
             accessToken: { type: "string" },
@@ -32,13 +39,11 @@ module.exports = function (fastify, opts, done) {
         .update(req.body.accessToken)
         .digest("base64");
 
-      console.log("test", test);
-
       // Check si l'user existe en DB avec son ID
 
-      //Si oui, on le return
+      // Si oui, on maj l'expiration du login/accessToken, puis on le return (avec les datas agrémentées du back)
 
-      // Si non, on le register PUIS on le return
+      // Si non, on le register PUIS on le return (avec les datas agrémentées du back)
       return { hello: "users" };
     }
   );
