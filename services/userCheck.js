@@ -1,15 +1,13 @@
 const db = require("../models/index");
-const crypto = require("crypto");
+const utils = require("../services/utils");
 
-const hashPassword = (password) => {
-  return crypto.createHash("sha256").update(password).digest("base64");
-};
+async function checkIfLogged(userId, hashedUserAccessToken, provider) {
+  console.log("testing user log");
 
-function checkIfLogged(userId, userAccessToken, provider) {
   // Param check
   if (
     userId === undefined ||
-    userAccessToken === undefined ||
+    hashedUserAccessToken === undefined ||
     provider === undefined
   ) {
     return false;
@@ -31,25 +29,29 @@ function checkIfLogged(userId, userAccessToken, provider) {
     throw "Provider not added in the check if logged function";
   }
 
-  const userData = db.User.findOne({
+  const userData = await db.User.findOne({
     where: {
       [idNameInDB]: userId,
-      [idTokenInDB]: hashPassword(userAccessToken),
+      [idTokenInDB]: hashedUserAccessToken,
     },
   });
 
   if (userData === null) {
+    console.log("Data is null");
     return false;
   }
 
-  const isLoggedUntilDB = userData.dataValues.isLoggedUntil;
+  // Getting UTC string
+  const isLoggedUntilDB = userData?.dataValues?.isLoggedUntil;
+
   if (isLoggedUntilDB) {
     const dbDataIntoDate = new Date(isLoggedUntilDB);
+
     // Comparing dates from DB to see if user is still logged
-    return dbDataIntoDate.getTime() > new Date().getTime();
+    return dbDataIntoDate.getTime() > utils.getNowInUTC().getTime();
   } else {
     return false;
   }
 }
 
-module.exports = { checkIfLogged, hashPassword };
+module.exports = { checkIfLogged };

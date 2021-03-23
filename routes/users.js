@@ -68,6 +68,11 @@ module.exports = function (fastify, opts, done) {
           userToReturn = userCreated;
         }
 
+        // Removing properties we don't want to see on Front-End
+        delete userToReturn.temporarySecret;
+        delete userToReturn.temporaryLastProductPaid;
+
+        // Final Reply
         reply
           .code(200)
           .header("Content-Type", "application/json; charset=utf-8")

@@ -18,6 +18,11 @@ fastify.register(require("./routes/users"), { prefix: "/api/users" });
 fastify.register(require("./routes/contentGeneration"), {
   prefix: "/api/service",
 });
+if (process.env.NODE_ENV !== "production") {
+  fastify.register(require("./routes/testRoutes"), {
+    prefix: "/api/test",
+  });
+}
 
 // Run the server!
 const start = async () => {
