@@ -2,7 +2,7 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface
-      .createTable("Categories", {
+      .createTable("Themes", {
         id: {
           allowNull: false,
           autoIncrement: true,
@@ -10,8 +10,14 @@ module.exports = {
           type: Sequelize.INTEGER,
         },
         name: { type: Sequelize.STRING, allowNull: false },
-        isShort: { type: Sequelize.INTEGER, allowNull: false },
-        maxLengthTokens: { type: Sequelize.INTEGER, defaultValue: 64 },
+        categoryId: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          references: {
+            model: "Categories",
+            key: "id",
+          },
+        },
         createdAt: {
           allowNull: false,
           type: Sequelize.DATE,
@@ -22,26 +28,11 @@ module.exports = {
         },
       })
       .then(function () {
-        queryInterface.bulkInsert("Categories", [
+        queryInterface.bulkInsert("Themes", [
           //todo insert all columns of priceguide
           {
-            name: "ShortProductDescription",
-            isShort: 1,
-            maxLengthTokens: 80,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            name: "LongProductDescription",
-            isShort: 0,
-            maxLengthTokens: 120,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            name: "BlogTitle",
-            isShort: 1,
-            maxLengthTokens: 30,
+            name: "Technologie",
+            categoryId: 1,
             createdAt: new Date(),
             updatedAt: new Date(),
           },
@@ -49,6 +40,6 @@ module.exports = {
       });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("Categories");
+    await queryInterface.dropTable("Themes");
   },
 };

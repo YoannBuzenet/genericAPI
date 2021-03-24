@@ -17,6 +17,13 @@ module.exports = {
             key: "id",
           },
         },
+        themeId: {
+          type: Sequelize.INTEGER,
+          references: {
+            model: "Categories",
+            key: "id",
+          },
+        },
         fr: { type: Sequelize.STRING(2000), allowNull: false },
         en: { type: Sequelize.STRING(2000), allowNull: false },
         createdAt: {
