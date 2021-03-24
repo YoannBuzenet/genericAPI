@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Snippet.belongsTo(models.Category, { foreignKey: "categoryId" });
-      Snippet.belongsTo(models.Theme, { foreignKey: "themeId" });
+      Snippet.hasMany(models.SnippetAttribute, { foreignKey: "snippetId" });
     }
   }
   Snippet.init(
@@ -23,10 +23,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       categoryId: {
         type: DataTypes.INTEGER,
-      },
-      themeId: {
-        type: DataTypes.INTEGER,
-        defaultValue: 1,
       },
     },
     {

@@ -23,7 +23,6 @@ module.exports = {
       })
       .then(function () {
         queryInterface.bulkInsert("Categories", [
-          //todo insert all columns of priceguide
           {
             name: "ShortProductDescription",
             isShort: 1,
