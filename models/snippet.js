@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       themeId: {
         type: DataTypes.INTEGER,
+        defaultValue: 1,
       },
     },
     {

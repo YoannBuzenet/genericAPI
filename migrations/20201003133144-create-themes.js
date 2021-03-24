@@ -31,6 +31,12 @@ module.exports = {
         queryInterface.bulkInsert("Themes", [
           //todo insert all columns of priceguide
           {
+            name: "Generic",
+            categoryId: 1,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
             name: "Technologie",
             categoryId: 1,
             createdAt: new Date(),
