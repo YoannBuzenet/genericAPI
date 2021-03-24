@@ -2,7 +2,7 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface
-      .createTable("SnippetAttributes", {
+      .createTable("Attributes", {
         id: {
           allowNull: false,
           autoIncrement: true,
@@ -18,14 +18,6 @@ module.exports = {
             key: "id",
           },
         },
-        snippetId: {
-          type: Sequelize.INTEGER,
-          allowNull: false,
-          references: {
-            model: "Snippets",
-            key: "id",
-          },
-        },
         createdAt: {
           allowNull: false,
           type: Sequelize.DATE,
@@ -36,32 +28,22 @@ module.exports = {
         },
       })
       .then(function () {
-        queryInterface.bulkInsert("SnippetAttributes", [
+        queryInterface.bulkInsert("Attributes", [
           {
             name: "Generic",
             categoryId: 1,
-            snippetId: 1,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            name: "Technology",
-            categoryId: 1,
-            snippetId: 1,
             createdAt: new Date(),
             updatedAt: new Date(),
           },
           {
             name: "AdditionalDescription",
             categoryId: 1,
-            snippetId: 1,
             createdAt: new Date(),
             updatedAt: new Date(),
           },
           {
             name: "Target Audience",
             categoryId: 1,
-            snippetId: 1,
             createdAt: new Date(),
             updatedAt: new Date(),
           },
@@ -79,10 +61,31 @@ module.exports = {
             createdAt: new Date(),
             updatedAt: new Date(),
           },
+          {
+            name: "Technology",
+            categoryId: 2,
+            snippetId: 2,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            name: "Generic",
+            categoryId: 2,
+            snippetId: 2,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            name: "AdditionalDescription",
+            categoryId: 2,
+            snippetId: 2,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
         ]);
       });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("SnippetAttributes");
+    await queryInterface.dropTable("Attributes");
   },
 };
