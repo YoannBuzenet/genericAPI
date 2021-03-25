@@ -43,7 +43,7 @@ module.exports = {
           {
             name: "Blog Title",
             isShort: 1,
-            maxLengthTokens: 30,
+            maxLengthTokens: 50,
             numberOfUserInputs: 1,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -51,7 +51,7 @@ module.exports = {
           {
             name: "Instagram Caption",
             isShort: 1,
-            maxLengthTokens: 50,
+            maxLengthTokens: 64,
             numberOfUserInputs: 1,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -59,7 +59,7 @@ module.exports = {
           {
             name: "Blog Intro",
             isShort: 1,
-            maxLengthTokens: 30,
+            maxLengthTokens: 100,
             numberOfUserInputs: 1,
             createdAt: new Date(),
             updatedAt: new Date(),
