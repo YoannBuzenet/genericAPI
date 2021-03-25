@@ -44,6 +44,16 @@ module.exports = {
             updatedAt: new Date(),
           },
           {
+            categoryId: 1,
+            isDefault: 0,
+            fr:
+              "Nom Produit : Cartes Magic\nAudience Cible : Passionnés\nDescription: De magnifiques cartes de jeu qui permettent de partager un bon moment entre ami à n'importe quel endroit. Conviviales, elles permettent de découvrir des moments calmes et chaleureux.\nNom Produit : Une tasse de thé\nAudience Cible : Jeunes actifs\nDescription: Wow ! Ces tasses de thé sont incroyables ! Elles iront parfaitement dans la cuisine à coté du plan de travail.\nNom Produit : un écran d'ordinateur\nAudience Cible : Personnes agées\nDescription: Lorsqu'on regarde un écran d'ordinateur, l'important est de bien voir. Avec son grand écran, notre produit vous fournit confort et plaisir pour les vidéos en famille.\nNom Produit : Paire de lunettes\nAudience Cible : Etudiants\nDescription: Pas chères les lunettes ! Comment avoir l'air cool pour un petit budget ? Avec ces belles lunettes !\nNom Produit : Liquide Essuie-glace\nAudience Cible : Tout le monde\nDescription: On a tous besoin de liquide essuie-glace pour la voiture ! Profitez d'un produit de qualité, préparé par nos experts.\nNom Produit : Pull en laine\nAudience Cible : Ménagère\nDescription: Ce pull est doux et confortable. Il vous ira à ravir.\nNom Produit : Chaussures en cuir\nAudience Cible : Jeunes cadre dynamique\nDescription: Ces chaussures sont parfaitement designées pour vos journées. Gardez le rythme avec nos chaussures de qualité.\nNom Produit : {{name}}\nAudience Cible : {{targetAudience}}\nDescription:",
+            en:
+              "Product Name: Magic Cards\nAudience Target: Enthusiasts\nDescription: Beautiful playing cards that allows you to share a good time with friends at any place. Friendly, they allow you to discover calm and warm moments.\nProduct Name: A cup of tea\nAudience Target: Young workers\nDescription: Wow! These tea cups are amazing! They will go perfectly in the kitchen next to the worktop.\nProduct name: a computer screen\nAudience: Elderly people\nDescription: When looking at a computer screen, the important thing is to see well. With its large screen, our product provides you comfort and enjoyment for family videos.\nProduct Name: Pair of glasses\nAudience: Students\nDescription: Cheap glasses! How to look cool on a budget? With those nice glasses!\nProduct Name: Wiper Fluid\nAudience: Everyone\nDescription: We all need windshield wiper fluid for the car! Enjoy a quality product, prepared by our experts.\nProduct Name: Wool sweater\nAudience Target: Housewife\nDescription: This sweater is soft and comfortable. It will look great on you.\nProduct Name: Leather shoes\nAudience: Young dynamic frame\nDescription: These shoes are perfectly designed for your day. Keep the pace with our quality shoes.\nProduct Name: {{name}}\nAudience Target: {{targetAudience}}\nDescription:",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
             categoryId: 2,
             isDefault: 1,
             fr: "",

@@ -34,8 +34,8 @@ module.exports = {
       .then(function () {
         queryInterface.bulkInsert("SnippetAttributes", [
           {
-            snippet_id: 1,
-            attribute_id: 2,
+            snippet_id: 2,
+            attribute_id: 1,
             createdAt: new Date(),
             updatedAt: new Date(),
           },
