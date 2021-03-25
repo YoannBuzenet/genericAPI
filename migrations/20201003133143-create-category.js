@@ -51,7 +51,7 @@ module.exports = {
           {
             name: "Instagram Caption",
             isShort: 1,
-            maxLengthTokens: 30,
+            maxLengthTokens: 50,
             numberOfUserInputs: 1,
             createdAt: new Date(),
             updatedAt: new Date(),
