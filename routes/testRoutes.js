@@ -36,18 +36,35 @@ module.exports = function (fastify, opts, done) {
   );
 
   fastify.post("/testGetSnippets", async () => {
-    //requete differente selon attribute === 0 ou > 0 (isDefault + category si attribut =0)
+    let categoryID;
+    let attributes = [{ id: 2, test: "ok" }];
+    let request;
+    if (Array.isArray(attributes) && attributes.length > 0) {
+      //mapper sur attribute pour préparer l'objet final
+      let attributesObject = [];
+      for (let i = 0; i < attributes.length; i++) {
+        attributesObject = [...attributesObject, { id: attributes[i].id }];
+      }
 
-    const snippets = await db.Snippet.findOne({
-      include: [
-        {
-          model: db.Attribute,
-          where: {
-            [Op.and]: [{ id: 2 }, { id: 1 }],
+      request = {
+        include: [
+          {
+            model: db.Attribute,
+            where: {
+              [Op.and]: attributesObject,
+            },
           },
+        ],
+      };
+    } else {
+      request = {
+        where: {
+          categoryId: categoryID,
+          isDefault: 1,
         },
-      ],
-    });
+      };
+    }
+    const snippets = await db.Snippet.findOne(request);
     return snippets;
   });
 

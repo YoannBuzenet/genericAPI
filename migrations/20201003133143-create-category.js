@@ -12,7 +12,6 @@ module.exports = {
         name: { type: Sequelize.STRING, allowNull: false },
         isShort: { type: Sequelize.INTEGER, allowNull: false },
         maxLengthTokens: { type: Sequelize.INTEGER, defaultValue: 64 },
-        defaultSnippet: { type: Sequelize.JSON, allowNull: false },
         createdAt: {
           allowNull: false,
           type: Sequelize.DATE,
