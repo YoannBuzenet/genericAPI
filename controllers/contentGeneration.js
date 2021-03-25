@@ -7,7 +7,7 @@ const { langReverted } = require("../services/langs");
 // /!\ Toujours mettre une maj au premier charac de l'user input et passer le reste en lowercase
 // /!\ Toujours remove first space de la rep AI
 
-const generateContent = async (categoryId, lang, userInput) => {
+const generateContent = async (categoryId, numberOfInputs, lang, userInput) => {
   // 1. Searching for the right snippet
   const snippet = await db.Snippet.findOne({
     where: {
@@ -21,12 +21,24 @@ const generateContent = async (categoryId, lang, userInput) => {
     },
   });
 
+  const numberOfInputs = category.dataValues.numberOfUserInputs;
+
   console.log("category :", category);
 
   const currentSnippet = snippet.dataValues[langReverted[lang]];
 
   // 2. Replace the variable in the snippet with the user Input
-  const snippetWithUserInput = currentSnippet.replace("{{name}}", userInput);
+  let snippetWithUserInput;
+  if (numberOfInputs === 1) {
+    snippetWithUserInput = currentSnippet.replace("{{value}}", userInput);
+  } else {
+    for (let i = 0; i < numberOfInputs; i++) {
+      snippetWithUserInput = currentSnippet.replace(
+        `{{value${i + 1}}}`,
+        userInput[i]
+      );
+    }
+  }
 
   const finalObject = {
     prompt: snippetWithUserInput,
