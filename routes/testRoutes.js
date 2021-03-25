@@ -36,6 +36,8 @@ module.exports = function (fastify, opts, done) {
   );
 
   fastify.post("/testGetSnippets", async () => {
+    //requete differente selon attribute === 0 ou > 0 (isDefault + category si attribut =0)
+
     const snippets = await db.Snippet.findOne({
       include: [
         {
@@ -45,9 +47,6 @@ module.exports = function (fastify, opts, done) {
           },
         },
       ],
-      where: {
-        isDefault: 1,
-      },
     });
     return snippets;
   });
