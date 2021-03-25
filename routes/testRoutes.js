@@ -35,12 +35,12 @@ module.exports = function (fastify, opts, done) {
     }
   );
 
-  fastify.post("/testGetSnippets", async () => {
-    let categoryID;
-    let attributes = [{ id: 2, test: "ok" }];
+  fastify.post("/testGetSnippets", async (req, reply) => {
+    let categoryID = req.body.categoryId;
+    let attributes = req.body.attributes;
+
     let request;
     if (Array.isArray(attributes) && attributes.length > 0) {
-      //mapper sur attribute pour préparer l'objet final
       let attributesObject = [];
       for (let i = 0; i < attributes.length; i++) {
         attributesObject = [...attributesObject, { id: attributes[i].id }];
@@ -65,7 +65,7 @@ module.exports = function (fastify, opts, done) {
       };
     }
     const snippets = await db.Snippet.findOne(request);
-    return snippets;
+    reply.send(snippets);
   });
 
   fastify.post("/testGetSnippetsByCategoryID", async () => {
