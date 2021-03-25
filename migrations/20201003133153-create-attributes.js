@@ -49,12 +49,6 @@ module.exports = {
           },
           {
             name: "mood",
-            categoryId: 2,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            name: "mood",
             categoryId: 3,
             createdAt: new Date(),
             updatedAt: new Date(),
