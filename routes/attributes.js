@@ -6,15 +6,15 @@ module.exports = function (fastify, opts, done) {
     {
       schema: {
         querystring: {
-          required: ["idCategory"],
-          properties: { idCategory: { type: "integer" } },
+          required: ["categoryId"],
+          properties: { categoryId: { type: "integer" } },
         },
       },
     },
     async (req, reply) => {
       console.log("définitions pingées");
       const attributesForcategory = await db.Attribute.findAll({
-        where: { categoryId: req.query.idCategory },
+        where: { categoryId: req.query.categoryId },
       });
 
       reply.send(attributesForcategory);
