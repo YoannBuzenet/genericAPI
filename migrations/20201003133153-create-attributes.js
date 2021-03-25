@@ -41,36 +41,6 @@ module.exports = {
             createdAt: new Date(),
             updatedAt: new Date(),
           },
-          {
-            name: "companyActivity",
-            categoryId: 2,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            name: "mood",
-            categoryId: 3,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            name: "place",
-            categoryId: 4,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            name: "mood",
-            categoryId: 4,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            name: "mood",
-            categoryId: 5,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
         ]);
       });
   },
