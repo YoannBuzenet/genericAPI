@@ -52,13 +52,6 @@ module.exports = {
             updatedAt: new Date(),
           },
           {
-            name: "Blog Idea",
-            isShort: 1,
-            maxLengthTokens: 30,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
             name: "Blog Intro",
             isShort: 1,
             maxLengthTokens: 30,

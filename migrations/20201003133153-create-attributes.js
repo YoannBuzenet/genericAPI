@@ -30,18 +30,6 @@ module.exports = {
       .then(function () {
         queryInterface.bulkInsert("Attributes", [
           {
-            name: "Generic",
-            categoryId: 1,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            name: "AdditionalDescription",
-            categoryId: 1,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
             name: "Target Audience",
             categoryId: 1,
             createdAt: new Date(),
@@ -60,20 +48,50 @@ module.exports = {
             updatedAt: new Date(),
           },
           {
-            name: "Technology",
+            name: "Target Audience",
             categoryId: 2,
             createdAt: new Date(),
             updatedAt: new Date(),
           },
           {
-            name: "Generic",
+            name: "Company Activity",
             categoryId: 2,
             createdAt: new Date(),
             updatedAt: new Date(),
           },
           {
-            name: "AdditionalDescription",
+            name: "Mood",
             categoryId: 2,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            name: "Mood",
+            categoryId: 3,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            name: "Place",
+            categoryId: 4,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            name: "Mood",
+            categoryId: 4,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            name: "Promotion",
+            categoryId: 4,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            name: "Mood",
+            categoryId: 5,
             createdAt: new Date(),
             updatedAt: new Date(),
           },
