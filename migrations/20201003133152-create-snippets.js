@@ -46,10 +46,8 @@ module.exports = {
           {
             categoryId: 2,
             isDefault: 1,
-            fr:
-              "Nom Produit : Cartes Magic\nDescription: De magnifiques cartes de jeu qui permettent de partager un bon moment entre ami à n'importe quel endroit. Conviviales, elles permettent de découvrir des\nmoments calmes et chaleureux. Profitez de moments stratégiques intenses tout en partageant un bon moment entre amis.\nNom Produit : Une tasse de thé\n\nDescription: Une magnifique tasse de thé qui ira parfaitement dans vos étagères, superbes pour la cuisine ! Solide, robuste, elle amène volupté et confort dans l'espace familial de la cuisine. Supporte le micro-onde, peut passer au lave vaisselle.\nNom Produit : un écran d'ordinateur\nDescription: Quoi de mieux qu'un écran 24 pouces pour voir mieux que quiconque vos films en HD ! Tout en affichant chaque pixel avec le plus grande profondeur, elle va au fond du film, et vous avec ! Les enceintes sont intégrées.\nNom Produit : {{name}}\nDescription:",
-            en:
-              "Product Name : Magic Cards\nDescription: Wonderful magic cards that will give you warm time with your friend around epic strategic battles !\nProduct Name : A cup of tea\n\nDescription: This great cup of tea will give you the best moments in your kitchen. be ready to taste delightful tea in this colorful and great cup.\nProduct Name : A Computer Screen\nDescription: Did you ever try this big and great computer screen to watch your bluray movies ? It is so good !\nNom Produit : {{name}}\nDescription:",
+            fr: "",
+            en: "",
             createdAt: new Date(),
             updatedAt: new Date(),
           },

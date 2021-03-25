@@ -24,21 +24,42 @@ module.exports = {
       .then(function () {
         queryInterface.bulkInsert("Categories", [
           {
-            name: "ShortProductDescription",
+            name: "Short Product Description",
             isShort: 1,
             maxLengthTokens: 80,
             createdAt: new Date(),
             updatedAt: new Date(),
           },
           {
-            name: "LongProductDescription",
-            isShort: 0,
-            maxLengthTokens: 120,
+            name: "Value Proposition",
+            isShort: 1,
+            maxLengthTokens: 80,
             createdAt: new Date(),
             updatedAt: new Date(),
           },
           {
-            name: "BlogTitle",
+            name: "Blog Title",
+            isShort: 1,
+            maxLengthTokens: 30,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            name: "Instagram Caption",
+            isShort: 1,
+            maxLengthTokens: 30,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            name: "Blog Idea",
+            isShort: 1,
+            maxLengthTokens: 30,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            name: "Blog Intro",
             isShort: 1,
             maxLengthTokens: 30,
             createdAt: new Date(),
