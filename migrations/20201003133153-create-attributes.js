@@ -42,18 +42,6 @@ module.exports = {
             updatedAt: new Date(),
           },
           {
-            name: "promotion",
-            categoryId: 1,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            name: "targetAudience",
-            categoryId: 2,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
             name: "companyActivity",
             categoryId: 2,
             createdAt: new Date(),
@@ -79,12 +67,6 @@ module.exports = {
           },
           {
             name: "mood",
-            categoryId: 4,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            name: "promotion",
             categoryId: 4,
             createdAt: new Date(),
             updatedAt: new Date(),

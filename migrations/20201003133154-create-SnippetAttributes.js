@@ -39,6 +39,12 @@ module.exports = {
             createdAt: new Date(),
             updatedAt: new Date(),
           },
+          {
+            snippet_id: 3,
+            attribute_id: 2,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
         ]);
       });
   },
