@@ -1,4 +1,7 @@
 const userCheck = require("../services/userCheck");
+const db = require("../models/index");
+const Sequelize = require("sequelize");
+const Op = Sequelize.Op;
 
 module.exports = function (fastify, opts, done) {
   fastify.post(
@@ -31,6 +34,28 @@ module.exports = function (fastify, opts, done) {
       }
     }
   );
+
+  fastify.post("/testGetSnippets", async () => {
+    const snippets = await db.Snippet.findOne({
+      include: [
+        {
+          model: db.Attribute,
+          where: {
+            [Op.and]: [{ id: 2 }, { id: 1 }],
+          },
+        },
+      ],
+      where: {
+        isDefault: 1,
+      },
+    });
+    return snippets;
+  });
+
+  fastify.post("/testGetSnippetsByCategoryID", async () => {
+    const snippets = await db.Snippet.getSnippetByCategoryID(1);
+    return snippets;
+  });
 
   done();
 };

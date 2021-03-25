@@ -19,6 +19,9 @@ module.exports = {
         },
         fr: { type: Sequelize.STRING(2000), allowNull: false },
         en: { type: Sequelize.STRING(2000), allowNull: false },
+        isDefault: {
+          type: Sequelize.INTEGER,
+        },
         createdAt: {
           allowNull: false,
           type: Sequelize.DATE,

@@ -1,4 +1,7 @@
-"use strict";
+const Sequelize = require("sequelize");
+const Op = Sequelize.Op;
+
+("use strict");
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Snippet extends Model {
@@ -15,6 +18,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "snippet_id",
       });
     }
+
+    static getSnippetByCategoryID(categoryID) {
+      return Snippet.findOne({
+        where: { categoryId: categoryID },
+      });
+    }
   }
   Snippet.init(
     {
@@ -26,6 +35,15 @@ module.exports = (sequelize, DataTypes) => {
       },
       categoryId: {
         type: DataTypes.INTEGER,
+      },
+      isDefault: {
+        type: DataTypes.INTEGER,
+        validate: {
+          isIn: {
+            args: [[0, 1]],
+            msg: "Value of IsDefault prop must be 0 or 1.",
+          },
+        },
       },
     },
     {

@@ -1,4 +1,4 @@
-"use strict";
+("use strict");
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Attribute extends Model {
@@ -20,17 +20,11 @@ module.exports = (sequelize, DataTypes) => {
   }
   Attribute.init(
     {
-      fr: {
-        type: DataTypes.STRING,
-      },
-      en: {
-        type: DataTypes.STRING,
-      },
       categoryId: {
         type: DataTypes.INTEGER,
       },
-      snippetId: {
-        type: DataTypes.INTEGER,
+      name: {
+        type: DataTypes.STRING,
       },
     },
     {
