@@ -9,18 +9,33 @@ module.exports = function (fastify, opts, done) {
       schema: {
         body: {
           type: "object",
-          required: ["category", "lang", "userInput"],
+          required: [
+            "category",
+            "lang",
+            "userInput",
+            "passphrase",
+            "idUser",
+            "provider",
+          ],
           properties: {
             category: { type: "integer" },
             lang: { type: "string", minLength: 2 },
             userInput: { type: "string", minLength: 5 },
+            passphrase: { type: "string", minLength: 5 },
+            idUser: { type: "string" },
+            provider: { type: "string" },
           },
         },
       },
     },
     async (req, reply) => {
-      // To check : should we escape user Input ? As it's sent directly to an API, XSS seems impossible there ?
-      // if needed : npm install validator
+      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
+        reply.code(406).send("Passphrase doesn't match.");
+        return;
+      }
+
+      // Verify that user is logged
+      // yo
 
       // Check if category exists
       const categoryIdChecked = await db.Category.findOne({

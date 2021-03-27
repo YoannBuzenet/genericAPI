@@ -9,6 +9,7 @@ const { langReverted } = require("../services/langs");
 
 const generateContent = async (categoryId, lang, userInput) => {
   // 1. Searching for the right snippet
+  //TODO later, add la recherche par combinaison unique d'attribut (déjà écrite)
   const snippet = await db.Snippet.findOne({
     where: {
       categoryId,
@@ -43,7 +44,7 @@ const generateContent = async (categoryId, lang, userInput) => {
   const finalObject = {
     prompt: snippetWithUserInput,
     max_tokens: category.dataValues.maxLengthTokens,
-    temperature: 0.5,
+    temperature: 0.7,
   };
 
   console.log("final object:", finalObject);
