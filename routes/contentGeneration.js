@@ -21,7 +21,7 @@ module.exports = function (fastify, opts, done) {
           properties: {
             category: { type: "integer" },
             lang: { type: "string", minLength: 2 },
-            userInput: { type: "string", minLength: 5 },
+            userInput: { type: "array", minLength: 5 },
             passphrase: { type: "string", minLength: 5 },
             idUser: { type: "string" },
             provider: { type: "string" },
@@ -38,7 +38,7 @@ module.exports = function (fastify, opts, done) {
       // USER CHECK
       let idToCheck;
       if (req.body.provider === "google") {
-        idToCheck = googleId;
+        idToCheck = "googleId";
       } else {
         reply.code(406).send("Provider not registered.");
         return;
