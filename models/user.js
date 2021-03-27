@@ -102,6 +102,10 @@ module.exports = (sequelize, DataTypes) => {
       isSubscribedUntil: {
         type: DataTypes.STRING,
       },
+      isOnFreeAccess: {
+        type: DataTypes.INTEGER,
+        defaultValue: 1,
+      },
       temporarySecret: {
         type: DataTypes.STRING,
       },

@@ -27,6 +27,15 @@ module.exports = {
       isSubscribedUntil: {
         type: Sequelize.STRING,
       },
+      isOnFreeAccess: {
+        type: Sequelize.INTEGER,
+        validate: {
+          isIn: {
+            args: [[0, 1]],
+            msg: "Value of isOnFreeAccess prop must be 0 or 1 integer.",
+          },
+        },
+      },
       temporarySecret: {
         type: Sequelize.STRING,
       },
