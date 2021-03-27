@@ -17,6 +17,8 @@ module.exports = (sequelize, DataTypes) => {
       name: { type: DataTypes.STRING, allowNull: false },
       isShort: { type: DataTypes.INTEGER, allowNull: false },
       maxLengthTokens: { type: DataTypes.INTEGER, defaultValue: 64 },
+      numberOfAIOutput: { type: DataTypes.INTEGER, defaultValue: 5 },
+      engine: { type: DataTypes.STRING, defaultValue: "currie" },
       numberOfUserInputs: {
         type: DataTypes.INTEGER,
         allowNull: false,

@@ -7,7 +7,7 @@ const { langReverted } = require("../services/langs");
 // /!\ Toujours mettre une maj au premier charac de l'user input et passer le reste en lowercase
 // /!\ Toujours remove first space de la rep AI
 
-const generateContent = async (categoryId, numberOfInputs, lang, userInput) => {
+const generateContent = async (categoryId, lang, userInput) => {
   // 1. Searching for the right snippet
   const snippet = await db.Snippet.findOne({
     where: {

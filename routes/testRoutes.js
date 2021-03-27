@@ -27,6 +27,8 @@ module.exports = function (fastify, opts, done) {
         req.body.provider
       );
 
+      //TODO Boolean
+
       if (isUserLogged) {
         return "User is logged";
       } else {
