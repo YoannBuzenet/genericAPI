@@ -1,6 +1,7 @@
 const { generateContent } = require("../controllers/contentGeneration");
 const { langReverted } = require("../services/langs");
 const db = require("../models/index");
+const { checkIfLogged } = require("../services/userCheck");
 
 module.exports = function (fastify, opts, done) {
   fastify.post(
@@ -34,8 +35,32 @@ module.exports = function (fastify, opts, done) {
         return;
       }
 
-      // Verify that user is logged
-      // yo
+      // USER CHECK
+      let idToCheck;
+      if (req.body.provider === "google") {
+        idToCheck = googleId;
+      } else {
+        reply.code(406).send("Provider not registered.");
+        return;
+      }
+
+      // Verify that user exists, is logged
+      const userToCheck = await db.User.findOne({
+        where: { [idToCheck]: req.body.idUser },
+      });
+
+      if (userToCheck === null) {
+        reply.code(401).send("User doesn't exist.");
+        return;
+      }
+      // Checking user is still logged
+      if (!checkIfLogged(userToCheck.dataValues.isLoggedUntil)) {
+        reply.code(401).send("User is not logged.");
+        return;
+      }
+
+      // STEP 2 : Check User is still subscribed
+      // TO DO
 
       // Check if category exists
       const categoryIdChecked = await db.Category.findOne({
