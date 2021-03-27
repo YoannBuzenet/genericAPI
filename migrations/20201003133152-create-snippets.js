@@ -17,8 +17,8 @@ module.exports = {
             key: "id",
           },
         },
-        fr: { type: Sequelize.STRING(2000), allowNull: false },
-        en: { type: Sequelize.STRING(2000), allowNull: false },
+        fr: { type: Sequelize.STRING(1900), allowNull: false },
+        en: { type: Sequelize.STRING(1900), allowNull: false },
         isDefault: {
           type: Sequelize.INTEGER,
         },

@@ -24,27 +24,30 @@ const generateContent = async (categoryId, lang, userInput) => {
 
   const numberOfInputs = category.dataValues.numberOfUserInputs;
 
-  console.log("category :", category);
-
   const currentSnippet = snippet.dataValues[langReverted[lang]];
 
   // 2. Replace the variable in the snippet with the user Input
   let snippetWithUserInput;
   if (numberOfInputs === 1) {
-    snippetWithUserInput = currentSnippet.replace("{{value}}", userInput);
+    snippetWithUserInput = currentSnippet.replace(
+      "{{value}}",
+      userInput[0].value
+    );
   } else {
     for (let i = 0; i < numberOfInputs; i++) {
       snippetWithUserInput = currentSnippet.replace(
         `{{value${i + 1}}}`,
-        userInput[i]
+        userInput[i].value
       );
     }
   }
 
   const finalObject = {
     prompt: snippetWithUserInput,
+    n: category.dataValues.numberOfAIOutput,
     max_tokens: category.dataValues.maxLengthTokens,
     temperature: 0.7,
+    stop: ["\n", "<|endoftext|>"],
   };
 
   console.log("final object:", finalObject);
@@ -60,12 +63,15 @@ const generateContent = async (categoryId, lang, userInput) => {
     .catch((error) => console.log("error while contacting Open AI : ", error));
 
   // 4. Get back AI output, cut it at the first \n
-  const apiResp = openAiResponse?.data?.choices;
-  const apiFirstChoice = apiResp[0].text;
-  const apiRespCut = apiFirstChoice.split("\n")[0];
+  console.log("digging yoooo", openAiResponse?.data?.choices);
+  const apiResp = openAiResponse?.data?.choices
+    .map((oneResp) => oneResp.text)
+    .filter((text) => text.length > 10);
+
+  console.log("resp sent back to Next :", apiResp);
 
   // 5 . Return AI output
-  return apiRespCut;
+  return apiResp;
 };
 
 module.exports = { generateContent };

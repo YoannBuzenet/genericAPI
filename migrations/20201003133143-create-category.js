@@ -30,7 +30,7 @@ module.exports = {
             name: "Product Description",
             isShort: 1,
             engine: "currie",
-            maxLengthTokens: 100,
+            maxLengthTokens: 120,
             numberOfUserInputs: 1,
             numberOfAIOutput: 5,
             createdAt: new Date(),
