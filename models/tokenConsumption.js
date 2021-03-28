@@ -11,7 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      TokenConsumption.belongsToMany(models.User, { foreignKey: "userID" });
+      TokenConsumption.belongsTo(models.User, {
+        foreignKey: "userID",
+      });
       TokenConsumption.belongsTo(models.Company, {
         foreignKey: "companyID",
       });
