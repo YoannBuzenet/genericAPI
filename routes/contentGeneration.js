@@ -21,7 +21,7 @@ module.exports = function (fastify, opts, done) {
           properties: {
             category: { type: "integer" },
             lang: { type: "string", minLength: 2 },
-            userInput: { type: "array", minLength: 5 },
+            userInput: { type: "array" },
             passphrase: { type: "string", minLength: 5 },
             idUser: { type: "string" },
             provider: { type: "string" },

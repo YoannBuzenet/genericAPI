@@ -27,17 +27,25 @@ const generateContent = async (categoryId, lang, userInput) => {
   const currentSnippet = snippet.dataValues[langReverted[lang]];
 
   // 2. Replace the variable in the snippet with the user Input
-  let snippetWithUserInput;
+  let snippetWithUserInput = currentSnippet;
   if (numberOfInputs === 1) {
-    snippetWithUserInput = currentSnippet.replace(
+    snippetWithUserInput = snippetWithUserInput.replace(
       "{{value}}",
       userInput[0].value
     );
   } else {
     for (let i = 0; i < numberOfInputs; i++) {
-      snippetWithUserInput = currentSnippet.replace(
-        `{{value${i + 1}}}`,
-        userInput[i].value
+      const keyToFind = `value${i + 1}`;
+
+      const relevantValue = userInput.find((input) =>
+        input.hasOwnProperty(keyToFind)
+      );
+
+      const valueToFind = `{{${keyToFind}}}`;
+
+      snippetWithUserInput = snippetWithUserInput.replace(
+        valueToFind,
+        relevantValue[keyToFind]
       );
     }
   }
