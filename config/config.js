@@ -8,7 +8,7 @@ if (result.error) {
 module.exports = {
   development: {
     username: process.env.DB_USERNAME_DEV,
-    password: process.env.PWD_DB,
+    password: process.env.DB_PWD_DEV,
     database: "database_generic_api_development",
     host: "127.0.0.1",
     dialect: "mysql",
