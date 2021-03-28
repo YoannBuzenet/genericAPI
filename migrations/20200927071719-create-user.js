@@ -60,6 +60,13 @@ module.exports = {
           key: "id",
         },
       },
+      companyID: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Companies",
+          key: "id",
+        },
+      },
       lastConnection: {
         allowNull: false,
         type: Sequelize.STRING,

@@ -106,6 +106,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         defaultValue: 1,
       },
+      companyID: {
+        type: DataTypes.INTEGER,
+        defaultValue: 1,
+      },
       temporarySecret: {
         type: DataTypes.STRING,
       },
