@@ -13,7 +13,8 @@ module.exports = {
         isShort: { type: Sequelize.INTEGER, allowNull: false },
         maxLengthTokens: { type: Sequelize.INTEGER, defaultValue: 64 },
         numberOfAIOutput: { type: Sequelize.INTEGER, defaultValue: 5 },
-        engine: { type: Sequelize.STRING, defaultValue: "currie" },
+        engine: { type: Sequelize.STRING, defaultValue: "davinci" },
+        temperature: { type: Sequelize.INTEGER, defaultValue: 0.7 },
         numberOfUserInputs: { type: Sequelize.INTEGER },
         createdAt: {
           allowNull: false,
@@ -52,6 +53,7 @@ module.exports = {
             maxLengthTokens: 100,
             engine: "currie",
             numberOfUserInputs: 1,
+            temperature: { type: Sequelize.INTEGER, defaultValue: 1 },
             numberOfAIOutput: 5,
             createdAt: new Date(),
             updatedAt: new Date(),
