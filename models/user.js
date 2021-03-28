@@ -70,6 +70,7 @@ module.exports = (sequelize, DataTypes) => {
             userFromGoogle.accessToken
           ),
           googleRefreshToken: userFromGoogle.googleRefreshToken,
+          companyID: userInDB.dataValues.companyID,
           isLoggedUntil: new Date().addHours(1).toUTCString(),
           avatar: userFromGoogle.avatar,
           userLocale: userFromGoogle.userLocale,
