@@ -53,7 +53,7 @@ module.exports = {
             maxLengthTokens: 100,
             engine: "currie",
             numberOfUserInputs: 1,
-            temperature: { type: Sequelize.INTEGER, defaultValue: 1 },
+            temperature: 1,
             numberOfAIOutput: 5,
             createdAt: new Date(),
             updatedAt: new Date(),
