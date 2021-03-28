@@ -54,7 +54,7 @@ const generateContent = async (categoryId, lang, userInput) => {
     prompt: snippetWithUserInput,
     n: category.dataValues.numberOfAIOutput,
     max_tokens: category.dataValues.maxLengthTokens,
-    temperature: 0.7,
+    temperature: category.dataValues.temperature,
     stop: ["\n", "<|endoftext|>"],
   };
 
