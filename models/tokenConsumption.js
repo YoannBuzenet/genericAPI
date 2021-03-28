@@ -3,7 +3,7 @@ const { Model } = require("sequelize");
 const hashingFunctions = require("../services/hashingFunctions");
 
 module.exports = (sequelize, DataTypes) => {
-  class Company extends Model {
+  class TokenConsumption extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,33 +11,34 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Company.hasMany(models.User, { foreignKey: "companyID" });
-      Company.hasMany(models.TokenConsumption, { foreignKey: "companyID" });
+      TokenConsumption.belongsToMany(models.User, { foreignKey: "userID" });
+      TokenConsumption.belongsToMany(models.Company, {
+        foreignKey: "companyID",
+      });
     }
   }
-  Company.init(
+  TokenConsumption.init(
     {
       legalName: { type: DataTypes.STRING, allowNull: false },
-      legalAddress: {
+      companyID: {
+        type: DataTypes.INTEGER,
+      },
+      userID: {
+        type: DataTypes.INTEGER,
+      },
+      month: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      PostalCode: {
-        type: DataTypes.STRING,
+      numberOfTokenUsed: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-      },
-      Town: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      VAT: {
-        type: DataTypes.STRING,
       },
     },
     {
       sequelize,
-      modelName: "Company",
+      modelName: "TokenConsumption",
     }
   );
-  return Company;
+  return TokenConsumption;
 };

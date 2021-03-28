@@ -19,6 +19,8 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       User.hasMany(models.Order, { foreignKey: "idShop" });
       User.hasMany(models.Invoice, { foreignKey: "idShop" });
+      User.hasMany(models.TokenConsumption, { foreignKey: "userID" });
+      User.belongsTo(models.Company, { foreignKey: "companyID" });
     }
     static async markAsHasConnected(user) {
       return User.upsert({
