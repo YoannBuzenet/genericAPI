@@ -54,7 +54,7 @@ const generateContent = async (categoryId, lang, userInput) => {
 
   // 3. Send it to Open AI
   const openAiResponse = await axios
-    .post(process.env.OPEN_AI_CURRIE_ENGINE, finalObject, {
+    .post(process.env.OPEN_AI_DAVINCI_ENGINE, finalObject, {
       headers: {
         Authorization: "Bearer " + process.env.OPEN_AI_KEY,
         "Content-Type": "application/json",
