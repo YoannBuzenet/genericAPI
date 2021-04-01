@@ -81,7 +81,8 @@ module.exports = function (fastify, opts, done) {
       const aiResponse = await generateContent(
         req.body.category,
         req.body.lang,
-        req.body.userInput
+        req.body.userInput,
+        req.body.numberOfOutput
       );
       return { response: aiResponse };
     }

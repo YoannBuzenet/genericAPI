@@ -78,6 +78,16 @@ module.exports = {
             createdAt: new Date(),
             updatedAt: new Date(),
           },
+          {
+            name: "Facebook Ads headline",
+            isShort: 1,
+            engine: "currie",
+            maxLengthTokens: 150,
+            numberOfUserInputs: 1,
+            numberOfAIOutput: 5,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
         ]);
       });
   },
