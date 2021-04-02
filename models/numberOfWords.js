@@ -4,6 +4,7 @@ const {
   getNowInUTC,
   getStartOfTheDayInUTC,
   getDays7DaysFromNowInUTC,
+  getDate1MonthFromNowInUTC,
 } = require("../services/utils");
 const Op = Sequelize.Op;
 
@@ -74,12 +75,27 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
 
-      console.log("ok", resultWords7Days);
+      console.log("ok resultWords7Days", resultWords7Days);
       return resultWords7Days;
     }
     static async getWordsConsumptionOfLastMonth(userID) {
-      //TO DO
-      // we'll need date 1month from now
+      const date1MonthFromNow = getDate1MonthFromNowInUTC();
+      const nowInUTC = getNowInUTC();
+      const resultWords1Month = await NumberOfWords.findAll({
+        attributes: [
+          [sequelize.fn("COUNT", sequelize.col("amount")), "totalAmount"],
+        ],
+        where: {
+          user_id: userID,
+          date: {
+            [Op.gt]: date1MonthFromNow,
+            [Op.lt]: nowInUTC,
+          },
+        },
+      });
+
+      console.log("ok resultWords1Month", resultWords1Month);
+      return resultWords1Month;
     }
     static async getWordsConsumptionForMonth(userID, month) {
       //TO DO
