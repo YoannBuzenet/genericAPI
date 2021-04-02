@@ -82,7 +82,7 @@ module.exports = function (fastify, opts, done) {
         req.body.category,
         req.body.lang,
         req.body.userInput,
-        req.body.numberOfOutput
+        req.body.numberOfOutputs
       );
       return { response: aiResponse };
     }
