@@ -34,16 +34,23 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
 
-      // TODO
-      //check if exist, if no exist, on UTC
-      // update or create
+      // If it doesnt exist, we create it
+      if (resultWordsToday === null) {
+        return NumberOfWords.create({
+          user_id: userID,
+          date: nowInUTC,
+          amount: numberOfWordsToAdd,
+        });
+      }
+      // If it exists, we just update it
+      else {
+        const wordsToday =
+          resultWordsToday.dataValues.amount + numberOfWordsToAdd;
 
-      const wordsToday =
-        resultWordsToday.dataValues.amount + numberOfWordsToAdd;
+        resultWordsToday.amount = wordsToday;
 
-      resultWordsToday.amount = wordsToday;
-
-      return resultWordsToday.save();
+        return resultWordsToday.save();
+      }
     }
   }
   NumberOfWords.init(
