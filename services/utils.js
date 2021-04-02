@@ -79,8 +79,42 @@ const getDate1MonthFromNowInUTC = () => {
   return new Date(date1MonthFromNowUTC);
 };
 
-// to do
-// get start of month
+const getStartDateOfCurrentMonthInUTC = () => {
+  var date = new Date(),
+    y = date.getFullYear(),
+    m = date.getMonth();
+  var firstDay = new Date(y, m, 1);
+
+  var dateStartOfCurrentMonthUTC = Date.UTC(
+    firstDay.getUTCFullYear(),
+    firstDay.getUTCMonth(),
+    firstDay.getUTCDate(),
+    firstDay.getUTCHours(),
+    firstDay.getUTCMinutes(),
+    firstDay.getUTCSeconds()
+  );
+
+  return new Date(dateStartOfCurrentMonthUTC);
+};
+
+const getStartDateThisMonthInUTC = (month) => {
+  const ajudstedMonth = month - 1;
+
+  var date = new Date(),
+    y = date.getFullYear();
+  var firstDay = new Date(y, ajudstedMonth, 1);
+
+  var dateStartOfthisMonthUTC = Date.UTC(
+    firstDay.getUTCFullYear(),
+    firstDay.getUTCMonth(),
+    firstDay.getUTCDate(),
+    firstDay.getUTCHours(),
+    firstDay.getUTCMinutes(),
+    firstDay.getUTCSeconds()
+  );
+
+  return new Date(dateStartOfthisMonthUTC);
+};
 
 module.exports = {
   propCheckInObject,
@@ -88,4 +122,6 @@ module.exports = {
   getStartOfTheDayInUTC,
   getDays7DaysFromNowInUTC,
   getDate1MonthFromNowInUTC,
+  getStartDateOfCurrentMonthInUTC,
+  getStartDateThisMonthInUTC,
 };
