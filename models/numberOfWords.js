@@ -18,6 +18,21 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       NumberOfWords.belongsTo(models.User, { foreignKey: "user_id" });
     }
+    static async addNumberOfWordsToday(userID, numberOfWordsToAdd) {
+      // TODO
+      //check if exist, if no exist, on UTC
+
+      const resultWordsToday = await NumberOfWords.findOne({
+        where: { user_id: userID },
+      });
+
+      const wordsToday =
+        resultWordsToday.dataValues.amount + numberOfWordsToAdd;
+
+      resultWordsToday.amount = wordsToday;
+
+      return resultWordsToday.save();
+    }
   }
   NumberOfWords.init(
     {
@@ -25,13 +40,9 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.STRING,
       },
-      month: {
+      date: {
         allowNull: false,
-        type: DataTypes.INTEGER,
-      },
-      year: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
+        type: DataTypes.DATEONLY,
       },
       amount: {
         allowNull: false,

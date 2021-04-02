@@ -14,12 +14,8 @@ module.exports = {
           key: "id",
         },
       },
-      month: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
-      year: {
-        type: Sequelize.INTEGER,
+      date: {
+        type: Sequelize.DATEONLY,
         allowNull: false,
       },
       amount: {
