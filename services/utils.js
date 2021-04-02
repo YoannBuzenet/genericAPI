@@ -47,4 +47,25 @@ const getStartOfTheDayInUTC = () => {
   return new Date(startOfTheDayUTC);
 };
 
-module.exports = { propCheckInObject, getNowInUTC, getStartOfTheDayInUTC };
+const getDays7DaysFromNowInUTC = () => {
+  var date = new Date();
+  date.setDate(date.getDate() - 7);
+
+  var date7daysFromNowUTC = Date.UTC(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate(),
+    date.getUTCHours(),
+    date.getUTCMinutes(),
+    date.getUTCSeconds()
+  );
+
+  return new Date(date7daysFromNowUTC);
+};
+
+module.exports = {
+  propCheckInObject,
+  getNowInUTC,
+  getStartOfTheDayInUTC,
+  getDays7DaysFromNowInUTC,
+};
