@@ -1,5 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
+const { getNowInUTC, getStartOfTheDayInUTC } = require("../services/utils");
+const Op = Sequelize.Op;
 
 // Specific function definition to handle UTC more easily
 Date.prototype.addHours = function (h) {
@@ -19,12 +21,22 @@ module.exports = (sequelize, DataTypes) => {
       NumberOfWords.belongsTo(models.User, { foreignKey: "user_id" });
     }
     static async addNumberOfWordsToday(userID, numberOfWordsToAdd) {
-      // TODO
-      //check if exist, if no exist, on UTC
+      const nowInUTC = getNowInUTC();
+      const startOfTheDayUTC = getStartOfTheDayInUTC();
 
       const resultWordsToday = await NumberOfWords.findOne({
-        where: { user_id: userID },
+        where: {
+          user_id: userID,
+          date: {
+            [Op.gt]: startOfTheDayUTC,
+            [Op.lt]: nowInUTC,
+          },
+        },
       });
+
+      // TODO
+      //check if exist, if no exist, on UTC
+      // update or create
 
       const wordsToday =
         resultWordsToday.dataValues.amount + numberOfWordsToAdd;

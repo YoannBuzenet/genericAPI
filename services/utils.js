@@ -31,4 +31,20 @@ const getNowInUTC = () => {
   return new Date(now_utc);
 };
 
-module.exports = { propCheckInObject, getNowInUTC };
+const getStartOfTheDayInUTC = () => {
+  var start = new Date();
+  start.setHours(0, 0, 0, 0);
+
+  var startOfTheDayUTC = Date.UTC(
+    start.getUTCFullYear(),
+    start.getUTCMonth(),
+    start.getUTCDate(),
+    start.getUTCHours(),
+    start.getUTCMinutes(),
+    start.getUTCSeconds()
+  );
+
+  return new Date(startOfTheDayUTC);
+};
+
+module.exports = { propCheckInObject, getNowInUTC, getStartOfTheDayInUTC };
