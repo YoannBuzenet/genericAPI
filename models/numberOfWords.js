@@ -5,6 +5,8 @@ const {
   getStartOfTheDayInUTC,
   getDays7DaysFromNowInUTC,
   getDate1MonthFromNowInUTC,
+  getStartDateMonthInUTC,
+  getLastDateOfMonthInUTC,
 } = require("../services/utils");
 const Op = Sequelize.Op;
 
@@ -98,10 +100,26 @@ module.exports = (sequelize, DataTypes) => {
       return resultWords1Month;
     }
     static async getWordsConsumptionForMonth(userID, month) {
-      //TO DO
+      const monthBeginning = getStartDateMonthInUTC(month);
+      const monthEnd = getLastDateOfMonthInUTC(month);
+      const resultWordsFromThisMonth = await NumberOfWords.findAll({
+        attributes: [
+          [sequelize.fn("COUNT", sequelize.col("amount")), "totalAmount"],
+        ],
+        where: {
+          user_id: userID,
+          date: {
+            [Op.gt]: monthBeginning,
+            [Op.lt]: monthEnd,
+          },
+        },
+      });
+
+      console.log("ok resultWordsFromThisMonth", resultWordsFromThisMonth);
+
+      return resultWordsFromThisMonth;
     }
     static async returnCompleteUserConsumption(userID) {
-      // TO DO
       const resultWordsFromBeginning = await NumberOfWords.findAll({
         attributes: [
           [sequelize.fn("COUNT", sequelize.col("amount")), "totalAmount"],

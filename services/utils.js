@@ -96,8 +96,26 @@ const getStartDateOfCurrentMonthInUTC = () => {
 
   return new Date(dateStartOfCurrentMonthUTC);
 };
+const getLastDateOfMonthInUTC = (month) => {
+  const ajudstedMonth = month - 1;
 
-const getStartDateThisMonthInUTC = (month) => {
+  var date = new Date(),
+    y = date.getFullYear();
+  var lastDay = new Date(date.getFullYear(), ajudstedMonth + 1, 0);
+
+  var dateLastDayOfMonthUTC = Date.UTC(
+    lastDay.getUTCFullYear(),
+    lastDay.getUTCMonth(),
+    lastDay.getUTCDate(),
+    lastDay.getUTCHours(),
+    lastDay.getUTCMinutes(),
+    lastDay.getUTCSeconds()
+  );
+
+  return new Date(dateLastDayOfMonthUTC);
+};
+
+const getStartDateMonthInUTC = (month) => {
   const ajudstedMonth = month - 1;
 
   var date = new Date(),
@@ -123,5 +141,6 @@ module.exports = {
   getDays7DaysFromNowInUTC,
   getDate1MonthFromNowInUTC,
   getStartDateOfCurrentMonthInUTC,
-  getStartDateThisMonthInUTC,
+  getStartDateMonthInUTC,
+  getLastDateOfMonthInUTC,
 };
