@@ -117,6 +117,20 @@ module.exports = (sequelize, DataTypes) => {
 
       return resultWordsFromThisMonth;
     }
+    static async getAllDataFor7lastDays(userID) {
+      const date7DaysFromNow = getDays7DaysFromNowInUTC();
+
+      const resultWords7Days = await NumberOfWords.findAll({
+        where: {
+          user_id: userID,
+          date: {
+            [Op.gt]: date7DaysFromNow,
+          },
+        },
+        order: [["date", "ASC"]],
+      });
+      return resultWords7Days;
+    }
     static async returnCompleteUserConsumption(userID) {
       const resultWordsFromBeginning = await NumberOfWords.findAll({
         attributes: [
