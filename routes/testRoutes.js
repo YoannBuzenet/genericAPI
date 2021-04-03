@@ -75,6 +75,10 @@ module.exports = function (fastify, opts, done) {
     return snippets;
   });
 
+  fastify.post("/addWordsToday", async () => {
+    const numberOfWords = await db.NumberOfWords.addNumberOfWordsToday(1, 10);
+    return numberOfWords;
+  });
   fastify.get("/UserNumberOfWordsLast7Days", async () => {
     const numberOfWords = await db.NumberOfWords.getWordsOfLastSevenDays(1);
     return numberOfWords;

@@ -9,6 +9,7 @@ const {
   getDate1MonthFromNowInUTC,
   getStartDateMonthInUTC,
   getLastDateOfMonthInUTC,
+  getTodayinDATEONLYInUTC,
 } = require("../services/utils");
 
 // Specific function definition to handle UTC more easily
@@ -29,24 +30,22 @@ module.exports = (sequelize, DataTypes) => {
       NumberOfWords.belongsTo(models.User, { foreignKey: "user_id" });
     }
     static async addNumberOfWordsToday(userID, numberOfWordsToAdd) {
-      const nowInUTC = getNowInUTC();
-      const startOfTheDayUTC = getStartOfTheDayInUTC();
+      const todayInUTC = getTodayinDATEONLYInUTC();
 
       const resultWordsToday = await NumberOfWords.findOne({
         where: {
           user_id: userID,
-          date: {
-            [Op.gt]: startOfTheDayUTC,
-            [Op.lt]: nowInUTC,
-          },
+          date: todayInUTC,
         },
       });
+
+      console.log("result of today", resultWordsToday);
 
       // If it doesnt exist, we create it
       if (resultWordsToday === null) {
         return NumberOfWords.create({
           user_id: userID,
-          date: nowInUTC,
+          date: todayInUTC,
           amount: numberOfWordsToAdd,
         });
       }
@@ -78,7 +77,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
 
-      console.log("ok resultWords7Days", resultWords7Days);
+      // console.log("ok resultWords7Days", resultWords7Days);
       return resultWords7Days;
     }
     static async getWordsConsumptionOfLastMonth(userID) {
@@ -97,7 +96,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
 
-      console.log("ok resultWords1Month", resultWords1Month);
+      // console.log("ok resultWords1Month", resultWords1Month);
       return resultWords1Month;
     }
     static async getWordsConsumptionForMonth(userID, month) {
@@ -116,7 +115,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
 
-      console.log("ok resultWordsFromThisMonth", resultWordsFromThisMonth);
+      // console.log("ok resultWordsFromThisMonth", resultWordsFromThisMonth);
 
       return resultWordsFromThisMonth;
     }

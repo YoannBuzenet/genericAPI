@@ -134,6 +134,29 @@ const getStartDateMonthInUTC = (month) => {
   return new Date(dateStartOfthisMonthUTC);
 };
 
+const formatNumberToTwoDigit = (number) => {
+  let finalNumber = number;
+  const stringifiedNumber = number + "";
+  if (stringifiedNumber.length === 1) {
+    finalNumber = "0" + stringifiedNumber;
+  }
+  return finalNumber;
+};
+
+const getTodayinDATEONLYInUTC = () => {
+  var date = new Date();
+
+  var now_DATEONLY =
+    "" +
+    date.getUTCFullYear() +
+    "-" +
+    formatNumberToTwoDigit(date.getUTCMonth()) +
+    "-" +
+    formatNumberToTwoDigit(date.getUTCDate());
+
+  return now_DATEONLY;
+};
+
 module.exports = {
   propCheckInObject,
   getNowInUTC,
@@ -143,4 +166,6 @@ module.exports = {
   getStartDateOfCurrentMonthInUTC,
   getStartDateMonthInUTC,
   getLastDateOfMonthInUTC,
+  getTodayinDATEONLYInUTC,
+  formatNumberToTwoDigit,
 };
