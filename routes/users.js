@@ -68,6 +68,16 @@ module.exports = function (fastify, opts, done) {
           userToReturn = userCreated;
         }
 
+        // FREE ACCESS CONTROL
+        // Adding number of words if the user is on free access
+        if (userToReturn.dataValues.isOnFreeAccess === 1) {
+          const totalWordsForThisUser = await db.NumberOfWords.returnCompleteUserConsumption(
+            userToReturn.dataValues.id
+          );
+          userToReturn.totalConsumption =
+            totalWordsForThisUser[0].dataValues.totalAmount;
+        }
+
         // Removing properties we don't want to see on Front-End
         delete userToReturn.dataValues.temporarySecret;
         delete userToReturn.dataValues.temporaryLastProductPaid;

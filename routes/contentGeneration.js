@@ -67,7 +67,7 @@ module.exports = function (fastify, opts, done) {
 
       // Checking that user is under free limit if he is on free access
       if (userToCheck.dataValues.isOnFreeAccess === 1) {
-        const totalWordsForThisUserThisMonth = await db.NumberOfWords.getWordsConsumptionOfLastMonth(
+        const totalWordsForThisUserThisMonth = await db.NumberOfWords.returnCompleteUserConsumption(
           userToCheck.dataValues.id
         );
 
@@ -105,14 +105,13 @@ module.exports = function (fastify, opts, done) {
         aiResponse.numberOfWords
       );
 
-      const totalWordsForThisUserThisMonth = await db.NumberOfWords.getWordsConsumptionOfLastMonth(
+      const totalWordsForThisUser = await db.NumberOfWords.returnCompleteUserConsumption(
         userToCheck.dataValues.id
       );
 
       return {
         response: aiResponse.apiResp,
-        numberOfWordsThisMonth:
-          totalWordsForThisUserThisMonth[0].dataValues.totalAmount,
+        numberOfWords: totalWordsForThisUser[0].dataValues.totalAmount,
         userCanStillUseService:
           totalWordsForThisUserThisMonth[0].dataValues.totalAmount <=
           FREE_LIMIT_NUMBER_OF_WORDS,
