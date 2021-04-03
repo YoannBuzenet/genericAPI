@@ -113,7 +113,7 @@ module.exports = function (fastify, opts, done) {
         response: aiResponse.apiResp,
         numberOfWords: totalWordsForThisUser[0].dataValues.totalAmount,
         userCanStillUseService:
-          totalWordsForThisUserThisMonth[0].dataValues.totalAmount <=
+          totalWordsForThisUser[0].dataValues.totalAmount <=
           FREE_LIMIT_NUMBER_OF_WORDS,
       };
     }

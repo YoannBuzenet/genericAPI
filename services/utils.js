@@ -162,11 +162,14 @@ const countWordsInString = (string) => {
 };
 
 const removeUnfinishedSentenceInString = (string) => {
+  let newString = string;
   if (string.length === 0) {
     return string;
   }
+  if (newString[newString.length - 1] === undefined) {
+    return string;
+  }
 
-  let newString = string;
   const regexpPunctuation = /[.!?\\-]/;
 
   while (

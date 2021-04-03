@@ -169,9 +169,11 @@ module.exports = function (fastify, opts, done) {
         userToCheck.dataValues.id
       );
 
-      reply.send({
-        dataFor7days: allData7Days,
-      });
+      allData7DaysPrepared = allData7Days.map((data) => data.dataValues);
+
+      return {
+        dataFor7days: allData7DaysPrepared,
+      };
     }
   );
 
