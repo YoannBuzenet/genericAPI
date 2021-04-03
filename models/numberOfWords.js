@@ -86,7 +86,7 @@ module.exports = (sequelize, DataTypes) => {
       const nowInUTC = getNowInUTC();
       const resultWords1Month = await NumberOfWords.findAll({
         attributes: [
-          [sequelize.fn("COUNT", sequelize.col("amount")), "totalAmount"],
+          [sequelize.fn("sum", sequelize.col("amount")), "totalAmount"],
         ],
         where: {
           user_id: userID,
@@ -105,7 +105,7 @@ module.exports = (sequelize, DataTypes) => {
       const monthEnd = getLastDateOfMonthInUTC(month);
       const resultWordsFromThisMonth = await NumberOfWords.findAll({
         attributes: [
-          [sequelize.fn("COUNT", sequelize.col("amount")), "totalAmount"],
+          [sequelize.fn("sum", sequelize.col("amount")), "totalAmount"],
         ],
         where: {
           user_id: userID,
@@ -123,7 +123,7 @@ module.exports = (sequelize, DataTypes) => {
     static async returnCompleteUserConsumption(userID) {
       const resultWordsFromBeginning = await NumberOfWords.findAll({
         attributes: [
-          [sequelize.fn("COUNT", sequelize.col("amount")), "totalAmount"],
+          [sequelize.fn("sum", sequelize.col("amount")), "totalAmount"],
         ],
         where: {
           user_id: userID,

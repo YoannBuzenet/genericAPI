@@ -80,5 +80,25 @@ module.exports = function (fastify, opts, done) {
     return numberOfWords;
   });
 
+  fastify.get("/UserNumberOfWordsLastMonth", async () => {
+    const numberOfWords = await db.NumberOfWords.getWordsConsumptionOfLastMonth(
+      1
+    );
+    return numberOfWords;
+  });
+  fastify.get("/getWordsConsumptionForMonth", async () => {
+    const numberOfWords = await db.NumberOfWords.getWordsConsumptionForMonth(
+      1,
+      1
+    );
+    return numberOfWords;
+  });
+  fastify.get("/returnCompleteUserConsumption", async () => {
+    const numberOfWords = await db.NumberOfWords.returnCompleteUserConsumption(
+      1
+    );
+    return numberOfWords;
+  });
+
   done();
 };
