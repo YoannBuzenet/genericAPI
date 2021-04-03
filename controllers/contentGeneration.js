@@ -92,7 +92,7 @@ const generateContent = async (categoryId, lang, userInput, numberOfOutput) => {
   console.log("number of words used : ", numberOfWordsUsedInResp);
 
   // 5 . Return AI output
-  return apiResp;
+  return { apiResp, numberOfWords: numberOfWordsUsedInResp };
 };
 
 module.exports = { generateContent };

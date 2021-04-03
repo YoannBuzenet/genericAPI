@@ -86,7 +86,13 @@ module.exports = function (fastify, opts, done) {
         req.body.userInput,
         req.body.numberOfOutputs
       );
-      return { response: aiResponse };
+
+      const updatedUser = await db.NumberOfWords.addNumberOfWordsToday(
+        userToCheck.dataValues.id,
+        aiResponse.numberOfWords
+      );
+
+      return { response: aiResponse.apiResp };
     }
   );
 
