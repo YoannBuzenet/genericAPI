@@ -157,6 +157,23 @@ const getTodayinDATEONLYInUTC = () => {
   return now_DATEONLY;
 };
 
+const countWordsInString = (string) => {
+  return string.split(" ").length;
+};
+
+const removeUnfinishedSentenceInString = (string) => {
+  let newString = string;
+  const regexpPunctuation = /[.!?\\-]/;
+
+  while (
+    !Array.isArray(newString[newString.length - 1].match(regexpPunctuation))
+  ) {
+    newString = newString.slice(0, -1);
+  }
+
+  return newString;
+};
+
 module.exports = {
   propCheckInObject,
   getNowInUTC,
@@ -168,4 +185,6 @@ module.exports = {
   getLastDateOfMonthInUTC,
   getTodayinDATEONLYInUTC,
   formatNumberToTwoDigit,
+  countWordsInString,
+  removeUnfinishedSentenceInString,
 };
