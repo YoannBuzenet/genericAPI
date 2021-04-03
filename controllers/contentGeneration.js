@@ -1,6 +1,10 @@
 const axios = require("axios");
 const db = require("../models");
 const { langReverted } = require("../services/langs");
+const {
+  countWordsInString,
+  removeUnfinishedSentenceInString,
+} = require("../services/utils");
 
 // TO DO
 // /!\ the cutting method should be linked to the category
@@ -72,11 +76,20 @@ const generateContent = async (categoryId, lang, userInput, numberOfOutput) => {
 
   // 4. Get back AI output, cut it at the first \n
   console.log("digging yoooo", openAiResponse?.data?.choices);
+  let numberOfWordsUsedInResp;
   const apiResp = openAiResponse?.data?.choices
     .map((oneResp) => oneResp.text)
+    .map((text) => text.trim())
+    .map((text) => {
+      numberOfWordsUsedInResp += countWordsInString(
+        removeUnfinishedSentenceInString(text)
+      );
+      return removeUnfinishedSentenceInString(text);
+    })
     .filter((text) => text.length > 10);
 
   console.log("resp sent back to Next :", apiResp);
+  console.log("number of words used : ", numberOfWordsUsedInResp);
 
   // 5 . Return AI output
   return apiResp;
