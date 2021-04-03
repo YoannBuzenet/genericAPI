@@ -75,12 +75,12 @@ module.exports = function (fastify, opts, done) {
           const totalWordsForThisUser = await db.NumberOfWords.returnCompleteUserConsumption(
             userToReturn.dataValues.id
           );
-          userToReturn.totalConsumption =
-            totalWordsForThisUser[0].dataValues.totalAmount;
+          userToReturn.dataValues.totalWordsConsumption =
+            totalWordsForThisUser[0].dataValues.totalAmount || 0;
 
-          userToReturn.userHasStillAccess =
-            totalWordsForThisUser[0].dataValues.totalAmount >=
-            FREE_LIMIT_NUMBER_OF_WORDS;
+          userToReturn.dataValues.userHasStillAccess =
+            totalWordsForThisUser[0].dataValues.totalAmount ||
+            0 <= FREE_LIMIT_NUMBER_OF_WORDS;
         }
 
         // Removing properties we don't want to see on Front-End
