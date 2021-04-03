@@ -150,7 +150,7 @@ const getTodayinDATEONLYInUTC = () => {
     "" +
     date.getUTCFullYear() +
     "-" +
-    formatNumberToTwoDigit(date.getUTCMonth()) +
+    formatNumberToTwoDigit(date.getUTCMonth() + 1) +
     "-" +
     formatNumberToTwoDigit(date.getUTCDate());
 
@@ -162,6 +162,10 @@ const countWordsInString = (string) => {
 };
 
 const removeUnfinishedSentenceInString = (string) => {
+  if (string.length === 0) {
+    return string;
+  }
+
   let newString = string;
   const regexpPunctuation = /[.!?\\-]/;
 

@@ -91,7 +91,6 @@ module.exports = (sequelize, DataTypes) => {
           user_id: userID,
           date: {
             [Op.gt]: date1MonthFromNow,
-            [Op.lt]: nowInUTC,
           },
         },
       });

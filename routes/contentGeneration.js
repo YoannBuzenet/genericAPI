@@ -92,7 +92,17 @@ module.exports = function (fastify, opts, done) {
         aiResponse.numberOfWords
       );
 
-      return { response: aiResponse.apiResp };
+      const totalWordsForThisUserThisMonth = await db.NumberOfWords.getWordsConsumptionOfLastMonth(
+        userToCheck.dataValues.id
+      );
+
+      console.log("okkkk", totalWordsForThisUserThisMonth);
+
+      return {
+        response: aiResponse.apiResp,
+        numberOfWordsThisMonth:
+          totalWordsForThisUserThisMonth[0].dataValues.totalAmount,
+      };
     }
   );
 
