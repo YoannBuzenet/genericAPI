@@ -15,6 +15,9 @@ fastify.get("/api", async (request, reply) => {
 });
 
 fastify.register(require("./routes/users"), { prefix: "/api/users" });
+fastify.register(require("./routes/NumberOfWords"), {
+  prefix: "/api/numberOfWords",
+});
 fastify.register(require("./routes/attributes"), { prefix: "/api/attributes" });
 fastify.register(require("./routes/contentGeneration"), {
   prefix: "/api/service",

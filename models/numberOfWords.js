@@ -72,7 +72,6 @@ module.exports = (sequelize, DataTypes) => {
           user_id: userID,
           date: {
             [Op.gt]: date7DaysFromNow,
-            [Op.lt]: nowInUTC,
           },
         },
       });
