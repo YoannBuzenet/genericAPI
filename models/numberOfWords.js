@@ -1,5 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
+const Sequelize = require("sequelize");
+const Op = Sequelize.Op;
 const {
   getNowInUTC,
   getStartOfTheDayInUTC,
@@ -8,7 +10,6 @@ const {
   getStartDateMonthInUTC,
   getLastDateOfMonthInUTC,
 } = require("../services/utils");
-const Op = Sequelize.Op;
 
 // Specific function definition to handle UTC more easily
 Date.prototype.addHours = function (h) {
@@ -66,7 +67,7 @@ module.exports = (sequelize, DataTypes) => {
 
       const resultWords7Days = await NumberOfWords.findAll({
         attributes: [
-          [sequelize.fn("COUNT", sequelize.col("amount")), "totalAmount"],
+          [sequelize.fn("sum", sequelize.col("amount")), "totalAmount"],
         ],
         where: {
           user_id: userID,

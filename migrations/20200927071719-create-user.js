@@ -64,7 +64,6 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       lastConnection: {
-        allowNull: false,
         type: Sequelize.STRING,
       },
       createdAt: {
