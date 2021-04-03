@@ -1,0 +1,3 @@
+const FREE_LIMIT_NUMBER_OF_WORDS = 5000;
+
+module.exports = { FREE_LIMIT_NUMBER_OF_WORDS };

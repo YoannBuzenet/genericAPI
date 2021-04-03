@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
 
-      console.log("result of today", resultWordsToday);
+      // console.log("result of today", resultWordsToday);
 
       // If it doesnt exist, we create it
       if (resultWordsToday === null) {

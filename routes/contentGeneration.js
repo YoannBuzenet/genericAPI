@@ -2,6 +2,7 @@ const { generateContent } = require("../controllers/contentGeneration");
 const { langReverted } = require("../services/langs");
 const db = require("../models/index");
 const { checkIfLogged } = require("../services/userCheck");
+const { FREE_LIMIT_NUMBER_OF_WORDS } = require("../config/settings");
 
 module.exports = function (fastify, opts, done) {
   fastify.post(
@@ -96,12 +97,13 @@ module.exports = function (fastify, opts, done) {
         userToCheck.dataValues.id
       );
 
-      console.log("okkkk", totalWordsForThisUserThisMonth);
-
       return {
         response: aiResponse.apiResp,
         numberOfWordsThisMonth:
           totalWordsForThisUserThisMonth[0].dataValues.totalAmount,
+        userCanStillUseService:
+          totalWordsForThisUserThisMonth[0].dataValues.totalAmount <=
+          FREE_LIMIT_NUMBER_OF_WORDS,
       };
     }
   );

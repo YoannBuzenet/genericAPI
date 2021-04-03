@@ -54,9 +54,18 @@ const generateContent = async (categoryId, lang, userInput, numberOfOutput) => {
     }
   }
 
+  // Checking the number of output is defined and not too high
+  let numberOutputAI = numberOfOutput;
+  if (isNaN(parseInt(numberOutputAI))) {
+    numberOutputAI = 1;
+  }
+  if (numberOutputAI > 5) {
+    numberOutputAI = 5;
+  }
+
   const finalObject = {
     prompt: snippetWithUserInput,
-    n: numberOfOutput || 1,
+    n: numberOutputAI,
     max_tokens: category.dataValues.maxLengthTokens,
     temperature: category.dataValues.temperature,
     stop: ["\n", "<|endoftext|>"],
