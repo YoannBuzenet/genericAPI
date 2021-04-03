@@ -1,3 +1,4 @@
+const { FREE_LIMIT_NUMBER_OF_WORDS } = require("../config/settings");
 const db = require("../models/index");
 const utils = require("../services/utils");
 
@@ -76,6 +77,10 @@ module.exports = function (fastify, opts, done) {
           );
           userToReturn.totalConsumption =
             totalWordsForThisUser[0].dataValues.totalAmount;
+
+          userToReturn.userHasStillAccess =
+            totalWordsForThisUser[0].dataValues.totalAmount >=
+            FREE_LIMIT_NUMBER_OF_WORDS;
         }
 
         // Removing properties we don't want to see on Front-End
