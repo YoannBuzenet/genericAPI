@@ -76,7 +76,7 @@ const generateContent = async (categoryId, lang, userInput, numberOfOutput) => {
 
   // 4. Get back AI output, cut it at the first \n
   console.log("digging yoooo", openAiResponse?.data?.choices);
-  let numberOfWordsUsedInResp;
+  let numberOfWordsUsedInResp = 0;
   const apiResp = openAiResponse?.data?.choices
     .map((oneResp) => oneResp.text)
     .map((text) => text.trim())

@@ -39,6 +39,8 @@ module.exports = function (fastify, opts, done) {
       let idToCheck;
       if (req.body.provider === "google") {
         idToCheck = "googleId";
+      } else if (req.body.provider === "website") {
+        idToCheck = "id";
       } else {
         reply.code(406).send("Provider not registered.");
         return;
