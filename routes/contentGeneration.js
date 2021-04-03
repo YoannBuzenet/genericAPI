@@ -65,6 +65,18 @@ module.exports = function (fastify, opts, done) {
       // STEP 2 : Check User is still subscribed
       // TO DO
 
+      // Checking that user is under free limit if he is on free access
+      if (userToCheck.dataValues.isOnFreeAccess === 1) {
+        const totalWordsForThisUserThisMonth = await db.NumberOfWords.getWordsConsumptionOfLastMonth(
+          userToCheck.dataValues.id
+        );
+
+        if (totalWordsForThisUserThisMonth >= FREE_LIMIT_NUMBER_OF_WORDS) {
+          reply.code(406).send("Maximum access already reached.");
+          return;
+        }
+      }
+
       // Check if category exists
       const categoryIdChecked = await db.Category.findOne({
         where: { id: req.body.category },
