@@ -59,8 +59,8 @@ const generateContent = async (categoryId, lang, userInput, numberOfOutput) => {
   if (isNaN(parseInt(numberOutputAI))) {
     numberOutputAI = 1;
   }
-  if (numberOutputAI > 5) {
-    numberOutputAI = 5;
+  if (numberOutputAI > 3) {
+    numberOutputAI = 3;
   }
 
   const finalObject = {
