@@ -5,11 +5,7 @@ const {
   countWordsInString,
   removeUnfinishedSentenceInString,
 } = require("../services/utils");
-
-// TO DO
-// /!\ the cutting method should be linked to the category
-// /!\ Toujours mettre une maj au premier charac de l'user input et passer le reste en lowercase
-// /!\ Toujours remove first space de la rep AI
+const { ENDPOINT_FILTER_OPEN_AI } = require("../config/settings");
 
 const generateContent = async (categoryId, lang, userInput, numberOfOutput) => {
   // 1. Searching for the right snippet
@@ -104,7 +100,19 @@ const generateContent = async (categoryId, lang, userInput, numberOfOutput) => {
   return { apiResp, numberOfWords: numberOfWordsUsedInResp };
 };
 
-const validateAIOutput = (prompt) => {
+const validateAIOutput = async (prompt) => {
+  const promptForOpenAI = `<|endoftext|>${prompt}\n--\nLabel:`;
+
+  //call the filter with prompt
+  const aiCall = await axios.post(ENDPOINT_FILTER_OPEN_AI, promptForOpenAI, {
+    headers: {
+      Authorization: "Bearer " + process.env.OPEN_AI_KEY,
+      "Content-Type": "application/json",
+    },
+  });
+
+  // parse answer, give boolean
+
   const TOXICITY_THRESHOLD = -0.355;
 
   return true;
