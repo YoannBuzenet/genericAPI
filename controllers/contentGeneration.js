@@ -104,4 +104,10 @@ const generateContent = async (categoryId, lang, userInput, numberOfOutput) => {
   return { apiResp, numberOfWords: numberOfWordsUsedInResp };
 };
 
+const validateAIOutput = (prompt) => {
+  const TOXICITY_THRESHOLD = -0.355;
+
+  return true;
+};
+
 module.exports = { generateContent };
