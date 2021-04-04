@@ -109,12 +109,18 @@ module.exports = function (fastify, opts, done) {
         userToCheck.dataValues.id
       );
 
+      const MonthlyWordsForThisUser = await db.NumberOfWords.getWordsConsumptionForCurrentMonth(
+        userToReturn.dataValues.id
+      );
+
       return {
         response: aiResponse.apiResp,
         numberOfWords: totalWordsForThisUser[0].dataValues.totalAmount,
         userCanStillUseService:
           totalWordsForThisUser[0].dataValues.totalAmount <=
           FREE_LIMIT_NUMBER_OF_WORDS,
+        userMonthlyConsumption:
+          MonthlyWordsForThisUser[0].dataValues.totalAmount || 0,
       };
     }
   );
