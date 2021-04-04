@@ -100,22 +100,37 @@ const generateContent = async (categoryId, lang, userInput, numberOfOutput) => {
   return { apiResp, numberOfWords: numberOfWordsUsedInResp };
 };
 
+// Open AI gives us a free API to flag if a content is misapropried or not. We use that filter on each output we receive.
 const validateAIOutput = async (prompt) => {
   const promptForOpenAI = `<|endoftext|>${prompt}\n--\nLabel:`;
 
   //call the filter with prompt
-  const aiCall = await axios.post(ENDPOINT_FILTER_OPEN_AI, promptForOpenAI, {
+  const response = await axios.post(ENDPOINT_FILTER_OPEN_AI, promptForOpenAI, {
     headers: {
       Authorization: "Bearer " + process.env.OPEN_AI_KEY,
       "Content-Type": "application/json",
     },
   });
 
-  // parse answer, give boolean
-
   const TOXICITY_THRESHOLD = -0.355;
+  const output_label = response["choices"][0]["text"];
 
-  return true;
+  if (output_label === "2") {
+    // If the model returns "2", return its confidence in 2 or other output-labels
+    const logprobs = response["choices"][0]["logprobs"]["top_logprobs"][0];
+
+    // If the model is not sufficiently confident in "2",
+    // choose the most probable of "0" or "1"
+    // Guaranteed to have a confidence for 2 since this was the selected token.
+    if (logprobs["2"] < TOXICITY_THRESHOLD) {
+    }
+  } else if (output_label === "1") {
+    return true;
+  } else if (output_label === "0") {
+    return true;
+  } else {
+    return false;
+  }
 };
 
 module.exports = { generateContent };
