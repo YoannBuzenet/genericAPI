@@ -45,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
         provider: "google",
         googleId: user.googleId,
         googleAccessToken: hashingFunctions.hashPassword(user.accessToken),
-        googleRefreshToken: user.googleRefreshToken,
+        googleRefreshToken: user.refreshToken,
         isLoggedUntil: new Date().addHours(1).toUTCString(),
         avatar: user.avatar,
         userLocale: user.userLocale,
@@ -59,6 +59,10 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
     static async updateTokenFromGoogle(userInDB, userFromGoogle) {
+      const refreshToken = userFromGoogle.hasOwnProperty("refreshToken")
+        ? userFromGoogle.refreshToken
+        : userInDB.googleRefreshToken;
+
       return User.upsert(
         {
           email: userFromGoogle.email,
@@ -70,7 +74,7 @@ module.exports = (sequelize, DataTypes) => {
           googleAccessToken: hashingFunctions.hashPassword(
             userFromGoogle.accessToken
           ),
-          googleRefreshToken: userFromGoogle.googleRefreshToken,
+          googleRefreshToken: userFromGoogle.refreshToken,
           companyID: userInDB.dataValues.companyID,
           isLoggedUntil: new Date().addHours(1).toUTCString(),
           avatar: userFromGoogle.avatar,
@@ -83,7 +87,14 @@ module.exports = (sequelize, DataTypes) => {
           hasAlreadyConnected: 0,
           lastConnection: new Date().toUTCString(),
         },
-        { fields: ["googleAccessToken", "isLoggedUntil", "lastConnection"] }
+        {
+          fields: [
+            "googleAccessToken",
+            "googleRefreshToken",
+            "isLoggedUntil",
+            "lastConnection",
+          ],
+        }
       );
     }
   }
