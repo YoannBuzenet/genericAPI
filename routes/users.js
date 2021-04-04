@@ -75,8 +75,15 @@ module.exports = function (fastify, opts, done) {
           const totalWordsForThisUser = await db.NumberOfWords.returnCompleteUserConsumption(
             userToReturn.dataValues.id
           );
+          const MonthlyWordsForThisUser = await db.NumberOfWords.getWordsConsumptionForCurrentMonth(
+            userToReturn.dataValues.id
+          );
+
           userToReturn.dataValues.totalWordsConsumption =
             totalWordsForThisUser[0].dataValues.totalAmount || 0;
+
+          userToReturn.dataValues.monthlyWordsConsumption =
+            MonthlyWordsForThisUser[0].dataValues.totalAmount || 0;
 
           userToReturn.dataValues.userHasStillAccess =
             totalWordsForThisUser[0].dataValues.totalAmount ||
