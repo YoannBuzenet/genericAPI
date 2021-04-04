@@ -85,7 +85,11 @@ module.exports = function (fastify, opts, done) {
   });
 
   fastify.get("/UserNumberOfWordsLastMonth", async () => {
-    const numberOfWords = await db.NumberOfWords.getWordsConsumptionOfLastMonth(
+    const numberOfWords = await db.NumberOfWords.getWordsConsumptionOf30days(1);
+    return numberOfWords;
+  });
+  fastify.get("/UserNumberOfWordsCurrentMonth", async () => {
+    const numberOfWords = await db.NumberOfWords.getWordsConsumptionForCurrentMonth(
       1
     );
     return numberOfWords;

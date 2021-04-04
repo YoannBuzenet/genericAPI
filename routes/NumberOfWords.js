@@ -49,7 +49,7 @@ module.exports = function (fastify, opts, done) {
         return;
       }
 
-      const totalWordsForThisUserThisMonth = await db.NumberOfWords.getWordsConsumptionOfLastMonth(
+      const totalWordsForThisUserThisMonth = await db.NumberOfWords.getWordsConsumptionOf30days(
         userToCheck.dataValues.id
       );
 

@@ -79,7 +79,7 @@ module.exports = (sequelize, DataTypes) => {
       // console.log("ok resultWords7Days", resultWords7Days);
       return resultWords7Days;
     }
-    static async getWordsConsumptionOfLastMonth(userID) {
+    static async getWordsConsumptionOf30days(userID) {
       const date1MonthFromNow = getDate1MonthFromNowInUTC();
       const nowInUTC = getNowInUTC();
       const resultWords1Month = await NumberOfWords.findAll({
@@ -117,6 +117,27 @@ module.exports = (sequelize, DataTypes) => {
 
       return resultWordsFromThisMonth;
     }
+
+    static async getWordsConsumptionForCurrentMonth(userID) {
+      var date = new Date();
+      const monthBeginning = getStartDateMonthInUTC(date.getUTCMonth());
+      const resultWordsFromThisMonth = await NumberOfWords.findAll({
+        attributes: [
+          [sequelize.fn("sum", sequelize.col("amount")), "totalAmount"],
+        ],
+        where: {
+          user_id: userID,
+          date: {
+            [Op.gt]: monthBeginning,
+          },
+        },
+      });
+
+      // console.log("ok resultWordsFromThisMonth", resultWordsFromThisMonth);
+
+      return resultWordsFromThisMonth;
+    }
+
     static async getAllDataFor7lastDays(userID) {
       const date7DaysFromNow = getDays7DaysFromNowInUTC();
 
