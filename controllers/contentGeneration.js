@@ -82,47 +82,92 @@ const generateContent = async (categoryId, lang, userInput, numberOfOutput) => {
   // 4. Get back AI output, cut it at the first \n
   console.log("digging yoooo", openAiResponse?.data?.choices);
   let numberOfWordsUsedInResp = 0;
-  const apiResp = openAiResponse?.data?.choices
-    .map((oneResp) => oneResp.text)
-    .map((text) => text.trim())
-    .map((text) => {
-      numberOfWordsUsedInResp += countWordsInString(
-        removeUnfinishedSentenceInString(text)
-      );
-      return removeUnfinishedSentenceInString(text);
-    })
-    .filter((text) => text.length > 10);
 
-  console.log("resp sent back to Next :", apiResp);
-  console.log("number of words used : ", numberOfWordsUsedInResp);
+  const APiRespTextsExtracted = openAiResponse?.data?.choices.map(
+    (oneResp) => oneResp.text
+  );
 
-  // 5 . Return AI output
-  return { apiResp, numberOfWords: numberOfWordsUsedInResp };
+  const trimedTexts = APiRespTextsExtracted.map((text) => text.trim());
+
+  const cleanedTexts = trimedTexts.map((text) => {
+    numberOfWordsUsedInResp += countWordsInString(
+      removeUnfinishedSentenceInString(text)
+    );
+    return removeUnfinishedSentenceInString(text);
+  });
+
+  const filteredTexts = cleanedTexts.filter((text) => text.length > 10);
+
+  //Checking each AI output with Open AI Content filter and making sure it's safe
+
+  const aiCheckedText = filteredTexts.map((text) => validateAIOutput(text));
+
+  let finalAIOutput = [];
+
+  return Promise.all(aiCheckedText).then(function (results) {
+    console.log("yoann", results);
+    for (let i = 0; i < results.length; i++) {
+      if (results[i] === true) {
+        finalAIOutput = [...finalAIOutput, filteredTexts[i]];
+      }
+    }
+
+    console.log("final AI output", finalAIOutput);
+
+    // 5 . Return AI output
+    return { apiResp: finalAIOutput, numberOfWords: numberOfWordsUsedInResp };
+  });
 };
 
 // Open AI gives us a free API to flag if a content is misapropried or not. We use that filter on each output we receive.
 const validateAIOutput = async (prompt) => {
-  const promptForOpenAI = `<|endoftext|>${prompt}\n--\nLabel:`;
+  const promptForOpenAI = {
+    prompt: `<|endoftext|>${prompt}\n--\nLabel:`,
+    max_tokens: 1,
+    temperature: 0,
+    top_p: 0,
+    logprobs: 10,
+  };
+  console.log("wtf ?");
 
+  let response;
   //call the filter with prompt
-  const response = await axios.post(ENDPOINT_FILTER_OPEN_AI, promptForOpenAI, {
-    headers: {
-      Authorization: "Bearer " + process.env.OPEN_AI_KEY,
-      "Content-Type": "application/json",
-    },
-  });
+  try {
+    response = await axios.post(ENDPOINT_FILTER_OPEN_AI, promptForOpenAI, {
+      headers: {
+        Authorization: "Bearer " + process.env.OPEN_AI_KEY,
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (e) {
+    console.log("err when calling conten filter on open AI", e);
+  }
 
   const TOXICITY_THRESHOLD = -0.355;
-  const output_label = response["choices"][0]["text"];
+  const output_label = response?.data?.["choices"]?.[0]?.["text"];
 
   if (output_label === "2") {
     // If the model returns "2", return its confidence in 2 or other output-labels
-    const logprobs = response["choices"][0]["logprobs"]["top_logprobs"][0];
+    const logprobs =
+      response?.data?.["choices"]?.[0]["logprobs"]?.["top_logprobs"]?.[0];
 
     // If the model is not sufficiently confident in "2",
     // choose the most probable of "0" or "1"
     // Guaranteed to have a confidence for 2 since this was the selected token.
     if (logprobs["2"] < TOXICITY_THRESHOLD) {
+      logprob_0 = logprobs["0"];
+      logprob_1 = logprobs["1"];
+
+      if (logprob_0 && logprob_1) {
+        return true;
+      } else if (logprob_0) {
+        return true;
+      } else if (logprob_1) {
+        return true;
+      }
+    } else {
+      // Output is still classified as 2
+      return false;
     }
   } else if (output_label === "1") {
     return true;
