@@ -107,5 +107,50 @@ module.exports = function (fastify, opts, done) {
     }
   );
 
+  fastify.post(
+    "/EnableFreeAccess",
+    {
+      schema: {
+        body: {
+          type: "object",
+          required: ["passphrase", "provider", "user"],
+          properties: {
+            passphrase: { type: "string" },
+            provider: { type: "string" },
+            user: { type: "object" },
+          },
+        },
+      },
+    },
+    async (req, reply) => {
+      let idUser;
+      let idUserName;
+      if (req.body.provider === "google") {
+        idUser = req.body.user.googleId;
+        idUserName = "googleId";
+      }
+
+      // Checking if user already exists
+      const userToFind = await db.User.findOne({
+        where: {
+          [idUser]: idUser,
+        },
+      });
+
+      if (userToFind === null) {
+        reply.code(406).send("User doesnt exist.");
+      }
+
+      const userhasNowFreeAccess = await db.User.subscribeFreeAccess(
+        userToFind.dataValues.id
+      );
+
+      reply
+        .code(200)
+        .header("Content-Type", "application/json; charset=utf-8")
+        .send(userhasNowFreeAccess);
+    }
+  );
+
   done();
 };

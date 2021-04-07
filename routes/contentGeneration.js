@@ -62,9 +62,6 @@ module.exports = function (fastify, opts, done) {
         return;
       }
 
-      // STEP 2 : Check User is still subscribed
-      // TO DO yoann
-
       // Checking that user is under free limit if he is on free access
       if (userToCheck.dataValues.isOnFreeAccess === 1) {
         const totalWordsForThisUserThisMonth = await db.NumberOfWords.returnCompleteUserConsumption(
@@ -75,6 +72,10 @@ module.exports = function (fastify, opts, done) {
           reply.code(406).send("Maximum access already reached.");
           return;
         }
+      } else {
+        // If user is not on free access, we check if he is subscribed
+        // STEP 2 : Check User is still subscribed OR FREE ACCESS
+        // TO DO yoann
       }
 
       // Check if category exists
