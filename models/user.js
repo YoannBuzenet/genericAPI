@@ -97,6 +97,11 @@ module.exports = (sequelize, DataTypes) => {
         }
       );
     }
+    static async subscribeFreeAccess(userID) {
+      const user = await User.findOne({ where: { id: userID } });
+      user.isOnFreeAccess = 1;
+      return user.save();
+    }
   }
   User.init(
     {
@@ -119,7 +124,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       isOnFreeAccess: {
         type: DataTypes.INTEGER,
-        defaultValue: 1,
+        defaultValue: 0,
       },
       companyID: {
         type: DataTypes.INTEGER,

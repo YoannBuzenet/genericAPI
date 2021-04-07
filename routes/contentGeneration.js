@@ -63,7 +63,7 @@ module.exports = function (fastify, opts, done) {
       }
 
       // STEP 2 : Check User is still subscribed
-      // TO DO
+      // TO DO yoann
 
       // Checking that user is under free limit if he is on free access
       if (userToCheck.dataValues.isOnFreeAccess === 1) {
