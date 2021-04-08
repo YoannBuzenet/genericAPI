@@ -2,6 +2,7 @@
 const { Model } = require("sequelize");
 const hashingFunctions = require("../services/hashingFunctions");
 const utils = require("../services/utils");
+const crypto = require("crypto");
 
 // Specific function definition to handle UTC more easily
 Date.prototype.addHours = function (h) {
@@ -39,8 +40,11 @@ module.exports = (sequelize, DataTypes) => {
     //   });
     // }
     static async registerFromGoogle(user) {
+      let nonce = crypto.randomBytes(16).toString("base64");
+
       return User.create({
         email: user.email,
+        nonce: nonce,
         fullName: user.fullName,
         firstName: user.firstName,
         lastName: user.lastName,
@@ -71,6 +75,7 @@ module.exports = (sequelize, DataTypes) => {
       return User.upsert(
         {
           email: userFromGoogle.email,
+          nonce: userInDB.nonce,
           fullName: userFromGoogle.fullName,
           firstName: userFromGoogle.firstName,
           lastName: userFromGoogle.lastName,
@@ -137,6 +142,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.STRING,
       },
+      nonce: { type: DataTypes.STRING, allowNull: false },
       fullName: { type: DataTypes.STRING },
       firstName: { type: DataTypes.STRING },
       lastName: { type: DataTypes.STRING },
