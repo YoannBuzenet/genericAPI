@@ -152,5 +152,53 @@ module.exports = function (fastify, opts, done) {
     }
   );
 
+  // subscription endpoint, can be yearly or monthly
+  fastify.post(
+    "/subscribe",
+    {
+      schema: {
+        body: {
+          type: "object",
+          required: ["passphrase", "provider", "user", "subscription"],
+          properties: {
+            passphrase: { type: "string" },
+            subscription: { type: "string" },
+            provider: { type: "string" },
+            user: { type: "object" },
+          },
+        },
+      },
+    },
+    async (req, reply) => {
+      let idUser;
+      let idUserName;
+      if (req.body.provider === "google") {
+        idUser = req.body.user.googleId;
+        idUserName = "googleId";
+      }
+
+      // Checking if user already exists
+      const userToFind = await db.User.findOne({
+        where: {
+          [idUser]: idUser,
+        },
+      });
+
+      if (userToFind === null) {
+        reply.code(406).send("User doesnt exist.");
+      }
+
+      if (req.body.subscription === "yearly") {
+        // 1 year
+        const isSubscribedYearly = await db.User.subscribeOneYear(idUser);
+      } else if (req.body.subscription === "monthly") {
+        // 1 month
+        const isSubscribedMonthly = await db.User.subscribeOneMonth(idUser);
+      } else {
+        reply.code(406).send("Subscription duration not handled.");
+      }
+    }
+  );
+
   done();
 };
