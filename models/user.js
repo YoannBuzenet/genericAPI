@@ -106,11 +106,13 @@ module.exports = (sequelize, DataTypes) => {
     static async subscribeOneMonth(userID) {
       const user = await User.findOne({ where: { id: userID } });
       user.isSubscribedUntil = utils.getOneMonthFutureFromNowUTC();
+      user.isOnFreeAccess = 0;
       return user.save();
     }
     static async subscribeOneYear(userID) {
       const user = await User.findOne({ where: { id: userID } });
       user.isSubscribedUntil = utils.get12MonthsFutureFromNowUTC();
+      user.isOnFreeAccess = 0;
       return user.save();
     }
   }
