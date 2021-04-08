@@ -26,9 +26,12 @@ module.exports = {
         type: Sequelize.STRING,
       },
       isSubscribedUntil: {
-        type: Sequelize.STRING,
+        type: Sequelize.DATEONLY,
       },
       isOnFreeAccess: {
+        type: Sequelize.INTEGER,
+      },
+      hasGottenFreeAccess: {
         type: Sequelize.INTEGER,
       },
       isOnCompanyAccess: {

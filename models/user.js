@@ -88,6 +88,7 @@ module.exports = (sequelize, DataTypes) => {
           googleRefreshToken: userFromGoogle.refreshToken,
           companyID: userInDB.dataValues.companyID,
           isOnCompanyAccess: userInDB.dataValues.isOnCompanyAccess,
+          hasGottenFreeAccess: userInDB.dataValues.hasGottenFreeAccess,
           isLoggedUntil: new Date().addHours(1).toUTCString(),
           avatar: userFromGoogle.avatar,
           userLocale: userFromGoogle.userLocale,
@@ -113,6 +114,7 @@ module.exports = (sequelize, DataTypes) => {
     static async subscribeFreeAccess(userID) {
       const user = await User.findOne({ where: { id: userID } });
       user.isOnFreeAccess = 1;
+      user.hasGottenFreeAccess = 1;
       return user.save();
     }
     static async subscribeOneMonth(userID) {
@@ -155,7 +157,7 @@ module.exports = (sequelize, DataTypes) => {
       avatar: { type: DataTypes.STRING },
       userLocale: { type: DataTypes.STRING },
       isSubscribedUntil: {
-        type: DataTypes.STRING,
+        type: DataTypes.DATEONLY,
       },
       isOnFreeAccess: {
         type: DataTypes.INTEGER,
@@ -164,6 +166,16 @@ module.exports = (sequelize, DataTypes) => {
           isIn: {
             args: [[0, 1]],
             msg: "Value of isOnFreeAccess prop must be 0 or 1 integer.",
+          },
+        },
+      },
+      hasGottenFreeAccess: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+        validate: {
+          isIn: {
+            args: [[0, 1]],
+            msg: "Value of hasGottenFreeAccess prop must be 0 or 1 integer.",
           },
         },
       },
