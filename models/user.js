@@ -3,6 +3,7 @@ const { Model } = require("sequelize");
 const hashingFunctions = require("../services/hashingFunctions");
 const utils = require("../services/utils");
 const crypto = require("crypto");
+const { MAX_WORD_SUBSCRIBE } = require("../Definitions/constants");
 
 // Specific function definition to handle UTC more easily
 Date.prototype.addHours = function (h) {
@@ -53,12 +54,12 @@ module.exports = (sequelize, DataTypes) => {
         googleAccessToken: hashingFunctions.hashPassword(user.accessToken),
         googleRefreshToken: user.refreshToken,
         isLoggedUntil: new Date().addHours(1).toUTCString(),
-        isOnCompanyAccess: user.dataValues.isOnCompanyAccess,
-        companyID: user.dataValues.companyID,
+        isOnCompanyAccess: user.isOnCompanyAccess,
+        companyID: 0,
         avatar: user.avatar,
         userLocale: user.userLocale,
-        isSubscribedUntil: user.dataValues.isSubscribedUntil,
-        baseMaxWords: user.dataValues.baseMaxWords,
+        isSubscribedUntil: "",
+        baseMaxWords: MAX_WORD_SUBSCRIBE,
         temporarySecret: "",
         temporaryLastProductPaid: "",
         rightsFrontWebApp: 1,
