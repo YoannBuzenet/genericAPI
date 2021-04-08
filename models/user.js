@@ -24,19 +24,19 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.TokenConsumption, { foreignKey: "userID" });
       User.belongsTo(models.Company, { foreignKey: "companyID" });
     }
-    static async markAsHasConnected(user) {
-      return User.upsert({
-        id: user.dataValues.id,
-        email: user.dataValues.email,
-        shopKey: user.dataValues.shopKey,
-        isSubscribedUntil: user.dataValues.isSubscribedUntil,
-        temporarySecret: user.dataValues.temporarySecret,
-        temporaryLastProductPaid: user.dataValues.temporaryLastProductPaid,
-        shouldHaveStockDataRefreshed:
-          user.dataValues.shouldHaveStockDataRefreshed,
-        hasAlreadyConnected: 1,
-      });
-    }
+    // static async markAsHasConnected(user) {
+    //   return User.upsert({
+    //     id: user.dataValues.id,
+    //     email: user.dataValues.email,
+    //     shopKey: user.dataValues.shopKey,
+    //     isSubscribedUntil: user.dataValues.isSubscribedUntil,
+    //     temporarySecret: user.dataValues.temporarySecret,
+    //     temporaryLastProductPaid: user.dataValues.temporaryLastProductPaid,
+    //     shouldHaveStockDataRefreshed:
+    //       user.dataValues.shouldHaveStockDataRefreshed,
+    //     hasAlreadyConnected: 1,
+    //   });
+    // }
     static async registerFromGoogle(user) {
       return User.create({
         email: user.email,
@@ -48,9 +48,11 @@ module.exports = (sequelize, DataTypes) => {
         googleAccessToken: hashingFunctions.hashPassword(user.accessToken),
         googleRefreshToken: user.refreshToken,
         isLoggedUntil: new Date().addHours(1).toUTCString(),
+        isOnCompanyAccess: user.dataValues.isOnCompanyAccess,
+        companyID: user.dataValues.companyID,
         avatar: user.avatar,
         userLocale: user.userLocale,
-        isSubscribedUntil: "",
+        isSubscribedUntil: user.dataValues.isSubscribedUntil,
         temporarySecret: "",
         temporaryLastProductPaid: "",
         rightsFrontWebApp: 1,
@@ -77,10 +79,11 @@ module.exports = (sequelize, DataTypes) => {
           ),
           googleRefreshToken: userFromGoogle.refreshToken,
           companyID: userInDB.dataValues.companyID,
+          isOnCompanyAccess: userInDB.dataValues.isOnCompanyAccess,
           isLoggedUntil: new Date().addHours(1).toUTCString(),
           avatar: userFromGoogle.avatar,
           userLocale: userFromGoogle.userLocale,
-          isSubscribedUntil: "",
+          isSubscribedUntil: userInDB.dataValues.isSubscribedUntil,
           temporarySecret: "",
           temporaryLastProductPaid: "",
           rightsFrontWebApp: userInDB.dataValues.rightsFrontWebApp,
@@ -115,6 +118,15 @@ module.exports = (sequelize, DataTypes) => {
       user.isOnFreeAccess = 0;
       return user.save();
     }
+    static async subscribeCompanyAccess(userID, companyID) {
+      const user = await User.findOne({ where: { id: userID } });
+      user.isSubscribedUntil = utils.get1200MonthsFutureFromNowUTC();
+      user.isOnFreeAccess = 0;
+      user.companyID = companyID;
+      user.isOnCompanyAccess = 1;
+
+      return user.save();
+    }
   }
   User.init(
     {
@@ -138,10 +150,26 @@ module.exports = (sequelize, DataTypes) => {
       isOnFreeAccess: {
         type: DataTypes.INTEGER,
         defaultValue: 0,
+        validate: {
+          isIn: {
+            args: [[0, 1]],
+            msg: "Value of isOnFreeAccess prop must be 0 or 1 integer.",
+          },
+        },
+      },
+      isOnCompanyAccess: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+        validate: {
+          isIn: {
+            args: [[0, 1]],
+            msg: "Value of isOnCompanyAccess prop must be 0 or 1 integer.",
+          },
+        },
       },
       companyID: {
         type: DataTypes.INTEGER,
-        defaultValue: 1,
+        defaultValue: 0,
       },
       temporarySecret: {
         type: DataTypes.STRING,

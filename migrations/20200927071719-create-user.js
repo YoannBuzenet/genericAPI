@@ -29,12 +29,10 @@ module.exports = {
       },
       isOnFreeAccess: {
         type: Sequelize.INTEGER,
-        validate: {
-          isIn: {
-            args: [[0, 1]],
-            msg: "Value of isOnFreeAccess prop must be 0 or 1 integer.",
-          },
-        },
+      },
+      isOnCompanyAccess: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
       },
       temporarySecret: {
         type: Sequelize.STRING,

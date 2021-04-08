@@ -214,6 +214,22 @@ const get12MonthsFutureFromNowUTC = () => {
   return new Date(dateIn12MonthMonthUTC);
 };
 
+const get1200MonthsFutureFromNowUTC = () => {
+  var date = new Date();
+  date.setMonth(date.getMonth() + 1200);
+
+  var dateIn1200MonthMonthUTC = Date.UTC(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate(),
+    date.getUTCHours(),
+    date.getUTCMinutes(),
+    date.getUTCSeconds()
+  );
+
+  return new Date(dateIn1200MonthMonthUTC);
+};
+
 module.exports = {
   propCheckInObject,
   getNowInUTC,
@@ -229,4 +245,5 @@ module.exports = {
   removeUnfinishedSentenceInString,
   getOneMonthFutureFromNowUTC,
   get12MonthsFutureFromNowUTC,
+  get1200MonthsFutureFromNowUTC,
 };
