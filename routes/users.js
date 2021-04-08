@@ -142,6 +142,9 @@ module.exports = function (fastify, opts, done) {
         reply.code(406).send("User doesnt exist.");
       }
 
+      if (userToFind.dataValues.hasGottenFreeAccess === 1) {
+        reply.code(406).send("User already had free access.");
+      }
       const userhasNowFreeAccess = await db.User.subscribeFreeAccess(
         userToFind.dataValues.id
       );

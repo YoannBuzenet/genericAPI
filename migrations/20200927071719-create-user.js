@@ -34,6 +34,9 @@ module.exports = {
       hasGottenFreeAccess: {
         type: Sequelize.INTEGER,
       },
+      hasSubscribedOnce: {
+        type: Sequelize.INTEGER,
+      },
       isOnCompanyAccess: {
         type: Sequelize.INTEGER,
         defaultValue: 0,

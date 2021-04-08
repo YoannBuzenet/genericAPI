@@ -89,6 +89,7 @@ module.exports = (sequelize, DataTypes) => {
           companyID: userInDB.dataValues.companyID,
           isOnCompanyAccess: userInDB.dataValues.isOnCompanyAccess,
           hasGottenFreeAccess: userInDB.dataValues.hasGottenFreeAccess,
+          hasSubscribedOnce: userInDB.dataValues.hasSubscribedOnce,
           isLoggedUntil: new Date().addHours(1).toUTCString(),
           avatar: userFromGoogle.avatar,
           userLocale: userFromGoogle.userLocale,
@@ -120,12 +121,14 @@ module.exports = (sequelize, DataTypes) => {
     static async subscribeOneMonth(userID) {
       const user = await User.findOne({ where: { id: userID } });
       user.isSubscribedUntil = utils.getOneMonthFutureFromNowUTC();
+      user.hasSubscribedOnce = 1;
       user.isOnFreeAccess = 0;
       return user.save();
     }
     static async subscribeOneYear(userID) {
       const user = await User.findOne({ where: { id: userID } });
       user.isSubscribedUntil = utils.get12MonthsFutureFromNowUTC();
+      user.hasSubscribedOnce = 1;
       user.isOnFreeAccess = 0;
       return user.save();
     }
@@ -133,6 +136,7 @@ module.exports = (sequelize, DataTypes) => {
       const user = await User.findOne({ where: { id: userID } });
       user.isSubscribedUntil = utils.get1200MonthsFutureFromNowUTC();
       user.isOnFreeAccess = 0;
+      user.hasSubscribedOnce = 1;
       user.companyID = companyID;
       user.isOnCompanyAccess = 1;
 
@@ -176,6 +180,16 @@ module.exports = (sequelize, DataTypes) => {
           isIn: {
             args: [[0, 1]],
             msg: "Value of hasGottenFreeAccess prop must be 0 or 1 integer.",
+          },
+        },
+      },
+      hasSubscribedOnce: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+        validate: {
+          isIn: {
+            args: [[0, 1]],
+            msg: "Value of hasSubscribedOnce prop must be 0 or 1 integer.",
           },
         },
       },
