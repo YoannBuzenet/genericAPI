@@ -167,7 +167,7 @@ module.exports = (sequelize, DataTypes) => {
     //   return resultWordsFromBeginning;
     // }
   }
-  NumberOfWords.init(
+  MaxWordsIncrease.init(
     {
       user_id: {
         allowNull: false,
@@ -187,5 +187,5 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "MaxWordsIncrease",
     }
   );
-  return NumberOfWords;
+  return MaxWordsIncrease;
 };
