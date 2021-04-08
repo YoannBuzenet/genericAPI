@@ -182,6 +182,38 @@ const removeUnfinishedSentenceInString = (string) => {
   return newString;
 };
 
+const getOneMonthFutureFromNowUTC = () => {
+  var date = new Date();
+  date.setMonth(date.getMonth() + 1);
+
+  var dateInOneMonthMonthUTC = Date.UTC(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate(),
+    date.getUTCHours(),
+    date.getUTCMinutes(),
+    date.getUTCSeconds()
+  );
+
+  return new Date(dateInOneMonthMonthUTC);
+};
+
+const get12MonthsFutureFromNowUTC = () => {
+  var date = new Date();
+  date.setMonth(date.getMonth() + 12);
+
+  var dateIn12MonthMonthUTC = Date.UTC(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate(),
+    date.getUTCHours(),
+    date.getUTCMinutes(),
+    date.getUTCSeconds()
+  );
+
+  return new Date(dateIn12MonthMonthUTC);
+};
+
 module.exports = {
   propCheckInObject,
   getNowInUTC,
@@ -195,4 +227,6 @@ module.exports = {
   formatNumberToTwoDigit,
   countWordsInString,
   removeUnfinishedSentenceInString,
+  getOneMonthFutureFromNowUTC,
+  get12MonthsFutureFromNowUTC,
 };

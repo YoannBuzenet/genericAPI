@@ -1,6 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 const hashingFunctions = require("../services/hashingFunctions");
+const utils = require("../services/utils");
 
 // Specific function definition to handle UTC more easily
 Date.prototype.addHours = function (h) {
@@ -100,6 +101,16 @@ module.exports = (sequelize, DataTypes) => {
     static async subscribeFreeAccess(userID) {
       const user = await User.findOne({ where: { id: userID } });
       user.isOnFreeAccess = 1;
+      return user.save();
+    }
+    static async subscribeOneMonth(userID) {
+      const user = await User.findOne({ where: { id: userID } });
+      user.isSubscribedUntil = utils.getOneMonthFutureFromNowUTC();
+      return user.save();
+    }
+    static async subscribeOneYear(userID) {
+      const user = await User.findOne({ where: { id: userID } });
+      user.isSubscribedUntil = utils.get12MonthsFutureFromNowUTC();
       return user.save();
     }
   }
