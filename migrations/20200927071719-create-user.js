@@ -34,6 +34,10 @@ module.exports = {
         type: Sequelize.INTEGER,
         defaultValue: 0,
       },
+      baseMaxWords: {
+        type: Sequelize.INTEGER,
+        defaultValue: 50000,
+      },
       temporarySecret: {
         type: Sequelize.STRING,
       },

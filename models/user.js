@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.NumberOfWords, { foreignKey: "user_id" });
       User.hasMany(models.Invoice, { foreignKey: "idShop" });
       User.hasMany(models.TokenConsumption, { foreignKey: "userID" });
+      User.hasMany(models.MaxWordsIncrease, { foreignKey: "user_id" });
       User.belongsTo(models.Company, { foreignKey: "companyID" });
     }
     // static async markAsHasConnected(user) {
@@ -53,6 +54,7 @@ module.exports = (sequelize, DataTypes) => {
         avatar: user.avatar,
         userLocale: user.userLocale,
         isSubscribedUntil: user.dataValues.isSubscribedUntil,
+        baseMaxWords: user.dataValues.baseMaxWords,
         temporarySecret: "",
         temporaryLastProductPaid: "",
         rightsFrontWebApp: 1,
@@ -84,6 +86,7 @@ module.exports = (sequelize, DataTypes) => {
           avatar: userFromGoogle.avatar,
           userLocale: userFromGoogle.userLocale,
           isSubscribedUntil: userInDB.dataValues.isSubscribedUntil,
+          baseMaxWords: userInDB.dataValues.baseMaxWords,
           temporarySecret: "",
           temporaryLastProductPaid: "",
           rightsFrontWebApp: userInDB.dataValues.rightsFrontWebApp,
@@ -176,6 +179,10 @@ module.exports = (sequelize, DataTypes) => {
       },
       temporaryLastProductPaid: {
         type: DataTypes.STRING,
+      },
+      baseMaxWords: {
+        type: DataTypes.INTEGER,
+        defaultValue: 50000,
       },
       rightsFrontWebApp: { type: DataTypes.INTEGER },
       rightsCentralAPI: { type: DataTypes.INTEGER },
