@@ -93,6 +93,7 @@ module.exports = function (fastify, opts, done) {
         // Removing properties we don't want to see on Front-End
         delete userToReturn.dataValues.temporarySecret;
         delete userToReturn.dataValues.temporaryLastProductPaid;
+        delete userToReturn.dataValues.nonce;
 
         // Final Reply
         reply
