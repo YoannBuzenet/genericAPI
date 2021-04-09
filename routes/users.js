@@ -134,16 +134,26 @@ module.exports = function (fastify, opts, done) {
       // Checking if user already exists
       const userToFind = await db.User.findOne({
         where: {
-          [idUser]: idUser,
+          [idUserName]: idUser,
         },
       });
 
       if (userToFind === null) {
         reply.code(406).send("User doesnt exist.");
+        return;
       }
 
       if (userToFind.dataValues.hasGottenFreeAccess === 1) {
         reply.code(406).send("User already had free access.");
+        return;
+      }
+      if (userToFind.dataValues.hasSubscribedOnce === 1) {
+        reply
+          .code(406)
+          .send(
+            "User subscribed already and does not have access to free access anymore."
+          );
+        return;
       }
       const userhasNowFreeAccess = await db.User.subscribeFreeAccess(
         userToFind.dataValues.id
@@ -153,6 +163,7 @@ module.exports = function (fastify, opts, done) {
         .code(200)
         .header("Content-Type", "application/json; charset=utf-8")
         .send(userhasNowFreeAccess);
+      return;
     }
   );
 
@@ -201,6 +212,37 @@ module.exports = function (fastify, opts, done) {
       } else {
         reply.code(406).send("Subscription duration not handled.");
       }
+    }
+  );
+  // Get by ID
+  fastify.post(
+    "/getById",
+    {
+      schema: {
+        body: {
+          type: "object",
+          required: ["passphrase", "userID"],
+          properties: {
+            passphrase: { type: "string" },
+            userID: { type: "string" },
+          },
+        },
+      },
+    },
+    async (req, reply) => {
+      // Checking if user already exists
+      const userToFind = await db.User.findOne({
+        where: {
+          id: req.body.userID,
+        },
+      });
+
+      if (userToFind === null) {
+        reply.code(406).send("User doesnt exist.");
+      }
+
+      reply.send(userToFind);
+      return;
     }
   );
 

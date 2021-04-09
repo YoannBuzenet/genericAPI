@@ -58,7 +58,7 @@ module.exports = (sequelize, DataTypes) => {
         companyID: 0,
         avatar: user.avatar,
         userLocale: user.userLocale,
-        isSubscribedUntil: "",
+        isSubscribedUntil: null,
         baseMaxWords: MAX_WORD_SUBSCRIBE,
         temporarySecret: "",
         temporaryLastProductPaid: "",
