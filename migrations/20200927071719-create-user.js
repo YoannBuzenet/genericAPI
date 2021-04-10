@@ -1,5 +1,6 @@
 "use strict";
 require("dotenv").config();
+const { BASE_WORDS_SUBSCRIPTION } = require("../config/settings");
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -43,7 +44,7 @@ module.exports = {
       },
       baseMaxWords: {
         type: Sequelize.INTEGER,
-        defaultValue: 50000,
+        defaultValue: BASE_WORDS_SUBSCRIPTION,
       },
       temporarySecret: {
         type: Sequelize.STRING,
