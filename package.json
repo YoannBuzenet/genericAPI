@@ -7,8 +7,11 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:server:dev:windows": "node ./server.js",
     "start:server:prod:linux": "NODE_ENV=production node ./server.js",
+    "start:server:dev:linux": "node ./server.js",
     "resetDBseed:dev:windows": "SET NODE_ENV=development& npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all --debug",
-    "resetDBseed:test:windows": "SET NODE_ENV=test& npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all --debug"
+    "resetDBseed:test:windows": "SET NODE_ENV=test& npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all --debug",
+    "prod:db:migrate": "sudo NODE_ENV=production npx sequelize-cli db:migrate",
+    "dev:db:migrate": "npx sequelize-cli db:migrate"
   },
   "author": "Yoann Buzenet",
   "license": "ISC",
