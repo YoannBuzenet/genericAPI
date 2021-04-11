@@ -124,6 +124,11 @@ module.exports = function (fastify, opts, done) {
       },
     },
     async (req, reply) => {
+      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
+        reply.code(406).send("Passphrase doesn't match.");
+        return;
+      }
+
       let idUser;
       let idUserName;
       if (req.body.provider === "google") {
@@ -185,6 +190,11 @@ module.exports = function (fastify, opts, done) {
       },
     },
     async (req, reply) => {
+      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
+        reply.code(406).send("Passphrase doesn't match.");
+        return;
+      }
+
       let idUser;
       let idUserName;
       if (req.body.provider === "google") {
@@ -230,6 +240,11 @@ module.exports = function (fastify, opts, done) {
       },
     },
     async (req, reply) => {
+      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
+        reply.code(406).send("Passphrase doesn't match.");
+        return;
+      }
+
       // Checking if user already exists
       const userToFind = await db.User.findOne({
         where: {
