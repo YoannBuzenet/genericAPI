@@ -81,7 +81,7 @@ module.exports = function (fastify, opts, done) {
         session.session_id = "used";
         session.save();
 
-        const userToUpdate = await db.StripePurchase.findOne({
+        const userToUpdate = await db.User.findOne({
           where: {
             id: req.body.userID,
           },
