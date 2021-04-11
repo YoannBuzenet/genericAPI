@@ -3,7 +3,7 @@ require("dotenv").config();
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("StripePurchases", {
+    await queryInterface.createTable("StripeInvoices", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -51,6 +51,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("StripePurchases");
+    await queryInterface.dropTable("StripeInvoices");
   },
 };

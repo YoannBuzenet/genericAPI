@@ -149,14 +149,49 @@ module.exports = function (fastify, opts, done) {
       }
 
       // trouver le customerID dans les session et en déduire l'user ID
+      const sessionWithCustomerId = await db.StripePurchase.findOne({
+        where : {
+          customerStripeId : req.body.customerID
+        }
+      })
 
-      // sauvegarder
+      if(sessionWithCustomerId === null){
+        reply
+            .code(406)
+            .send("No corresponding session with this customer id", req.body.customerID);
+          return;
+      }
 
-      // si billing_reason ='subscription_create' on passe, sinon on va update (subscription_cycle)
+      const userID = sessionWithCustomerId?.dataValues?.user_id;
 
-      // amount -> yearly monthly etc
+      // sauvegarder avec user id
 
-      // 200
+      const savedInvoice = await db.StripeInvoice.create({
+        user_id : userID,
+        billing_reason : req.body.billing_reason,
+        customer_email : req.body.customer_email,
+        customerStripeId : req.body.customerID,
+        account_country : req.body.account_country,
+        status : req.body.status,
+        subscription : req.body.subscription,
+        date : req.body.date,
+        amount : req.body.total,
+      })
+
+      if(req.body.billing_reason === "subscription_create"){
+        // We do not do anything special here, as user has already been registered during first paiment via his stripe checkout session.
+        console.log('subscription created')
+      }
+      else if(req.body.billing_reason === "subscription_cycle"){
+        // amount -> yearly monthly etc
+        // subscribe l'user avec son ID
+        //to do yoann
+      }
+      else {
+        console.log('Billing reason not processed for now', req.body.billing_reason)
+      }
+
+      reply.status(200).send();
     }
   );
   done();

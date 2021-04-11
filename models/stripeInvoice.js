@@ -10,7 +10,7 @@ Date.prototype.addHours = function (h) {
 };
 
 module.exports = (sequelize, DataTypes) => {
-  class StripePurchase extends Model {
+  class StripeInvoice extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -20,13 +20,13 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  StripePurchase.init(
+  StripeInvoice.init(
     {
-      session_id: {
-        type: DataTypes.STRING,
-      },
       user_id: {
         type: DataTypes.INTEGER,
+      },
+      billing_reason: {
+        type: DataTypes.STRING,
       },
       customer_email: {
         type: DataTypes.STRING,
@@ -35,10 +35,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      mode: {
+      account_country: {
         type: DataTypes.STRING,
       },
-      paymentStatus: {
+      status: {
         type: DataTypes.STRING,
       },
       subscription: {
@@ -55,8 +55,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "StripePurchase",
+      modelName: "StripeInvoice",
     }
   );
-  return StripePurchase;
+  return StripeInvoice;
 };
