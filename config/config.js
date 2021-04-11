@@ -10,6 +10,7 @@ module.exports = {
     username: process.env.DB_USERNAME_DEV,
     password: process.env.DB_PWD_DEV,
     database: "database_generic_api_development",
+    logging: false,
     host: "127.0.0.1",
     dialect: "mysql",
   },
