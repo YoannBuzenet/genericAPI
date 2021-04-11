@@ -73,6 +73,7 @@ module.exports = function (fastify, opts, done) {
         }
 
         session.user_id = req.body.userID;
+        session.session_id = "used";
         session.save();
 
         const userToUpdate = await db.StripePurchase.findOne({
@@ -87,8 +88,21 @@ module.exports = function (fastify, opts, done) {
             .send("User coulnt be found, with ID :", req.body.userID);
         }
 
-        const pricePaid = session.dataValues.amount;
+        const pricePaid = parseInt(session.dataValues.amount, 10);
+
         // pricepaid allows us to know duration to add as subscription
+
+        if (pricePaid === 34800) {
+          const updatedYearlyUser = await db.User.subscribeOneYear(
+            req.body.userID
+          );
+        } else if (pricePaid === 4400) {
+          const updatedMonthly = await db.User.subscribeOneMonth(
+            req.body.userID
+          );
+        } else if (pricePaid === 1900) {
+          const oneMonthReload = "TODO when reloads will be implemented";
+        }
 
         // Appliquer la bonne méthode en fonction du prix payé
 
