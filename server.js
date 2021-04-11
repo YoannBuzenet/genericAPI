@@ -22,6 +22,9 @@ fastify.register(require("./routes/attributes"), { prefix: "/api/attributes" });
 fastify.register(require("./routes/contentGeneration"), {
   prefix: "/api/service",
 });
+fastify.register(require("./routes/stripePurchases"), {
+  prefix: "/api/stripePurchases",
+});
 if (process.env.NODE_ENV !== "production") {
   fastify.register(require("./routes/testRoutes"), {
     prefix: "/api/test",

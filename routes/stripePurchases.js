@@ -36,5 +36,38 @@ module.exports = function (fastify, opts, done) {
       }
     }
   );
+  fastify.post(
+    "/sessionLink",
+    {
+      schema: {
+        required: ["passphrase", "session", "userID"],
+        properties: {
+          passphrase: { type: "string" },
+          session: { type: "string" },
+          userID: { type: "string" },
+        },
+      },
+    },
+    async (req, reply) => {
+      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
+        reply.code(406).send("Passphrase doesn't match.");
+        return;
+      }
+
+      try {
+        console.log(
+          "get the right session, update it, then get the right user, update it"
+        );
+        console.log("req.body.session", req.body.session);
+        console.log("req.body.userID", req.body.userID);
+        // get the right session, update userID
+        // get the right user, update subscription
+        reply.code(200).send();
+      } catch (e) {
+        console.error("error while registering stripe purchase", e);
+        reply.code(500).send();
+      }
+    }
+  );
   done();
 };
