@@ -109,7 +109,7 @@ module.exports = function (fastify, opts, done) {
         reply.code(200).send();
       } catch (e) {
         console.error("error while registering stripe purchase", e);
-        reply.code(500).send();
+        reply.code(500).send(e);
       }
     }
   );
