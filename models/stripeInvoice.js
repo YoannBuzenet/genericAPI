@@ -22,11 +22,11 @@ module.exports = (sequelize, DataTypes) => {
   }
   StripePurchase.init(
     {
+      session_id: {
+        type: DataTypes.STRING,
+      },
       user_id: {
         type: DataTypes.INTEGER,
-      },
-      billing_reason: {
-        type: DataTypes.STRING,
       },
       customer_email: {
         type: DataTypes.STRING,
@@ -35,10 +35,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      account_country: {
+      mode: {
         type: DataTypes.STRING,
       },
-      status: {
+      paymentStatus: {
         type: DataTypes.STRING,
       },
       subscription: {

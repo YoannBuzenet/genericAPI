@@ -122,5 +122,42 @@ module.exports = function (fastify, opts, done) {
       }
     }
   );
+
+  fastify.post(
+    "updateSubscription",
+    {
+      schema: {
+        required: ["passphrase", "session", "userID"],
+        properties: {
+          passphrase: { type: "string" },
+          customerID: { type: "string" },
+          amount: { type: "string" },
+          billing_reason: { type: "string" },
+          date: { type: "string" },
+          account_country: { type: "string" },
+          status: { type: "string" },
+          total: { type: "string" },
+          subscription: { type: "string" },
+          customer_email: { type: "string" },
+        },
+      },
+    },
+    (req, reply) => {
+      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
+        reply.code(406).send("Passphrase doesn't match.");
+        return;
+      }
+
+      // trouver le customerID dans les session et en déduire l'user ID
+
+      // sauvegarder
+
+      // si billing_reason ='subscription_create' on passe, sinon on va update (subscription_cycle)
+
+      // amount -> yearly monthly etc
+
+      // 200
+    }
+  );
   done();
 };
