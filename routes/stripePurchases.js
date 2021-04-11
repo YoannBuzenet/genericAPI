@@ -52,6 +52,7 @@ module.exports = function (fastify, opts, done) {
     },
     async (req, reply) => {
       if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
+        console.log("Passphrase doesn't match.");
         reply.code(406).send("Passphrase doesn't match.");
         return;
       }
@@ -71,6 +72,7 @@ module.exports = function (fastify, opts, done) {
         });
 
         if (session === null) {
+          console.log("No corresponding session");
           reply.code(406).send("No corresponding session");
         }
 
@@ -85,6 +87,7 @@ module.exports = function (fastify, opts, done) {
         });
 
         if (userToUpdate === null) {
+          console.log("User coulnt be found, with ID :", req.body.userID);
           reply
             .code(406)
             .send("User coulnt be found, with ID :", req.body.userID);
