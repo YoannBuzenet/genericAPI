@@ -108,6 +108,7 @@ module.exports = function (fastify, opts, done) {
             req.body.userID
           );
         } else if (pricePaid === 1900) {
+          //TO DO With reloads
           const oneMonthReload = "TODO when reloads will be implemented";
         }
 
@@ -183,9 +184,20 @@ module.exports = function (fastify, opts, done) {
         console.log('subscription created')
       }
       else if(req.body.billing_reason === "subscription_cycle"){
-        // amount -> yearly monthly etc
-        // subscribe l'user avec son ID
-        //to do yoann
+        if(req.body.total === 34800){
+          const updatedYearlyUser = await db.User.subscribeOneYear(
+            userID
+          );
+        }
+        else if(req.body.total === 4400){
+          const updatedMonthly = await db.User.subscribeOneMonth(
+            userID
+          );
+
+        }
+        else if(req.body.total === 1900){
+          //TO DO LATER - RELOAD
+        }
       }
       else {
         console.log('Billing reason not processed for now', req.body.billing_reason)
