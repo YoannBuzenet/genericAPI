@@ -56,12 +56,42 @@ module.exports = function (fastify, opts, done) {
 
       try {
         console.log(
-          "get the right session, update it, then get the right user, update it"
+          "get the right session, update it, empty session id, then get the right user, update it"
         );
         console.log("req.body.session", req.body.session);
         console.log("req.body.userID", req.body.userID);
-        // get the right session, update userID
-        // get the right user, update subscription
+        // to do
+        // get the right session, update userID, erase field session id
+        const session = await db.StripePurchase.findOne({
+          where: {
+            session_id: req.body.session,
+          },
+        });
+
+        if (session === null) {
+          reply.code(406).send("No corresponding session");
+        }
+
+        session.user_id = req.body.userID;
+        session.save();
+
+        const userToUpdate = await db.StripePurchase.findOne({
+          where: {
+            id: req.body.userID,
+          },
+        });
+
+        if (userToUpdate === null) {
+          reply
+            .code(406)
+            .send("User coulnt be found, with ID :", req.body.userID);
+        }
+
+        const pricePaid = session.dataValues.amount;
+        // pricepaid allows us to know duration to add as subscription
+
+        // Appliquer la bonne méthode en fonction du prix payé
+
         reply.code(200).send();
       } catch (e) {
         console.error("error while registering stripe purchase", e);

@@ -24,7 +24,6 @@ module.exports = (sequelize, DataTypes) => {
     {
       session_id: {
         type: DataTypes.STRING,
-        allowNull: false,
       },
       user_id: {
         type: DataTypes.INTEGER,

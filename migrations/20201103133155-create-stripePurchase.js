@@ -15,7 +15,6 @@ module.exports = {
       },
       session_id: {
         type: Sequelize.STRING,
-        allowNull: false,
       },
       customer_email: {
         type: Sequelize.STRING,
