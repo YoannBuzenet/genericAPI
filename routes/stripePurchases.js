@@ -20,14 +20,16 @@ module.exports = function (fastify, opts, done) {
 
       try {
         const newStripePurchase = await db.StripePurchase.create({
-          session_id: stripePurchaseObject.session_id,
-          customer_email: stripePurchaseObject.customer_email,
-          customerStripeId: stripePurchaseObject.customerStripeId,
-          mode: stripePurchaseObject.mode,
-          paymentStatus: stripePurchaseObject.paymentStatus,
-          subscription: stripePurchaseObject.subscription,
-          date: new Date().toUTCString(stripePurchaseObject.date * 1000),
-          amount: stripePurchaseObject.amount,
+          session_id: req.body.stripePurchaseObject.session_id,
+          customer_email: req.body.stripePurchaseObject.customer_email,
+          customerStripeId: req.body.stripePurchaseObject.customerStripeId,
+          mode: req.body.stripePurchaseObject.mode,
+          paymentStatus: req.body.stripePurchaseObject.paymentStatus,
+          subscription: req.body.stripePurchaseObject.subscription,
+          date: new Date().toUTCString(
+            req.body.stripePurchaseObject.date * 1000
+          ),
+          amount: req.body.stripePurchaseObject.amount,
         });
         reply.code(200).send();
       } catch (e) {
