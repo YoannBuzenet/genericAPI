@@ -74,6 +74,7 @@ module.exports = function (fastify, opts, done) {
         if (session === null) {
           console.log("No corresponding session");
           reply.code(406).send("No corresponding session");
+          return;
         }
 
         session.user_id = req.body.userID;
@@ -91,6 +92,7 @@ module.exports = function (fastify, opts, done) {
           reply
             .code(406)
             .send("User coulnt be found, with ID :", req.body.userID);
+          return;
         }
 
         const pricePaid = parseInt(session.dataValues.amount, 10);
@@ -112,9 +114,11 @@ module.exports = function (fastify, opts, done) {
         // Appliquer la bonne méthode en fonction du prix payé
 
         reply.code(200).send();
+        return;
       } catch (e) {
         console.error("error while registering stripe purchase", e);
         reply.code(500).send(e);
+        return;
       }
     }
   );
