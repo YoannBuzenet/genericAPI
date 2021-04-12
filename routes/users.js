@@ -305,20 +305,14 @@ module.exports = function (fastify, opts, done) {
 
       if (!isNaN(intBoost)) {
         console.log("here");
-        totalMaxWordsUserThisMonth +=
-          allBoostsWordsThisMonthForThisUser[0].dataValues.totalAmount;
+        totalMaxWordsUserThisMonth = totalMaxWordsUserThisMonth + intBoost;
       } else {
         totalMaxWordsUserThisMonth = baseWordsUser;
         console.log("there");
       }
-      console.log(
-        "allBoostsWordsThisMonthForThisUser",
-        allBoostsWordsThisMonthForThisUser
-      );
 
       userToFind.dataValues.totalMaxWordsUserThisMonth = totalMaxWordsUserThisMonth;
-      userToFind.dataValues.boostThisMonth =
-        allBoostsWordsThisMonthForThisUser[0].dataValues.totalAmount || 0;
+      userToFind.dataValues.boostThisMonth = boostForThisMonth || 0;
 
       reply.send(userToFind);
       return;
