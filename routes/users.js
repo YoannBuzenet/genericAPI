@@ -94,8 +94,19 @@ module.exports = function (fastify, opts, done) {
           MonthlyWordsForThisUser[0].dataValues.totalAmount || 0;
 
         // USER OWN MAX WORDS FOR THIS MONTH
-        // to do yoann
-        //choper le base word de l'user + choper et additionner les boost du mois
+        const baseWordsUser = userToReturn.dataValues.baseMaxWords;
+        const allBoostsWordsThisMonthForThisUser = await db.MaxWordsIncrease.getBoostForThisMonthForThisUser(
+          userToReturn.dataValues.id
+        );
+
+        let totalMaxWordsUserThisMonth;
+        if (!isNaN(parseInt(allBoostsWordsThisMonthForThisUser, 10))) {
+          totalMaxWordsUserThisMonth += allBoostsWordsThisMonthForThisUser;
+        } else {
+          totalMaxWordsUserThisMonth = baseWordsUser;
+        }
+
+        userToReturn.dataValues.totalMaxWordsUserThisMonth = totalMaxWordsUserThisMonth;
 
         // Removing properties we don't want to see on Front-End
         delete userToReturn.dataValues.temporarySecret;

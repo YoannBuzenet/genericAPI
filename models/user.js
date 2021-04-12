@@ -215,7 +215,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       baseMaxWords: {
         type: DataTypes.INTEGER,
-        defaultValue: 50000,
+        defaultValue: 20000,
       },
       rightsFrontWebApp: { type: DataTypes.INTEGER },
       rightsCentralAPI: { type: DataTypes.INTEGER },
