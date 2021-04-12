@@ -61,9 +61,6 @@ module.exports = function (fastify, opts, done) {
         console.log(
           "get the right session, update it, empty session id, then get the right user, update it"
         );
-        console.log("req.body.session", req.body.session);
-        console.log("req.body.userID", req.body.userID);
-        // to do
         // get the right session, update userID, erase field session id
         const session = await db.StripePurchase.findOne({
           where: {
