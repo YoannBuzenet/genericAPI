@@ -3,7 +3,7 @@ require("dotenv").config();
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("MaxWordsIncrease", {
+    await queryInterface.createTable("MaxWordsIncreases", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -36,6 +36,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("MaxWordsIncrease");
+    await queryInterface.dropTable("MaxWordsIncreases");
   },
 };

@@ -100,20 +100,21 @@ module.exports = function (fastify, opts, done) {
         // pricepaid allows us to know duration to add as subscription
 
         if (pricePaid === 34800) {
-          console.log('yearly subscription')
+          console.log("yearly subscription");
           const updatedYearlyUser = await db.User.subscribeOneYear(
             req.body.userID
           );
         } else if (pricePaid === 4400) {
-          console.log('monthly subscription')
+          console.log("monthly subscription");
           const updatedMonthly = await db.User.subscribeOneMonth(
             req.body.userID
           );
         } else if (pricePaid === 1900) {
-          console.log('reload payment')
-          const oneMonthReload = await db.MaxWordsIncrease.getBoostThisUser(req.body.userID);
+          console.log("reload payment");
+          const oneMonthReload = await db.MaxWordsIncrease.getBoostThisUser(
+            req.body.userID
+          );
         }
-
 
         reply.code(200).send();
         return;
@@ -144,7 +145,7 @@ module.exports = function (fastify, opts, done) {
         },
       },
     },
-    (req, reply) => {
+    async (req, reply) => {
       if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
         reply.code(406).send("Passphrase doesn't match.");
         return;
@@ -152,16 +153,19 @@ module.exports = function (fastify, opts, done) {
 
       // trouver le customerID dans les session et en déduire l'user ID
       const sessionWithCustomerId = await db.StripePurchase.findOne({
-        where : {
-          customerStripeId : req.body.customerID
-        }
-      })
+        where: {
+          customerStripeId: req.body.customerID,
+        },
+      });
 
-      if(sessionWithCustomerId === null){
+      if (sessionWithCustomerId === null) {
         reply
-            .code(406)
-            .send("No corresponding session with this customer id", req.body.customerID);
-          return;
+          .code(406)
+          .send(
+            "No corresponding session with this customer id",
+            req.body.customerID
+          );
+        return;
       }
 
       const userID = sessionWithCustomerId?.dataValues?.user_id;
@@ -169,36 +173,31 @@ module.exports = function (fastify, opts, done) {
       // sauvegarder avec user id
 
       const savedInvoice = await db.StripeInvoice.create({
-        user_id : userID,
-        billing_reason : req.body.billing_reason,
-        customer_email : req.body.customer_email,
-        customerStripeId : req.body.customerID,
-        account_country : req.body.account_country,
-        status : req.body.status,
-        subscription : req.body.subscription,
-        date : req.body.date,
-        amount : req.body.total,
-      })
+        user_id: userID,
+        billing_reason: req.body.billing_reason,
+        customer_email: req.body.customer_email,
+        customerStripeId: req.body.customerID,
+        account_country: req.body.account_country,
+        status: req.body.status,
+        subscription: req.body.subscription,
+        date: req.body.date,
+        amount: req.body.total,
+      });
 
-      if(req.body.billing_reason === "subscription_create"){
+      if (req.body.billing_reason === "subscription_create") {
         // We do not do anything special here, as user has already been registered during first paiment via his stripe checkout session.
-        console.log('subscription created')
-      }
-      else if(req.body.billing_reason === "subscription_cycle"){
-        if(req.body.total === 34800){
-          const updatedYearlyUser = await db.User.subscribeOneYear(
-            userID
-          );
+        console.log("subscription created");
+      } else if (req.body.billing_reason === "subscription_cycle") {
+        if (req.body.total === 34800) {
+          const updatedYearlyUser = await db.User.subscribeOneYear(userID);
+        } else if (req.body.total === 4400) {
+          const updatedMonthly = await db.User.subscribeOneMonth(userID);
         }
-        else if(req.body.total === 4400){
-          const updatedMonthly = await db.User.subscribeOneMonth(
-            userID
-          );
-
-        }
-      }
-      else {
-        console.log('Billing reason not processed for now', req.body.billing_reason)
+      } else {
+        console.log(
+          "Billing reason not processed for now",
+          req.body.billing_reason
+        );
       }
 
       reply.status(200).send();

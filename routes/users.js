@@ -100,7 +100,9 @@ module.exports = function (fastify, opts, done) {
         );
 
         let totalMaxWordsUserThisMonth;
-        if (!isNaN(parseInt(allBoostsWordsThisMonthForThisUser, 10))) {
+        if (
+          !isNaN(parseInt(allBoostsWordsThisMonthForThisUser.totalAmount, 10))
+        ) {
           totalMaxWordsUserThisMonth += allBoostsWordsThisMonthForThisUser;
         } else {
           totalMaxWordsUserThisMonth = baseWordsUser;
@@ -274,6 +276,41 @@ module.exports = function (fastify, opts, done) {
       if (userToFind === null) {
         reply.code(406).send("User doesnt exist.");
       }
+
+      // FREE ACCESS CONTROL
+      // Adding number of words if the user is on free access
+      if (userToFind.dataValues.isOnFreeAccess === 1) {
+        const totalWordsForThisUser = await db.NumberOfWords.returnCompleteUserConsumption(
+          userToFind.dataValues.id
+        );
+
+        userToFind.dataValues.totalWordsConsumption =
+          totalWordsForThisUser[0].dataValues.totalAmount || 0;
+
+        userToFind.dataValues.userHasStillAccess =
+          totalWordsForThisUser[0].dataValues.totalAmount ||
+          0 <= FREE_LIMIT_NUMBER_OF_WORDS;
+      }
+
+      // USER OWN MAX WORDS FOR THIS MONTH
+      const baseWordsUser = userToFind.dataValues.baseMaxWords;
+      const allBoostsWordsThisMonthForThisUser = await db.MaxWordsIncrease.getBoostForLast30DaysForThisUser(
+        userToFind.dataValues.id
+      );
+
+      let totalMaxWordsUserThisMonth;
+      if (
+        !isNaN(parseInt(allBoostsWordsThisMonthForThisUser[0].totalAmount, 10))
+      ) {
+        totalMaxWordsUserThisMonth +=
+          allBoostsWordsThisMonthForThisUser[0].totalAmount;
+      } else {
+        totalMaxWordsUserThisMonth = baseWordsUser;
+      }
+
+      userToFind.dataValues.totalMaxWordsUserThisMonth = totalMaxWordsUserThisMonth;
+      userToFind.dataValues.boostThisMonth =
+        allBoostsWordsThisMonthForThisUser[0].totalAmount || 0;
 
       reply.send(userToFind);
       return;
