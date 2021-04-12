@@ -304,7 +304,7 @@ module.exports = function (fastify, opts, done) {
       ) {
         console.log("here");
         totalMaxWordsUserThisMonth +=
-          allBoostsWordsThisMonthForThisUser[0].totalAmount;
+          allBoostsWordsThisMonthForThisUser[0].dataValues.totalAmount;
       } else {
         totalMaxWordsUserThisMonth = baseWordsUser;
         console.log("there");
@@ -316,7 +316,7 @@ module.exports = function (fastify, opts, done) {
 
       userToFind.dataValues.totalMaxWordsUserThisMonth = totalMaxWordsUserThisMonth;
       userToFind.dataValues.boostThisMonth =
-        allBoostsWordsThisMonthForThisUser[0].totalAmount || 0;
+        allBoostsWordsThisMonthForThisUser[0].dataValues.totalAmount || 0;
 
       reply.send(userToFind);
       return;
