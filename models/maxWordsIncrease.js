@@ -68,6 +68,7 @@ module.exports = (sequelize, DataTypes) => {
       date: {
         allowNull: false,
         type: DataTypes.DATEONLY,
+        defaultValue: getNowInUTC(),
       },
       amount: {
         allowNull: false,
