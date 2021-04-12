@@ -100,16 +100,21 @@ module.exports = function (fastify, opts, done) {
         );
 
         let totalMaxWordsUserThisMonth = 0;
-        if (
-          !isNaN(parseInt(allBoostsWordsThisMonthForThisUser.totalAmount, 10))
-        ) {
-          totalMaxWordsUserThisMonth += allBoostsWordsThisMonthForThisUser;
+        const boostForThisMonth =
+          allBoostsWordsThisMonthForThisUser[0].dataValues.totalAmount;
+        const intBoost = parseInt(boostForThisMonth, 10);
+
+        if (!isNaN(intBoost)) {
+          console.log("here");
+          totalMaxWordsUserThisMonth =
+            totalMaxWordsUserThisMonth + intBoost + baseWordsUser;
         } else {
           totalMaxWordsUserThisMonth = baseWordsUser;
+          console.log("there");
         }
 
         userToReturn.dataValues.totalMaxWordsUserThisMonth = totalMaxWordsUserThisMonth;
-        userToReturn.dataValues.boostThisMonth = allBoostsWordsThisMonthForThisUser;
+        userToReturn.dataValues.boostThisMonth = boostForThisMonth || 0;
 
         // Removing properties we don't want to see on Front-End
         delete userToReturn.dataValues.temporarySecret;
@@ -305,7 +310,8 @@ module.exports = function (fastify, opts, done) {
 
       if (!isNaN(intBoost)) {
         console.log("here");
-        totalMaxWordsUserThisMonth = totalMaxWordsUserThisMonth + intBoost;
+        totalMaxWordsUserThisMonth =
+          totalMaxWordsUserThisMonth + intBoost + baseWordsUser;
       } else {
         totalMaxWordsUserThisMonth = baseWordsUser;
         console.log("there");
