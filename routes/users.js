@@ -99,7 +99,7 @@ module.exports = function (fastify, opts, done) {
           userToReturn.dataValues.id
         );
 
-        let totalMaxWordsUserThisMonth;
+        let totalMaxWordsUserThisMonth = 0;
         if (
           !isNaN(parseInt(allBoostsWordsThisMonthForThisUser.totalAmount, 10))
         ) {
@@ -298,15 +298,21 @@ module.exports = function (fastify, opts, done) {
         userToFind.dataValues.id
       );
 
-      let totalMaxWordsUserThisMonth;
+      let totalMaxWordsUserThisMonth = 0;
       if (
         !isNaN(parseInt(allBoostsWordsThisMonthForThisUser[0].totalAmount, 10))
       ) {
+        console.log("here");
         totalMaxWordsUserThisMonth +=
           allBoostsWordsThisMonthForThisUser[0].totalAmount;
       } else {
         totalMaxWordsUserThisMonth = baseWordsUser;
+        console.log("there");
       }
+      console.log(
+        "allBoostsWordsThisMonthForThisUser",
+        allBoostsWordsThisMonthForThisUser
+      );
 
       userToFind.dataValues.totalMaxWordsUserThisMonth = totalMaxWordsUserThisMonth;
       userToFind.dataValues.boostThisMonth =
