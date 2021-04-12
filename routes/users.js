@@ -300,7 +300,12 @@ module.exports = function (fastify, opts, done) {
 
       let totalMaxWordsUserThisMonth = 0;
       if (
-        !isNaN(parseInt(allBoostsWordsThisMonthForThisUser[0].totalAmount, 10))
+        !isNaN(
+          parseInt(
+            allBoostsWordsThisMonthForThisUser[0].dataValues.totalAmount,
+            10
+          )
+        )
       ) {
         console.log("here");
         totalMaxWordsUserThisMonth +=
