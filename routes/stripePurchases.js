@@ -124,7 +124,7 @@ module.exports = function (fastify, opts, done) {
   );
 
   fastify.post(
-    "updateSubscription",
+    "/updateSubscription",
     {
       schema: {
         required: ["passphrase", "session", "userID"],
