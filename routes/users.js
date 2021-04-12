@@ -107,6 +107,7 @@ module.exports = function (fastify, opts, done) {
         }
 
         userToReturn.dataValues.totalMaxWordsUserThisMonth = totalMaxWordsUserThisMonth;
+        userToReturn.dataValues.boostThisMonth = allBoostsWordsThisMonthForThisUser;
 
         // Removing properties we don't want to see on Front-End
         delete userToReturn.dataValues.temporarySecret;

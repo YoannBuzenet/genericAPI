@@ -100,14 +100,17 @@ module.exports = function (fastify, opts, done) {
         // pricepaid allows us to know duration to add as subscription
 
         if (pricePaid === 34800) {
+          console.log('yearly subscription')
           const updatedYearlyUser = await db.User.subscribeOneYear(
             req.body.userID
           );
         } else if (pricePaid === 4400) {
+          console.log('monthly subscription')
           const updatedMonthly = await db.User.subscribeOneMonth(
             req.body.userID
           );
         } else if (pricePaid === 1900) {
+          console.log('reload payment')
           const oneMonthReload = await db.MaxWordsIncrease.getBoostThisUser(req.body.userID);
         }
 
@@ -192,9 +195,6 @@ module.exports = function (fastify, opts, done) {
             userID
           );
 
-        }
-        else if(req.body.total === 1900){
-          //TO DO LATER - RELOAD
         }
       }
       else {
