@@ -95,7 +95,7 @@ module.exports = function (fastify, opts, done) {
 
         // USER OWN MAX WORDS FOR THIS MONTH
         const baseWordsUser = userToReturn.dataValues.baseMaxWords;
-        const allBoostsWordsThisMonthForThisUser = await db.MaxWordsIncrease.getBoostForThisMonthForThisUser(
+        const allBoostsWordsThisMonthForThisUser = await db.MaxWordsIncrease.getBoostForLast30DaysForThisUser(
           userToReturn.dataValues.id
         );
 

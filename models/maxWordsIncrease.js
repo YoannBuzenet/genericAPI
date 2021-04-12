@@ -1,6 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 const Sequelize = require("sequelize");
+const db = require(".");
 const Op = Sequelize.Op;
 const {
   getNowInUTC,
@@ -30,24 +31,32 @@ module.exports = (sequelize, DataTypes) => {
       MaxWordsIncrease.belongsTo(models.User, { foreignKey: "user_id" });
     }
 
-    static async getBoostForThisMonthForThisUser(userID) {
-      const startOfMonthUTC = getStartDateMonthInUTC();
+    static async getBoostForLast30DaysForThisUser(userID) {
+      const thirtyDaysFromNow = getDate1MonthFromNowInUTC();
       const nowInUTC = getNowInUTC();
 
-      const resultBoostThisMonth = await NumberOfWords.findAll({
+      const resultBoostThisMonth = await MaxWordsIncrease.findAll({
         attributes: [
           [sequelize.fn("sum", sequelize.col("amount")), "totalAmount"],
         ],
         where: {
           user_id: userID,
           date: {
-            [Op.gt]: startOfMonthUTC,
+            [Op.gt]: thirtyDaysFromNow,
           },
         },
       });
 
       // console.log("ok resultWords7Days", resultWords7Days);
       return resultBoostThisMonth;
+    }
+    static async getBoostThisUser(userID) {
+      const createdBoost = MaxWordsIncrease.create({
+        user_id: userID,
+        amount: 20000,
+      });
+
+      return createdBoost;
     }
   }
   MaxWordsIncrease.init(

@@ -108,11 +108,9 @@ module.exports = function (fastify, opts, done) {
             req.body.userID
           );
         } else if (pricePaid === 1900) {
-          //TO DO With reloads
-          const oneMonthReload = "TODO when reloads will be implemented";
+          const oneMonthReload = await db.MaxWordsIncrease.getBoostThisUser(req.body.userID);
         }
 
-        // Appliquer la bonne méthode en fonction du prix payé
 
         reply.code(200).send();
         return;
