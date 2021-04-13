@@ -230,6 +230,11 @@ const get1200MonthsFutureFromNowUTC = () => {
   return new Date(dateIn1200MonthMonthUTC);
 };
 
+const getCurrentMonthUTC = () => {
+  var date = new Date();
+  return date.getUTCMonth();
+};
+
 module.exports = {
   propCheckInObject,
   getNowInUTC,
@@ -246,4 +251,5 @@ module.exports = {
   getOneMonthFutureFromNowUTC,
   get12MonthsFutureFromNowUTC,
   get1200MonthsFutureFromNowUTC,
+  getCurrentMonthUTC,
 };

@@ -116,6 +116,17 @@ module.exports = function (fastify, opts, done) {
         userToReturn.dataValues.totalMaxWordsUserThisMonth = totalMaxWordsUserThisMonth;
         userToReturn.dataValues.boostThisMonth = boostForThisMonth || 0;
 
+        //Getting user consumption this month
+
+        const currentMonthUTC = utils.getCurrentMonthUTC();
+        const totalConsumptionThisMonth = await db.NumberOfWords.getWordsConsumptionForMonth(
+          userToFind.dataValues.id,
+          currentMonthUTC
+        );
+
+        userToFind.dataValues.consumptionThisMonth =
+          totalConsumptionThisMonth[0].dataValues.totalAmount;
+
         // Removing properties we don't want to see on Front-End
         delete userToReturn.dataValues.temporarySecret;
         delete userToReturn.dataValues.temporaryLastProductPaid;
@@ -328,16 +339,31 @@ module.exports = function (fastify, opts, done) {
       const intBoost = parseInt(boostForThisMonth, 10);
 
       if (!isNaN(intBoost)) {
-        console.log("here");
         totalMaxWordsUserThisMonth =
           totalMaxWordsUserThisMonth + intBoost + baseWordsUser;
+        userToFind.dataValues.boostThisMonth = intBoost;
       } else {
         totalMaxWordsUserThisMonth = baseWordsUser;
-        console.log("there");
+        userToFind.dataValues.boostThisMonth = boostForThisMonth || 0;
       }
 
       userToFind.dataValues.totalMaxWordsUserThisMonth = totalMaxWordsUserThisMonth;
-      userToFind.dataValues.boostThisMonth = boostForThisMonth || 0;
+
+      //Getting user consumption this month
+
+      const currentMonthUTC = utils.getCurrentMonthUTC();
+      const totalConsumptionThisMonth = await db.NumberOfWords.getWordsConsumptionForMonth(
+        userToFind.dataValues.id,
+        currentMonthUTC
+      );
+
+      userToFind.dataValues.consumptionThisMonth =
+        totalConsumptionThisMonth[0].dataValues.totalAmount;
+
+      // Removing properties we don't want to see on Front-End
+      delete userToReturn.dataValues.temporarySecret;
+      delete userToReturn.dataValues.temporaryLastProductPaid;
+      delete userToReturn.dataValues.nonce;
 
       reply.send(userToFind);
       return;
