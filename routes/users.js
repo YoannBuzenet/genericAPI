@@ -239,6 +239,8 @@ module.exports = function (fastify, opts, done) {
         reply.code(406).send("User doesnt exist.");
       }
 
+      const wasUserOnFreeAccess = userToFind.dataValues.isOnFreeAccess === 1;
+
       if (req.body.subscription === "yearly") {
         // 1 year
         const isSubscribedYearly = await db.User.subscribeOneYear(idUser);
@@ -247,6 +249,23 @@ module.exports = function (fastify, opts, done) {
         const isSubscribedMonthly = await db.User.subscribeOneMonth(idUser);
       } else {
         reply.code(406).send("Subscription duration not handled.");
+      }
+
+      //If user had remaining words on his free access, we add them to his new account
+      if (wasUserOnFreeAccess) {
+        const result = await db.NumberOfWords.returnCompleteUserConsumption(
+          idUser
+        );
+        const usedWordsForUser = result[0].dataValues.totalAmount;
+        const remainingWordsToAdd =
+          FREE_LIMIT_NUMBER_OF_WORDS - usedWordsForUser;
+
+        if (remainingWordsToAdd > 0) {
+          const addedWords = await db.NumberOfWords.addNumberOfWordsToday(
+            idUser,
+            remainingWordsToAdd
+          );
+        }
       }
     }
   );
