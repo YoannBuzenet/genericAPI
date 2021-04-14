@@ -100,7 +100,14 @@ const generateContent = async (categoryId, lang, userInput, numberOfOutput) => {
 
   //Checking each AI output with Open AI Content filter and making sure it's safe
 
-  const aiCheckedText = filteredTexts.map((text) => validateAIOutput(text));
+  const aiCheckedText = filteredTexts.map((text) => {
+    // open AI Validation is applied only on english texts
+    if (lang === "en-US") {
+      return validateAIOutput(text);
+    } else {
+      return text;
+    }
+  });
 
   let finalAIOutput = [];
 
