@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       User.hasMany(models.Order, { foreignKey: "idShop" });
       User.hasMany(models.NumberOfWords, { foreignKey: "user_id" });
+      User.hasMany(models.FilteredOpenAIInput, { foreignKey: "user_id" });
       User.hasMany(models.Invoice, { foreignKey: "idShop" });
       User.hasMany(models.TokenConsumption, { foreignKey: "userID" });
       User.hasMany(models.MaxWordsIncrease, { foreignKey: "user_id" });
