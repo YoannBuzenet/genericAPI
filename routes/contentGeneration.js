@@ -36,6 +36,14 @@ module.exports = function (fastify, opts, done) {
         return;
       }
 
+      //Checking user Input
+      for (let i = 0; i < req.body.userInput.length; i++) {
+        if (req.body.userInput[i].length === 0) {
+          reply.code(406).send("Input can't have 0 caracter length.");
+          return;
+        }
+      }
+
       // USER CHECK
       let idToCheck;
       if (req.body.provider === "google") {
