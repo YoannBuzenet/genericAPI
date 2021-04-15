@@ -137,8 +137,10 @@ const generateContent = async (categoryId, lang, userInput, numberOfOutput, user
          wasFullyFiltered :wasAllInputFiltered
        })
       }
-        
 
+      // Adding a flag to allow front-end to display notification in case of full filtered output
+      finalAIOutput.wasFullyFiltered = wasAllInputFiltered;
+        
 
     console.log("final AI output", finalAIOutput);
 
