@@ -81,7 +81,6 @@ const generateContent = async (categoryId, lang, userInput, numberOfOutput, user
     .catch((error) => console.log("error while contacting Open AI : ", error));
 
   // 4. Get back AI output, cut it at the first \n
-  console.log("digging yoooo", openAiResponse?.data?.choices);
   let numberOfWordsUsedInResp = 0;
 
   const APiRespTextsExtracted = openAiResponse?.data?.choices.map(
@@ -137,15 +136,12 @@ const generateContent = async (categoryId, lang, userInput, numberOfOutput, user
          wasFullyFiltered :wasAllInputFiltered
        })
       }
-
-      // Adding a flag to allow front-end to display notification in case of full filtered output
-      finalAIOutput.wasFullyFiltered = wasAllInputFiltered;
         
 
     console.log("final AI output", finalAIOutput);
 
     // 5 . Return AI output
-    return { apiResp: finalAIOutput, numberOfWords: numberOfWordsUsedInResp };
+    return { apiResp: finalAIOutput, numberOfWords: numberOfWordsUsedInResp, wasAllInputFiltered };
   });
 };
 
