@@ -22,6 +22,10 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
+      numberOfOutputsFiltered: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       wasFullyFiltered: {
         type: Sequelize.INTEGER,
         allowNull: false,

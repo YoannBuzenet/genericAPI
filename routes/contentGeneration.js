@@ -106,7 +106,8 @@ module.exports = function (fastify, opts, done) {
         req.body.category,
         req.body.lang,
         req.body.userInput,
-        req.body.numberOfOutputs
+        req.body.numberOfOutputs,
+        userToCheck
       );
 
       const updatedUser = await db.NumberOfWords.addNumberOfWordsToday(

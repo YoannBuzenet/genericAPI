@@ -4,10 +4,11 @@ const { langReverted } = require("../services/langs");
 const {
   countWordsInString,
   removeUnfinishedSentenceInString,
+  getTodayinDATEONLYInUTC
 } = require("../services/utils");
 const { ENDPOINT_FILTER_OPEN_AI } = require("../config/settings");
 
-const generateContent = async (categoryId, lang, userInput, numberOfOutput) => {
+const generateContent = async (categoryId, lang, userInput, numberOfOutput, userData) => {
   // 1. Searching for the right snippet
   //TODO later, add la recherche par combinaison unique d'attribut (déjà écrite)
   const snippet = await db.Snippet.findOne({
@@ -110,14 +111,34 @@ const generateContent = async (categoryId, lang, userInput, numberOfOutput) => {
   });
 
   let finalAIOutput = [];
-
+  let numberOfWordsFiltered = 0;
   return Promise.all(aiCheckedText).then(function (results) {
-    console.log("yoann", results);
     for (let i = 0; i < results.length; i++) {
       if (results[i] === true) {
         finalAIOutput = [...finalAIOutput, filteredTexts[i]];
+      } else {
+        numberOfWordsFiltered = numberOfWordsFiltered + filteredTexts[i].length;
       }
     }
+
+    //Saving filtered AI outputs for statistics purpose
+    const numberOfFilteredOutputs = results.filter((result) => result === false)
+      .length;
+
+    const wasAllInputFiltered =
+      numberOfFilteredOutputs === filteredTexts.length;
+
+      if (numberOfFilteredOutputs > 0){
+       const savedFilteredOutput = await db.FilteredOpenAIInput.create({
+         user_id : userData.dataValues.id,
+         date : getTodayinDATEONLYInUTC(),
+         wordsFiltered : numberOfWordsFiltered,
+         numberOfOutputsFiltered :numberOfFilteredOutputs,
+         wasFullyFiltered :wasAllInputFiltered
+       })
+      }
+        
+
 
     console.log("final AI output", finalAIOutput);
 

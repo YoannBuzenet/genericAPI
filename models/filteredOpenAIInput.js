@@ -35,6 +35,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      numberOfOutputsFiltered: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
       wasFullyFiltered: {
         type: DataTypes.INTEGER,
         allowNull: false,
