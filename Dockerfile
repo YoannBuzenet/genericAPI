@@ -12,7 +12,19 @@ COPY package*.json ./
 RUN npm install --only=production
 
 # Copy local code to the container image.
-COPY . .
+COPY config ./config
+COPY controllers ./controllers
+COPY Definitions ./Definitions
+COPY migrations ./migrations
+COPY models ./models
+COPY routes ./routes
+COPY seeders ./seeders
+COPY services ./services
+COPY .npmrc .
+COPY .sequelizerc .
+COPY server.js .
+
+RUN echo "" > .env.local
 
 # Run the web service on container startup.
-CMD [ "npm", "start:server:prod:linux" ]
+CMD [ "npm", "run", "start:server:prod:linux" ]
