@@ -18,6 +18,11 @@ module.exports = (sequelize, DataTypes) => {
       isShort: { type: DataTypes.INTEGER, allowNull: false },
       maxLengthTokens: { type: DataTypes.INTEGER, defaultValue: 64 },
       numberOfAIOutput: { type: DataTypes.INTEGER, defaultValue: 5 },
+      parentCategoryName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "Content",
+      },
       engine: { type: DataTypes.STRING, defaultValue: "davinci" },
       temperature: { type: DataTypes.INTEGER, defaultValue: 0.7 },
       numberOfUserInputs: {
