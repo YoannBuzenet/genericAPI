@@ -4,11 +4,17 @@ const { langReverted } = require("../services/langs");
 const {
   countWordsInString,
   removeUnfinishedSentenceInString,
-  getTodayinDATEONLYInUTC
+  getTodayinDATEONLYInUTC,
 } = require("../services/utils");
 const { ENDPOINT_FILTER_OPEN_AI } = require("../config/settings");
 
-const generateContent = async (categoryId, lang, userInput, numberOfOutput, userData) => {
+const generateContent = async (
+  categoryId,
+  lang,
+  userInput,
+  numberOfOutput,
+  userData
+) => {
   // 1. Searching for the right snippet
   //TODO later, add la recherche par combinaison unique d'attribut (déjà écrite)
   const snippet = await db.Snippet.findOne({
@@ -111,7 +117,7 @@ const generateContent = async (categoryId, lang, userInput, numberOfOutput, user
 
   let finalAIOutput = [];
   let numberOfWordsFiltered = 0;
-  return Promise.all(aiCheckedText).then(function (results) {
+  return Promise.all(aiCheckedText).then(async function (results) {
     for (let i = 0; i < results.length; i++) {
       if (results[i] === true) {
         finalAIOutput = [...finalAIOutput, filteredTexts[i]];
@@ -127,21 +133,24 @@ const generateContent = async (categoryId, lang, userInput, numberOfOutput, user
     const wasAllInputFiltered =
       numberOfFilteredOutputs === filteredTexts.length;
 
-      if (numberOfFilteredOutputs > 0){
-       const savedFilteredOutput = await db.FilteredOpenAIInput.create({
-         user_id : userData.dataValues.id,
-         date : getTodayinDATEONLYInUTC(),
-         wordsFiltered : numberOfWordsFiltered,
-         numberOfOutputsFiltered :numberOfFilteredOutputs,
-         wasFullyFiltered :wasAllInputFiltered
-       })
-      }
-        
+    if (numberOfFilteredOutputs > 0) {
+      const savedFilteredOutput = await db.FilteredOpenAIInput.create({
+        user_id: userData.dataValues.id,
+        date: getTodayinDATEONLYInUTC(),
+        wordsFiltered: numberOfWordsFiltered,
+        numberOfOutputsFiltered: numberOfFilteredOutputs,
+        wasFullyFiltered: wasAllInputFiltered,
+      });
+    }
 
     console.log("final AI output", finalAIOutput);
 
     // 5 . Return AI output
-    return { apiResp: finalAIOutput, numberOfWords: numberOfWordsUsedInResp, wasAllInputFiltered };
+    return {
+      apiResp: finalAIOutput,
+      numberOfWords: numberOfWordsUsedInResp,
+      wasAllInputFiltered,
+    };
   });
 };
 
