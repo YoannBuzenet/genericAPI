@@ -44,7 +44,7 @@ module.exports = {
           },
           {
             name: "Value Proposition",
-            parentCategoryName: "Start Up",
+            parentCategoryName: "Brand",
             isShort: 1,
             temperature: 0.7,
             maxLengthTokens: 100,
@@ -78,7 +78,7 @@ module.exports = {
           },
           {
             name: "Facebook Ads headline",
-            parentCategoryName: "Social Networks",
+            parentCategoryName: "Social Media",
             isShort: 1,
             temperature: 0.9,
             maxLengthTokens: 50,
@@ -89,7 +89,7 @@ module.exports = {
           },
           {
             name: "Facebook Primary Text",
-            parentCategoryName: "Social Networks",
+            parentCategoryName: "Social Media",
             isShort: 1,
             temperature: 0.9,
             maxLengthTokens: 50,
@@ -122,7 +122,7 @@ module.exports = {
           },
           {
             name: "Linkedin Ad Text",
-            parentCategoryName: "Social Networks",
+            parentCategoryName: "Social Media",
             isShort: 1,
             temperature: 0.9,
             maxLengthTokens: 50,
@@ -222,6 +222,17 @@ module.exports = {
           {
             name: "Sale Argument",
             parentCategoryName: "Marketing",
+            isShort: 1,
+            temperature: 0.9,
+            maxLengthTokens: 75,
+            numberOfUserInputs: 1,
+            numberOfAIOutput: 3,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            name: "Hooky Email Object",
+            parentCategoryName: "Email",
             isShort: 1,
             temperature: 0.9,
             maxLengthTokens: 75,

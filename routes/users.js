@@ -120,11 +120,11 @@ module.exports = function (fastify, opts, done) {
 
         const currentMonthUTC = utils.getCurrentMonthUTC();
         const totalConsumptionThisMonth = await db.NumberOfWords.getWordsConsumptionForMonth(
-          userToFind.dataValues.id,
+          userToReturn.dataValues.id,
           currentMonthUTC
         );
 
-        userToFind.dataValues.consumptionThisMonth =
+        userToReturn.dataValues.consumptionThisMonth =
           totalConsumptionThisMonth[0].dataValues.totalAmount;
 
         // Removing properties we don't want to see on Front-End
