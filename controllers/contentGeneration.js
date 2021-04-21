@@ -7,6 +7,7 @@ const {
   getTodayinDATEONLYInUTC,
 } = require("../services/utils");
 const { ENDPOINT_FILTER_OPEN_AI } = require("../config/settings");
+var Bugsnag = require("@bugsnag/js");
 
 const generateContent = async (
   categoryId,
@@ -96,7 +97,10 @@ const generateContent = async (
         "Content-Type": "application/json",
       },
     })
-    .catch((error) => console.log("error while contacting Open AI : ", error));
+    .catch((error) => {
+      console.log("error while contacting Open AI : ", error);
+      Bugsnag.notify(new Error(err));
+    });
 
   // 4. Get back AI output, cut it at the first \n
   let numberOfWordsUsedInResp = 0;
@@ -187,6 +191,7 @@ const validateAIOutput = async (prompt) => {
       },
     });
   } catch (e) {
+    Bugsnag.notify(new Error(e));
     console.log("err when calling conten filter on open AI", e);
   }
 

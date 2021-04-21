@@ -6,6 +6,9 @@ if (result.error) {
   throw result.error;
 }
 
+var Bugsnag = require("@bugsnag/js");
+Bugsnag.start({ apiKey: "8f4afb4e24eb693a3fb86f0f3914d599" });
+
 // Require the framework and instantiate it
 const fastify = require("fastify")({ logger: true });
 
@@ -36,7 +39,8 @@ const start = async () => {
   try {
     await fastify.listen(3001);
   } catch (err) {
-    fastify.log.error(err);
+    Bugsnag.notify(new Error(err));
+    fastify.log.error("Server Error", err);
     process.exit(1);
   }
 };

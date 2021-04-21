@@ -16,6 +16,7 @@
   "author": "Yoann Buzenet",
   "license": "ISC",
   "dependencies": {
+    "@bugsnag/js": "^7.9.2",
     "axios": "^0.21.1",
     "dotenv": "^8.2.0",
     "fastify": "^3.14.0",
