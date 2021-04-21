@@ -22,6 +22,10 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
+      isUserOnCompanyAccessForThisCall: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       date: {
         type: Sequelize.DATEONLY,
         allowNull: false,

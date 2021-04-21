@@ -23,6 +23,9 @@ module.exports = (sequelize, DataTypes) => {
       isUserSubscribedForThisCall: {
         type: DataTypes.INTEGER,
       },
+      isUserOnCompanyAccessForThisCall: {
+        type: DataTypes.INTEGER,
+      },
       date: {
         type: DataTypes.DATEONLY,
       },
