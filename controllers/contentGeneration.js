@@ -15,6 +15,18 @@ const generateContent = async (
   numberOfOutput,
   userData
 ) => {
+  // 0. Tracking the request to make statistics.
+  // We do not await success on this call to not slow down the calling process.
+  db.CallToService.create({
+    user_id: userData.dataValues.id,
+    isUserSubscribedForThisCall: userData.dataValues.isOnFreeAccess === 0,
+    isUserOnCompanyAccessForThisCall:
+      userData.dataValues.isOnCompanyAccess === 1,
+    date: getTodayinDATEONLYInUTC(),
+    categoryUsed: categoryId,
+    locale: langReverted[lang],
+  });
+
   // 1. Searching for the right snippet
   //TODO later, add la recherche par combinaison unique d'attribut (déjà écrite)
   const snippet = await db.Snippet.findOne({
