@@ -7,7 +7,7 @@ if (result.error) {
 }
 
 var Bugsnag = require("@bugsnag/js");
-Bugsnag.start({ apiKey: "8f4afb4e24eb693a3fb86f0f3914d599" });
+Bugsnag.start({ apiKey: process.env.BUGSNAG_KEY });
 
 // Require the framework and instantiate it
 const fastify = require("fastify")({ logger: true });
