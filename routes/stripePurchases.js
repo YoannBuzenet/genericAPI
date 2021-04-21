@@ -1,4 +1,5 @@
 const db = require("../models/index");
+var Bugsnag = require("@bugsnag/js");
 
 module.exports = function (fastify, opts, done) {
   fastify.post(
@@ -34,6 +35,7 @@ module.exports = function (fastify, opts, done) {
         reply.code(200).send();
       } catch (e) {
         console.error("error while registering stripe purchase", e);
+        Bugsnag.notify(new Error(e));
         reply.code(500).send();
       }
     }
@@ -117,6 +119,7 @@ module.exports = function (fastify, opts, done) {
         return;
       } catch (e) {
         console.error("error while registering stripe purchase", e);
+        Bugsnag.notify(new Error(e));
         reply.code(500).send();
         return;
       }

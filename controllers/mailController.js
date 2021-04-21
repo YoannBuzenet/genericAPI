@@ -5,6 +5,7 @@ const path = require("path");
 const { createIntl, createIntlCache } = require("react-intl");
 const genericTranslations = require("../../src/services/fullstackTranslations/genericTranslations");
 const { createSummaryPDFName } = require("../services/PDFGeneration");
+var Bugsnag = require("@bugsnag/js");
 
 /* *********************************** */
 /* ******* TRANSLATION CONTEXT ******* */
@@ -295,6 +296,7 @@ async function sendEmail(
       async: true,
     });
   } catch (err) {
+    Bugsnag.notify(new Error(err));
     console.log("error while sending mail", err);
   }
 
@@ -322,6 +324,7 @@ async function sendEmail(
     const msgSent = await transport.sendMail(mailOpts);
     console.log("mail info", msgSent);
   } catch (e) {
+    Bugsnag.notify(new Error(e));
     console.log("errro while sending the mail", e);
   }
 }
