@@ -1,0 +1,20 @@
+<h2>Bonjour <%= shop.legalName %>,</h2>
+<p>
+  Nous avons bien reçu votre paiement de <%= order.amount %> euros, pour un
+  abonnement d'une durée de <%= order.duration %> mois.
+</p>
+<p>Vous êtes ainsi abonné jusqu'au <%= order.endDate %> inclus.</p>
+<p>
+  Vous pouvez trouver un récapitulatif de vos factures
+  <a
+    href="<%= process.env.REACT_APP_THIS_WEBSITE_URL%>/my-invoices"
+    target="_blank"
+    >sur votre compte.</a
+  >
+</p>
+<p>
+  Pour toute question, merci de nous contacter à l'adresse suivante :
+  supprt@mkmpriceupdater.com
+</p>
+<p>Merci,</p>
+<p>L'équipe MTG Interface</p>

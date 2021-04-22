@@ -23,6 +23,7 @@ module.exports = function (fastify, opts, done) {
     async (req, reply) => {
       try {
         // envoyer le mail
+        // TO DO Yoann
         reply.code(200).send();
       } catch (e) {
         console.log("error when mailing from contact us", e);

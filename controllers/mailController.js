@@ -3,8 +3,6 @@ const ejs = require("ejs");
 const fs = require("fs");
 const path = require("path");
 const { createIntl, createIntlCache } = require("react-intl");
-const genericTranslations = require("../../src/services/fullstackTranslations/genericTranslations");
-const { createSummaryPDFName } = require("../services/PDFGeneration");
 var Bugsnag = require("@bugsnag/js");
 
 /* *********************************** */
@@ -14,35 +12,9 @@ var Bugsnag = require("@bugsnag/js");
 function getTemplate(action, locale) {
   let template;
   switch (action) {
-    case "summaryTestScript": {
-      template = __basedir + "/mail_templates/" + locale + "/test-pdf.ejs";
-      break;
-    }
-    case "summaryRealScript": {
-      template = __basedir + "/mail_templates/" + locale + "/real-pdf.ejs";
-      break;
-    }
-    case "register": {
-      template = __basedir + "/mail_templates/" + locale + "/register.ejs";
-      break;
-    }
-    case "mailForgotten": {
+    case "userContactUsForm": {
       template =
-        __basedir + "/mail_templates/" + locale + "/resetMailSendChallenge.ejs";
-      break;
-    }
-    case "afterPayment": {
-      template = __basedir + "/mail_templates/" + locale + "/afterPayment.ejs";
-      break;
-    }
-    case "scriptHad0card": {
-      template =
-        __basedir + "/mail_templates/" + locale + "/scriptHad0card.ejs";
-      break;
-    }
-    case "testScriptHad0card": {
-      template =
-        __basedir + "/mail_templates/" + locale + "/testScriptHad0card.ejs";
+        __basedir + "/mail_templates/" + locale + "/userContactUsForm.ejs";
       break;
     }
     default: {
@@ -55,53 +27,10 @@ function getTemplate(action, locale) {
 function getMailTitle(action, intl) {
   let mailTitle;
   switch (action) {
-    case "summaryTestScript": {
+    case "userContactUsForm": {
       mailTitle = intl.formatMessage({
-        id: "mail.sending.title.test",
-        defaultMessage: "Your test script has been executed.",
-      });
-      break;
-    }
-    case "summaryRealScript": {
-      mailTitle = intl.formatMessage({
-        id: "mail.sending.title.real",
-        defaultMessage: "Your script has been executed.",
-      });
-      break;
-    }
-    case "register": {
-      mailTitle = intl.formatMessage({
-        id: "mail.sending.title.register",
-        defaultMessage: "You just registered on mkmpriceupdater.com !",
-      });
-      break;
-    }
-    case "mailForgotten": {
-      mailTitle = intl.formatMessage({
-        id: "mail.sending.title.passwordForgotten",
-        defaultMessage: "Reset your password",
-      });
-      break;
-    }
-    case "afterPayment": {
-      mailTitle = intl.formatMessage({
-        id: "mail.sending.title.afterPayment",
-        defaultMessage: "Payment received",
-      });
-      break;
-    }
-    case "scriptHad0card": {
-      mailTitle = intl.formatMessage({
-        id: "mail.sending.title.scriptHad0card",
-        defaultMessage: "Your script has been executed, but affected 0 card.",
-      });
-      break;
-    }
-    case "testScriptHad0card": {
-      mailTitle = intl.formatMessage({
-        id: "mail.sending.title.testScriptHad0card",
-        defaultMessage:
-          "Your test script has been executed, but affected 0 card.",
+        id: "TO DO",
+        defaultMessage: "TO DO",
       });
       break;
     }
@@ -118,59 +47,8 @@ function buildTemplateData(action, params, intl) {
   //each case of witch should verify the params it needs and throw an error
   let templateData;
   switch (action) {
-    case "summaryTestScript": {
-      templateData = {};
-      break;
-    }
-    case "summaryRealScript": {
-      templateData = {};
-      break;
-    }
-    case "register": {
-      if (params?.shop?.legalName === undefined) {
-        console.error(
-          "Missing parameter : shop LegalName in buildTempleData function"
-        );
-      }
-      templateData = {
-        shop: {
-          legalName: params.shop.legalName,
-        },
-      };
-      break;
-    }
-    case "mailForgotten": {
-      if (params?.challenge === undefined) {
-        console.error(
-          "Missing parameter : challenge in buildTempleData function"
-        );
-      }
-      templateData = { challenge: params.challenge };
-      break;
-    }
-    case "afterPayment": {
-      if (params?.order === undefined) {
-        console.error("Missing parameter : order in buildTempleData function");
-      }
-
-      templateData = {
-        order: {
-          amount: params?.order?.amount,
-          duration: params?.order?.duration,
-          endDate: intl.formatDate(new Date(params?.order?.endDate), {
-            year: "numeric",
-            month: "numeric",
-            day: "numeric",
-          }),
-        },
-      };
-      break;
-    }
-    case "scriptHad0card": {
-      templateData = {};
-      break;
-    }
-    case "testScriptHad0card": {
+    case "userContactUsForm": {
+      //TO DO Yoann Add data form user contact form
       templateData = {};
       break;
     }
@@ -181,77 +59,6 @@ function buildTemplateData(action, params, intl) {
     }
   }
   return templateData;
-}
-
-function getPDF(action, locale, idShop, params) {
-  let PDFData = [];
-  switch (action) {
-    case "summaryTestScript": {
-      PDFData = [
-        {
-          filename: createSummaryPDFName(params.idScript, idShop, true),
-          path: path.join(
-            __dirname,
-            "../../PDF_storage/" +
-              idShop +
-              "/" +
-              createSummaryPDFName(params.idScript, idShop, true)
-          ),
-        },
-      ];
-      break;
-    }
-    case "summaryRealScript": {
-      PDFData = [
-        {
-          filename: createSummaryPDFName(params.idScript, idShop, false),
-          path: path.join(
-            __dirname,
-            "../../PDF_storage/" +
-              idShop +
-              "/" +
-              createSummaryPDFName(params.idScript, idShop, false)
-          ),
-        },
-      ];
-      break;
-    }
-    case "scriptHad0card": {
-      PDFData = [
-        {
-          filename: createSummaryPDFName(params.idScript, idShop, false),
-          path: path.join(
-            __dirname,
-            "../../PDF_storage/" +
-              idShop +
-              "/" +
-              createSummaryPDFName(params.idScript, idShop, false)
-          ),
-        },
-      ];
-      break;
-    }
-    case "testScriptHad0card": {
-      PDFData = [
-        {
-          filename: createSummaryPDFName(params.idScript, idShop, false),
-          path: path.join(
-            __dirname,
-            "../../PDF_storage/" +
-              idShop +
-              "/" +
-              createSummaryPDFName(params.idScript, idShop, false)
-          ),
-        },
-      ];
-      break;
-    }
-    default: {
-      console.log("no attachment for this email.");
-    }
-  }
-
-  return PDFData;
 }
 
 async function sendEmail(
@@ -275,6 +82,7 @@ async function sendEmail(
       // Locale of the application
       locale: locale,
       // Locale of the fallback defaultMessage
+      //TO DO Yoann rebancher ça quelque part
       messages: genericTranslations.translatedMessagesWithLocaleKey[locale],
     },
     cache
@@ -287,8 +95,6 @@ async function sendEmail(
   const templatePath = getTemplate(action, locale);
 
   const templateData = buildTemplateData(action, params, intl);
-
-  const attachedPdf = getPDF(action, locale, idShop, params);
 
   let htmlToSend;
   try {
@@ -307,7 +113,7 @@ async function sendEmail(
     to: shopMail,
     subject: mailTitle,
     html: htmlToSend,
-    attachments: attachedPdf,
+    attachments: [],
   };
 
   const transport = nodemailer.createTransport({
