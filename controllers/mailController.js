@@ -42,8 +42,8 @@ function buildTemplateData(action, params, locale) {
   let templateData;
   switch (action) {
     case "userContactUsForm": {
-      //TO DO Yoann Add data form user contact form
-      templateData = {};
+      const { fullName, company, telephone, mail, message } = params;
+      templateData = { fullName, company, telephone, mail, message };
       break;
     }
     default: {
@@ -57,14 +57,13 @@ function buildTemplateData(action, params, locale) {
 
 async function sendEmail(
   action,
-  idShop,
-  shopMail,
+  mailAdressDestination,
   params = {},
   locale = "fr-FR"
 ) {
   // test if parameters are here
-  if (!shopMail) {
-    throw new Error("A parameter is missing in mail PDF function.");
+  if (!mailAdressDestination) {
+    throw new Error("Mail parameter is missing.");
   }
 
   // create translated mail title
@@ -89,7 +88,7 @@ async function sendEmail(
 
   let mailOpts = {
     from: process.env.MAIL_SENDING,
-    to: shopMail,
+    to: mailAdressDestination,
     subject: mailTitle,
     html: htmlToSend,
     attachments: [],
