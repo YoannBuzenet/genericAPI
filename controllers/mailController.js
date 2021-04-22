@@ -2,12 +2,8 @@ const nodemailer = require("nodemailer");
 const ejs = require("ejs");
 const fs = require("fs");
 const path = require("path");
-const { createIntl, createIntlCache } = require("react-intl");
 var Bugsnag = require("@bugsnag/js");
-
-/* *********************************** */
-/* ******* TRANSLATION CONTEXT ******* */
-/* *********************************** */
+const { translations } = require("../translations/translations");
 
 function getTemplate(action, locale) {
   let template;
@@ -24,14 +20,12 @@ function getTemplate(action, locale) {
   return template;
 }
 
-function getMailTitle(action, intl) {
+function getMailTitle(action, locale) {
   let mailTitle;
   switch (action) {
     case "userContactUsForm": {
-      mailTitle = intl.formatMessage({
-        id: "TO DO",
-        defaultMessage: "TO DO",
-      });
+      mailTitle =
+        translations[locale].mailTitle["contactForm.user.contactedUs"];
       break;
     }
     default: {
@@ -42,7 +36,7 @@ function getMailTitle(action, intl) {
   return mailTitle;
 }
 
-function buildTemplateData(action, params, intl) {
+function buildTemplateData(action, params, locale) {
   console.log("in building template data, action is :", action);
   //each case of witch should verify the params it needs and throw an error
   let templateData;
@@ -73,28 +67,13 @@ async function sendEmail(
     throw new Error("A parameter is missing in mail PDF function.");
   }
 
-  // This is optional but highly recommended
-  // since it prevents memory leak
-  const cache = createIntlCache();
-
-  const intl = createIntl(
-    {
-      // Locale of the application
-      locale: locale,
-      // Locale of the fallback defaultMessage
-      //TO DO Yoann rebancher ça quelque part
-      messages: genericTranslations.translatedMessagesWithLocaleKey[locale],
-    },
-    cache
-  );
-
   // create translated mail title
-  const mailTitle = getMailTitle(action, intl);
+  const mailTitle = getMailTitle(action, locale);
 
   //Find the right ejs template file
   const templatePath = getTemplate(action, locale);
 
-  const templateData = buildTemplateData(action, params, intl);
+  const templateData = buildTemplateData(action, params, locale);
 
   let htmlToSend;
   try {
