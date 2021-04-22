@@ -12,11 +12,6 @@ Bugsnag.start({ apiKey: process.env.BUGSNAG_KEY });
 // Require the framework and instantiate it
 const fastify = require("fastify")({ logger: true });
 
-// Declare a route
-fastify.get("/api", async (request, reply) => {
-  return { hello: "world" };
-});
-
 fastify.register(require("./routes/users"), { prefix: "/api/users" });
 fastify.register(require("./routes/NumberOfWords"), {
   prefix: "/api/numberOfWords",
