@@ -1,0 +1,45 @@
+"use strict";
+const { Model } = require("sequelize");
+
+const utils = require("../services/utils");
+
+module.exports = (sequelize, DataTypes) => {
+  class CallToService extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+      CallToService.belongsTo(models.User, { foreignKey: "user_id" });
+    }
+  }
+  CallToService.init(
+    {
+      user_id: {
+        type: DataTypes.INTEGER,
+      },
+      isUserSubscribedForThisCall: {
+        type: DataTypes.INTEGER,
+      },
+      isUserOnCompanyAccessForThisCall: {
+        type: DataTypes.INTEGER,
+      },
+      date: {
+        type: DataTypes.DATEONLY,
+      },
+      categoryUsed: {
+        type: DataTypes.INTEGER,
+      },
+      locale: {
+        type: DataTypes.STRING,
+      },
+    },
+    {
+      sequelize,
+      modelName: "CallToService",
+    }
+  );
+  return CallToService;
+};

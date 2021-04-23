@@ -4,11 +4,30 @@ const { langReverted } = require("../services/langs");
 const {
   countWordsInString,
   removeUnfinishedSentenceInString,
-  getTodayinDATEONLYInUTC
+  getTodayinDATEONLYInUTC,
 } = require("../services/utils");
 const { ENDPOINT_FILTER_OPEN_AI } = require("../config/settings");
+var Bugsnag = require("@bugsnag/js");
 
-const generateContent = async (categoryId, lang, userInput, numberOfOutput, userData) => {
+const generateContent = async (
+  categoryId,
+  lang,
+  userInput,
+  numberOfOutput,
+  userData
+) => {
+  // 0. Tracking the request to make statistics.
+  // We do not await success on this call to not slow down the calling process.
+  db.CallToService.create({
+    user_id: userData.dataValues.id,
+    isUserSubscribedForThisCall: userData.dataValues.isOnFreeAccess === 0,
+    isUserOnCompanyAccessForThisCall:
+      userData.dataValues.isOnCompanyAccess === 1,
+    date: getTodayinDATEONLYInUTC(),
+    categoryUsed: categoryId,
+    locale: langReverted[lang],
+  });
+
   // 1. Searching for the right snippet
   //TODO later, add la recherche par combinaison unique d'attribut (déjà écrite)
   const snippet = await db.Snippet.findOne({
@@ -78,7 +97,10 @@ const generateContent = async (categoryId, lang, userInput, numberOfOutput, user
         "Content-Type": "application/json",
       },
     })
-    .catch((error) => console.log("error while contacting Open AI : ", error));
+    .catch((error) => {
+      console.log("error while contacting Open AI : ", error);
+      Bugsnag.notify(new Error(err));
+    });
 
   // 4. Get back AI output, cut it at the first \n
   let numberOfWordsUsedInResp = 0;
@@ -111,7 +133,7 @@ const generateContent = async (categoryId, lang, userInput, numberOfOutput, user
 
   let finalAIOutput = [];
   let numberOfWordsFiltered = 0;
-  return Promise.all(aiCheckedText).then(function (results) {
+  return Promise.all(aiCheckedText).then(async function (results) {
     for (let i = 0; i < results.length; i++) {
       if (results[i] === true) {
         finalAIOutput = [...finalAIOutput, filteredTexts[i]];
@@ -127,21 +149,24 @@ const generateContent = async (categoryId, lang, userInput, numberOfOutput, user
     const wasAllInputFiltered =
       numberOfFilteredOutputs === filteredTexts.length;
 
-      if (numberOfFilteredOutputs > 0){
-       const savedFilteredOutput = await db.FilteredOpenAIInput.create({
-         user_id : userData.dataValues.id,
-         date : getTodayinDATEONLYInUTC(),
-         wordsFiltered : numberOfWordsFiltered,
-         numberOfOutputsFiltered :numberOfFilteredOutputs,
-         wasFullyFiltered :wasAllInputFiltered
-       })
-      }
-        
+    if (numberOfFilteredOutputs > 0) {
+      const savedFilteredOutput = await db.FilteredOpenAIInput.create({
+        user_id: userData.dataValues.id,
+        date: getTodayinDATEONLYInUTC(),
+        wordsFiltered: numberOfWordsFiltered,
+        numberOfOutputsFiltered: numberOfFilteredOutputs,
+        wasFullyFiltered: wasAllInputFiltered,
+      });
+    }
 
     console.log("final AI output", finalAIOutput);
 
     // 5 . Return AI output
-    return { apiResp: finalAIOutput, numberOfWords: numberOfWordsUsedInResp, wasAllInputFiltered };
+    return {
+      apiResp: finalAIOutput,
+      numberOfWords: numberOfWordsUsedInResp,
+      wasAllInputFiltered,
+    };
   });
 };
 
@@ -166,6 +191,7 @@ const validateAIOutput = async (prompt) => {
       },
     });
   } catch (e) {
+    Bugsnag.notify(new Error(e));
     console.log("err when calling conten filter on open AI", e);
   }
 

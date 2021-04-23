@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Invoice, { foreignKey: "idShop" });
       User.hasMany(models.TokenConsumption, { foreignKey: "userID" });
       User.hasMany(models.MaxWordsIncrease, { foreignKey: "user_id" });
+      User.hasMany(models.CallToService, { foreignKey: "user_id" });
       User.belongsTo(models.Company, { foreignKey: "companyID" });
     }
     // static async markAsHasConnected(user) {

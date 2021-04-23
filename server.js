@@ -6,13 +6,11 @@ if (result.error) {
   throw result.error;
 }
 
+var Bugsnag = require("@bugsnag/js");
+Bugsnag.start({ apiKey: process.env.BUGSNAG_KEY });
+
 // Require the framework and instantiate it
 const fastify = require("fastify")({ logger: true });
-
-// Declare a route
-fastify.get("/api", async (request, reply) => {
-  return { hello: "world" };
-});
 
 fastify.register(require("./routes/users"), { prefix: "/api/users" });
 fastify.register(require("./routes/NumberOfWords"), {
@@ -25,6 +23,9 @@ fastify.register(require("./routes/contentGeneration"), {
 fastify.register(require("./routes/stripePurchases"), {
   prefix: "/api/stripePurchases",
 });
+fastify.register(require("./routes/contact-us"), {
+  prefix: "/api/mail/contact-us",
+});
 if (process.env.NODE_ENV !== "production") {
   fastify.register(require("./routes/testRoutes"), {
     prefix: "/api/test",
@@ -36,7 +37,8 @@ const start = async () => {
   try {
     await fastify.listen(3001);
   } catch (err) {
-    fastify.log.error(err);
+    Bugsnag.notify(new Error(err));
+    fastify.log.error("Server Error", err);
     process.exit(1);
   }
 };
