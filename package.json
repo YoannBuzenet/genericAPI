@@ -26,5 +26,8 @@
     "sequelize": "^6.5.1",
     "sequelize-cli": "^6.2.0",
     "stripe": "^8.138.0"
+  },
+  "devDependencies": {
+    "semantic-release": "^17.4.2"
   }
 }
