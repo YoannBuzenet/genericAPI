@@ -9,9 +9,9 @@ module.exports = {
   development: {
     username: process.env.DB_USERNAME_DEV,
     password: process.env.DB_PWD_DEV,
-    database: "database_generic_api_development",
+    database: process.env.DB_NAME_DEV,
     logging: false,
-    host: "127.0.0.1",
+    host: process.env.DB_HOST_DEV,
     dialect: "mysql",
   },
   test: {
@@ -24,8 +24,8 @@ module.exports = {
   production: {
     username: process.env.DB_USERNAME_PROD,
     password: process.env.DB_PWD_PROD,
-    database: "database_generic_api_production",
-    host: "127.0.0.1",
+    database: process.env.DB_NAME_PROD,
+    host: process.env.DB_HOST_PRDO,
     dialect: "mysql",
   },
 };
