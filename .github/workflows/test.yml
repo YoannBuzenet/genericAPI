@@ -8,6 +8,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: echo $SMTP_PORT
+        run: echo "${{ secrets.OPEN_AI_DAVINCI_ENGINE }}"
