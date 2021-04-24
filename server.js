@@ -3,7 +3,11 @@ const result = require("dotenv").config({
   path: path.resolve(process.cwd(), "./.env.local"),
 });
 if (result.error) {
-  throw result.error;
+  if (process.env.NODE_ENV !== "production") {
+    throw result.error;
+  } else {
+    console.log("error : couldnt find .env.local");
+  }
 }
 
 var Bugsnag = require("@bugsnag/js");
