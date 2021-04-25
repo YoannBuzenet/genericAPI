@@ -19,7 +19,7 @@ module.exports = {
           defaultValue: "Content",
         },
         engine: { type: Sequelize.STRING, defaultValue: "davinci" },
-        temperature: { type: Sequelize.INTEGER, defaultValue: 0.7 },
+        temperature: { type: Sequelize.FLOAT, defaultValue: 0.7 },
         numberOfUserInputs: { type: Sequelize.INTEGER },
         createdAt: {
           allowNull: false,
@@ -36,7 +36,8 @@ module.exports = {
             name: "Product Description",
             parentCategoryName: "Marketing",
             isShort: 1,
-            maxLengthTokens: 50,
+            temperature: 0.7,
+            maxLengthTokens: 80,
             numberOfUserInputs: 1,
             numberOfAIOutput: 3,
             createdAt: new Date(),

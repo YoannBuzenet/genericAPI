@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: "Content",
       },
       engine: { type: DataTypes.STRING, defaultValue: "davinci" },
-      temperature: { type: DataTypes.INTEGER, defaultValue: 0.7 },
+      temperature: { type: DataTypes.FLOAT, defaultValue: 0.7 },
       numberOfUserInputs: {
         type: DataTypes.INTEGER,
         allowNull: false,
