@@ -310,6 +310,7 @@ module.exports = function (fastify, opts, done) {
 
       if (userToFind === null) {
         reply.code(406).send("User doesnt exist.");
+        return;
       }
 
       // FREE ACCESS CONTROL
