@@ -109,14 +109,25 @@ const generateContent = async (
     (oneResp) => oneResp.text
   );
 
+  console.log("received texts from open AI", APiRespTextsExtracted);
+
   const trimedTexts = APiRespTextsExtracted.map((text) => text.trim());
 
-  const cleanedTexts = trimedTexts.map((text) => {
-    numberOfWordsUsedInResp += countWordsInString(
-      removeUnfinishedSentenceInString(text)
-    );
-    return removeUnfinishedSentenceInString(text);
-  });
+  let cleanedTexts = [];
+
+  if (category.dataValues.shouldRemoveUnfinishedSentenceInResults == 1) {
+    cleanedTexts = trimedTexts.map((text) => {
+      numberOfWordsUsedInResp += countWordsInString(
+        removeUnfinishedSentenceInString(text)
+      );
+      return removeUnfinishedSentenceInString(text);
+    });
+  } else {
+    cleanedTexts = trimedTexts.map((text) => {
+      numberOfWordsUsedInResp += countWordsInString(text);
+      return text;
+    });
+  }
 
   const filteredTexts = cleanedTexts.filter((text) => text.length > 10);
 
