@@ -210,7 +210,7 @@ module.exports = {
             isShort: 1,
             shouldRemoveUnfinishedSentenceInResults: 1,
             temperature: 0.9,
-            maxLengthTokens: 50,
+            maxLengthTokens: 200,
             numberOfUserInputs: 1,
             numberOfAIOutput: 3,
             createdAt: new Date(),
