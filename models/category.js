@@ -23,6 +23,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: "Content",
       },
+      shouldRemoveUnfinishedSentenceInResults: {
+        type: DataTypes.INTEGER,
+        defaultValue: 1,
+      },
       engine: { type: DataTypes.STRING, defaultValue: "davinci" },
       temperature: { type: DataTypes.FLOAT, defaultValue: 0.7 },
       numberOfUserInputs: {
