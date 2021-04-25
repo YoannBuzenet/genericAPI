@@ -122,19 +122,6 @@ const generateContent = async (
 
   //Checking each AI output with Open AI Content filter and making sure it's safe
 
-  // let aiCheckedText = [];
-  // for(let i=0;i<filteredTexts.length; i++){
-  //   if (lang === "en-US") {
-  //     let isValid =  await validateAIOutput(text);
-  //     if(isValid){
-  //       aiCheckedText = [...aiCheckedText, test];
-  //     }
-  //   }
-  //   else {
-  //     aiCheckedText = [...aiCheckedText, test];
-  //   }
-  // }
-
   const aiCheckedText = filteredTexts.map((text) => {
     // open AI Validation is applied only on english texts
     if (lang === "en-US") {

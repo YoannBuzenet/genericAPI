@@ -170,7 +170,7 @@ const removeUnfinishedSentenceInString = (string) => {
     return string;
   }
 
-  const regexpPunctuation = /[.!?\\-]/;
+  const regexpPunctuation = /[.!?\\]/;
 
   while (
     newString[newString.length - 1] !== undefined &&
