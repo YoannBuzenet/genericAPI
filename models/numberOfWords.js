@@ -152,6 +152,21 @@ module.exports = (sequelize, DataTypes) => {
       });
       return resultWords7Days;
     }
+    // Yo
+    static async getConsumptionforCurrentDynamicMonthlyPeriod(userObject) {
+      console.log("user object", userObject);
+      const user_id = userObject.dataValues.id;
+      const userIsSubscribedUntil = userObject.dataValues.isSubscribedUntil;
+
+      const dayOfRenewalSubscription = new Date(
+        userIsSubscribedUntil
+      ).getUTCDate();
+
+      // choper la date de renew de l'user
+      // prendre le chiffre et construire une date dans le mois actuel
+      // prendre tous les numberOfWords entre cette période et maintenant
+      // retourner le total
+    }
     static async returnCompleteUserConsumption(userID) {
       const resultWordsFromBeginning = await NumberOfWords.findAll({
         attributes: [
