@@ -85,6 +85,7 @@ const generateContent = async (
     max_tokens: category.dataValues.maxLengthTokens,
     temperature: category.dataValues.temperature,
     stop: ["\n", "<|endoftext|>"],
+    user: userData.dataValues.nonce,
   };
 
   console.log("final object:", finalObject);
@@ -136,7 +137,7 @@ const generateContent = async (
   const aiCheckedText = filteredTexts.map((text) => {
     // open AI Validation is applied only on english texts
     if (lang === "en-US") {
-      return validateAIOutput(text);
+      return validateAIOutput(text, userData.dataValues.nonce);
     } else {
       return true;
     }
@@ -182,13 +183,14 @@ const generateContent = async (
 };
 
 // Open AI gives us a free API to flag if a content is misapropried or not. We use that filter on each output we receive.
-const validateAIOutput = async (prompt) => {
+const validateAIOutput = async (prompt, userNonce) => {
   const promptForOpenAI = {
     prompt: `<|endoftext|>${prompt}\n--\nLabel:`,
     max_tokens: 1,
     temperature: 0,
     top_p: 0,
     logprobs: 10,
+    user: userNonce,
   };
   console.log("wtf ?");
 

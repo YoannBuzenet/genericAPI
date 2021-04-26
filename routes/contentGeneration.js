@@ -82,7 +82,7 @@ module.exports = function (fastify, opts, done) {
         }
       } else {
         // If user is not on free access, we check if he is subscribed
-        // STEP 2 : Check User is still subscribed OR FREE ACCESS
+        // STEP 2 : Check User is still subscribed and if he still has words
         // TO DO yoann
       }
 
