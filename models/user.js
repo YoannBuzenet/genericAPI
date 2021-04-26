@@ -144,6 +144,40 @@ module.exports = (sequelize, DataTypes) => {
 
       return user.save();
     }
+
+    static async getNextDateOfRenew(userID) {
+      const user = await User.findOne({ where: { id: userID } });
+      if (user === null) {
+        return null;
+      }
+
+      const dayOfRenewalSubscription = new Date(
+        user.dataValues.isSubscribedUntil
+      ).getUTCDate();
+
+      // Building the next date of renew
+      const todayNumberOftTheDayUTC = new Date().getUTCDate();
+      let monthOfNextRenew;
+
+      // If today is below the renew date, we must check last month to get the next renew
+      if (todayNumberOftTheDayUTC > dayOfRenewalSubscription) {
+        monthOfNextRenew = new Date().getUTCMonth() + 1;
+      } else {
+        monthOfNextRenew = new Date().getUTCMonth();
+      }
+
+      const date = new Date();
+      const nextRenewDate = Date.UTC(
+        date.getUTCFullYear(),
+        monthOfNextRenew,
+        dayOfRenewalSubscription,
+        date.getUTCHours(),
+        date.getUTCMinutes(),
+        date.getUTCSeconds()
+      );
+
+      return nextRenewDate;
+    }
   }
   User.init(
     {
