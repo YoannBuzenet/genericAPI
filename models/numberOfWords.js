@@ -152,20 +152,53 @@ module.exports = (sequelize, DataTypes) => {
       });
       return resultWords7Days;
     }
-    // Yo
-    static async getConsumptionforCurrentDynamicMonthlyPeriod(userObject) {
-      console.log("user object", userObject);
-      const user_id = userObject.dataValues.id;
-      const userIsSubscribedUntil = userObject.dataValues.isSubscribedUntil;
 
+    // This function calculates user consumption on the dynamuc user month (not the real current month but the period he chose, that is likely to be splitted on 2 months)
+    // As the user can subscribe at any day of the month, we must calculate first
+    // - when does it renew
+    // - then substract consumption between today and last renew period to have final count
+    static async getConsumptionforCurrentDynamicMonthlyPeriod(
+      user_id,
+      userIsSubscribedUntil
+    ) {
       const dayOfRenewalSubscription = new Date(
         userIsSubscribedUntil
       ).getUTCDate();
 
-      // choper la date de renew de l'user
-      // prendre le chiffre et construire une date dans le mois actuel
-      // prendre tous les numberOfWords entre cette période et maintenant
-      // retourner le total
+      // Building the last date of renew
+      const todayNumberOftTheDayUTC = new Date().getUTCDate();
+      let nextMonthOfRenew = new Date().getUTCMonth();
+
+      // If today is below the renew date, we must check last month to get the last renew that happened
+      if (dayOfRenewalSubscription > todayNumberOftTheDayUTC) {
+        nextMonthOfRenew = new Date().getUTCMonth() - 1;
+      }
+
+      const date = new Date();
+      const lastRenewDate = Date.UTC(
+        date.getUTCFullYear(),
+        nextMonthOfRenew,
+        dayOfRenewalSubscription,
+        date.getUTCHours(),
+        date.getUTCMinutes(),
+        date.getUTCSeconds()
+      );
+
+      const nowUTC = utils.getNowInUTC();
+
+      const resultWordsFromThisUserPeriod = await NumberOfWords.findAll({
+        attributes: [
+          [sequelize.fn("sum", sequelize.col("amount")), "totalAmount"],
+        ],
+        where: {
+          user_id: user_id,
+          date: {
+            [Op.gt]: lastRenewDate,
+          },
+        },
+      });
+
+      return resultWordsFromThisUserPeriod;
     }
     static async returnCompleteUserConsumption(userID) {
       const resultWordsFromBeginning = await NumberOfWords.findAll({
