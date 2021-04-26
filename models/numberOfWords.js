@@ -161,6 +161,10 @@ module.exports = (sequelize, DataTypes) => {
       user_id,
       userIsSubscribedUntil
     ) {
+      if (userIsSubscribedUntil === null) {
+        return 0;
+      }
+
       const dayOfRenewalSubscription = new Date(
         userIsSubscribedUntil
       ).getUTCDate();
@@ -184,8 +188,6 @@ module.exports = (sequelize, DataTypes) => {
         date.getUTCSeconds()
       );
 
-      const nowUTC = utils.getNowInUTC();
-
       const resultWordsFromThisUserPeriod = await NumberOfWords.findAll({
         attributes: [
           [sequelize.fn("sum", sequelize.col("amount")), "totalAmount"],
@@ -198,7 +200,10 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
 
-      return resultWordsFromThisUserPeriod;
+      if (isNaN(parseInt(resultWordsFromThisUserPeriod.totalAmount))) {
+        return 0;
+      }
+      return resultWordsFromThisUserPeriod.totalAmount;
     }
     static async returnCompleteUserConsumption(userID) {
       const resultWordsFromBeginning = await NumberOfWords.findAll({
