@@ -76,7 +76,7 @@ module.exports = function (fastify, opts, done) {
   });
   fastify.get("/getUserConsumptionForThisUserPeriod", async () => {
     const userID = 1;
-    const isSubscribedUntil = "2021-04-28";
+    const isSubscribedUntil = "2021-04-26";
 
     const userConsumptionForDynamicPeriod = await db.NumberOfWords.getConsumptionforCurrentDynamicMonthlyPeriod(
       userID,

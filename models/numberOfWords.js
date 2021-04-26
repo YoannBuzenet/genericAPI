@@ -71,7 +71,7 @@ module.exports = (sequelize, DataTypes) => {
         where: {
           user_id: userID,
           date: {
-            [Op.gt]: date7DaysFromNow,
+            [Op.gte]: date7DaysFromNow,
           },
         },
       });
@@ -89,7 +89,7 @@ module.exports = (sequelize, DataTypes) => {
         where: {
           user_id: userID,
           date: {
-            [Op.gt]: date1MonthFromNow,
+            [Op.gte]: date1MonthFromNow,
           },
         },
       });
@@ -107,8 +107,8 @@ module.exports = (sequelize, DataTypes) => {
         where: {
           user_id: userID,
           date: {
-            [Op.gt]: monthBeginning,
-            [Op.lt]: monthEnd,
+            [Op.gte]: monthBeginning,
+            [Op.lte]: monthEnd,
           },
         },
       });
@@ -128,7 +128,7 @@ module.exports = (sequelize, DataTypes) => {
         where: {
           user_id: userID,
           date: {
-            [Op.gt]: monthBeginning,
+            [Op.gte]: monthBeginning,
           },
         },
       });
@@ -145,7 +145,7 @@ module.exports = (sequelize, DataTypes) => {
         where: {
           user_id: userID,
           date: {
-            [Op.gt]: date7DaysFromNow,
+            [Op.gte]: date7DaysFromNow,
           },
         },
         order: [["date", "ASC"]],
@@ -171,17 +171,19 @@ module.exports = (sequelize, DataTypes) => {
 
       // Building the last date of renew
       const todayNumberOftTheDayUTC = new Date().getUTCDate();
-      let nextMonthOfRenew = new Date().getUTCMonth();
+      let monthOfLastRenew;
 
       // If today is below the renew date, we must check last month to get the last renew that happened
       if (dayOfRenewalSubscription > todayNumberOftTheDayUTC) {
-        nextMonthOfRenew = new Date().getUTCMonth() - 1;
+        monthOfLastRenew = new Date().getUTCMonth() - 1;
+      } else {
+        monthOfLastRenew = new Date().getUTCMonth();
       }
 
       const date = new Date();
       const lastRenewDate = Date.UTC(
         date.getUTCFullYear(),
-        nextMonthOfRenew,
+        monthOfLastRenew,
         dayOfRenewalSubscription,
         date.getUTCHours(),
         date.getUTCMinutes(),
@@ -195,15 +197,19 @@ module.exports = (sequelize, DataTypes) => {
         where: {
           user_id: user_id,
           date: {
-            [Op.gt]: lastRenewDate,
+            [Op.gte]: lastRenewDate,
           },
         },
       });
 
-      if (isNaN(parseInt(resultWordsFromThisUserPeriod.totalAmount))) {
+      if (
+        isNaN(
+          parseInt(resultWordsFromThisUserPeriod?.[0]?.dataValues?.totalAmount)
+        )
+      ) {
         return 0;
       }
-      return resultWordsFromThisUserPeriod.totalAmount;
+      return resultWordsFromThisUserPeriod?.[0]?.dataValues?.totalAmount;
     }
     static async returnCompleteUserConsumption(userID) {
       const resultWordsFromBeginning = await NumberOfWords.findAll({
