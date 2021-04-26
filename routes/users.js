@@ -84,14 +84,18 @@ module.exports = function (fastify, opts, done) {
             0 <= FREE_LIMIT_NUMBER_OF_WORDS;
         }
 
-        // MONTHLY CONSUMPTION
+        // DYNAMIC MONTHLY CONSUMPTION
 
-        const MonthlyWordsForThisUser = await db.NumberOfWords.getWordsConsumptionForCurrentMonth(
-          userToReturn.dataValues.id
+        const MonthlyWordsForThisUser = await db.NumberOfWords.getConsumptionforCurrentDynamicMonthlyPeriod(
+          userToReturn.dataValues.id,
+          userToReturn.dataValues.isSubscribedUntil
         );
 
-        userToReturn.dataValues.monthlyWordsConsumption =
-          MonthlyWordsForThisUser[0].dataValues.totalAmount || 0;
+        userToReturn.dataValues.consumptionThisMonth = MonthlyWordsForThisUser;
+
+        // CALCULATING NEXT DATE OF SUBSCRIPTION RENEW
+        const renewSubscriptionDate = db.User.getNextDateOfRenew(userToReturn);
+        userToReturn.dataValues.renewSubscriptionDate = renewSubscriptionDate;
 
         // USER OWN MAX WORDS FOR THIS MONTH
         const baseWordsUser = userToReturn.dataValues.baseMaxWords;
@@ -115,17 +119,6 @@ module.exports = function (fastify, opts, done) {
 
         userToReturn.dataValues.totalMaxWordsUserThisMonth = totalMaxWordsUserThisMonth;
         userToReturn.dataValues.boostThisMonth = boostForThisMonth || 0;
-
-        //Getting user consumption this month
-
-        const currentMonthUTC = utils.getCurrentMonthUTC();
-        const totalConsumptionThisMonth = await db.NumberOfWords.getWordsConsumptionForMonth(
-          userToReturn.dataValues.id,
-          currentMonthUTC
-        );
-
-        userToReturn.dataValues.consumptionThisMonth =
-          totalConsumptionThisMonth[0].dataValues.totalAmount;
 
         // Removing properties we don't want to see on Front-End
         delete userToReturn.dataValues.temporarySecret;
@@ -350,16 +343,17 @@ module.exports = function (fastify, opts, done) {
 
       userToFind.dataValues.totalMaxWordsUserThisMonth = totalMaxWordsUserThisMonth;
 
-      //Getting user consumption this month
-
-      const currentMonthUTC = utils.getCurrentMonthUTC();
-      const totalConsumptionThisMonth = await db.NumberOfWords.getWordsConsumptionForMonth(
+      //Getting user consumption this dynamic month
+      const totalConsumptionThisMonth = await db.NumberOfWords.getConsumptionforCurrentDynamicMonthlyPeriod(
         userToFind.dataValues.id,
-        currentMonthUTC
+        userToFind.dataValues.isSubscribedUntil
       );
 
-      userToFind.dataValues.consumptionThisMonth =
-        totalConsumptionThisMonth[0].dataValues.totalAmount;
+      userToFind.dataValues.consumptionThisMonth = totalConsumptionThisMonth;
+
+      // CALCULATING NEXT DATE OF SUBSCRIPTION RENEW
+      const renewSubscriptionDate = db.User.getNextDateOfRenew(userToFind);
+      userToFind.dataValues.renewSubscriptionDate = renewSubscriptionDate;
 
       // Removing properties we don't want to see on Front-End
       delete userToFind.dataValues.temporarySecret;

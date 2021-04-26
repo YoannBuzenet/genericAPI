@@ -74,6 +74,17 @@ module.exports = function (fastify, opts, done) {
     const snippets = await db.Snippet.getSnippetByCategoryID(1);
     return snippets;
   });
+  fastify.get("/getUserConsumptionForThisUserPeriod", async () => {
+    const userID = 1;
+    const isSubscribedUntil = "2021-04-26";
+
+    const userConsumptionForDynamicPeriod = await db.NumberOfWords.getConsumptionforCurrentDynamicMonthlyPeriod(
+      userID,
+      isSubscribedUntil
+    );
+
+    return userConsumptionForDynamicPeriod;
+  });
 
   fastify.post("/addWordsToday", async () => {
     const numberOfWords = await db.NumberOfWords.addNumberOfWordsToday(1, 10);
