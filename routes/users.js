@@ -93,6 +93,10 @@ module.exports = function (fastify, opts, done) {
 
         userToReturn.dataValues.consumptionThisMonth = MonthlyWordsForThisUser;
 
+        // CALCULATING NEXT DATE OF SUBSCRIPTION RENEW
+        const renewSubscriptionDate = db.User.getNextDateOfRenew(userToReturn);
+        userToReturn.dataValues.renewSubscriptionDate = renewSubscriptionDate;
+
         // USER OWN MAX WORDS FOR THIS MONTH
         const baseWordsUser = userToReturn.dataValues.baseMaxWords;
         const allBoostsWordsThisMonthForThisUser = await db.MaxWordsIncrease.getBoostForLast30DaysForThisUser(
@@ -346,6 +350,10 @@ module.exports = function (fastify, opts, done) {
       );
 
       userToFind.dataValues.consumptionThisMonth = totalConsumptionThisMonth;
+
+      // CALCULATING NEXT DATE OF SUBSCRIPTION RENEW
+      const renewSubscriptionDate = db.User.getNextDateOfRenew(userToFind);
+      userToFind.dataValues.renewSubscriptionDate = renewSubscriptionDate;
 
       // Removing properties we don't want to see on Front-End
       delete userToFind.dataValues.temporarySecret;

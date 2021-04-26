@@ -145,14 +145,16 @@ module.exports = (sequelize, DataTypes) => {
       return user.save();
     }
 
-    static async getNextDateOfRenew(userID) {
-      const user = await User.findOne({ where: { id: userID } });
-      if (user === null) {
+    static getNextDateOfRenew(userObject) {
+      if (
+        userObject === null ||
+        userObject.dataValues.isSubscribedUntil === null
+      ) {
         return null;
       }
 
       const dayOfRenewalSubscription = new Date(
-        user.dataValues.isSubscribedUntil
+        userObject.dataValues.isSubscribedUntil
       ).getUTCDate();
 
       // Building the next date of renew
