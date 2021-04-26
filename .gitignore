@@ -1,5 +1,7 @@
 node_modules/
 .vscode/
+# We keep track of the useful launch.json
+!.vscode/launch.json
 .env.local
 .env
 

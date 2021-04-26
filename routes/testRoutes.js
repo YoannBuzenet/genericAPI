@@ -82,6 +82,8 @@ module.exports = function (fastify, opts, done) {
       userID,
       isSubscribedUntil
     );
+
+    return userConsumptionForDynamicPeriod;
   });
 
   fastify.post("/addWordsToday", async () => {
