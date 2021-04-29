@@ -1,5 +1,7 @@
 const db = require("../models/index");
 var Bugsnag = require("@bugsnag/js");
+const { sendEmail } = require("../controllers/mailController");
+const { langReverted } = require("../services/langs");
 
 module.exports = function (fastify, opts, done) {
   // User canceled subscription, we mail him to say goodbye
@@ -40,9 +42,12 @@ module.exports = function (fastify, opts, done) {
           return;
         }
 
-        // mailing the user
-        // TO DO
-        // get his mail/locale and mail him
+        sendEmail(
+          "subscription.canceled",
+          user.dataValues.email,
+          { userFirstName: user.dataValues.firstName },
+          langReverted[user.dataValues.userLocale]
+        );
 
         reply.code(200).send();
       } catch (e) {

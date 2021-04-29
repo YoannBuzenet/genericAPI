@@ -13,6 +13,11 @@ function getTemplate(action, locale) {
         __basedir + "/mail_templates/" + locale + "/userContactUsForm.ejs";
       break;
     }
+    case "subscription.canceled": {
+      template =
+        __basedir + "/mail_templates/" + locale + "/subscriptionCanceled.ejs";
+      break;
+    }
     default: {
       throw new Error("Could not find corresponding template.");
     }
@@ -28,6 +33,10 @@ function getMailTitle(action, locale) {
         translations[locale].mailTitle["contactForm.user.contactedUs"];
       break;
     }
+    case "userContactUsForm": {
+      mailTitle = translations[locale].mailTitle["subscription.canceled"];
+      break;
+    }
     default: {
       throw new Error("Could not find corresponding mailTitle.");
     }
@@ -36,7 +45,12 @@ function getMailTitle(action, locale) {
   return mailTitle;
 }
 
+// TO DO Yoann
+// créer le chemin pour subscription.canceled
+
 function buildTemplateData(action, params, locale) {
+  // param for cancelation : userFirstName
+
   console.log("in building template data, action is :", action);
   //each case of witch should verify the params it needs and throw an error
   let templateData;
@@ -64,6 +78,10 @@ async function sendEmail(
   // test if parameters are here
   if (!mailAdressDestination) {
     throw new Error("Mail parameter is missing.");
+  }
+
+  if (locale === undefined || locale === null) {
+    locale = "fr-FR";
   }
 
   // create translated mail title
