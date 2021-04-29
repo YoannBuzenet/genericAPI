@@ -2,6 +2,7 @@ const db = require("../models/index");
 var Bugsnag = require("@bugsnag/js");
 
 module.exports = function (fastify, opts, done) {
+  // User canceled subscription, we mail him to say goodbye
   fastify.post(
     "/cancel",
     {
@@ -21,9 +22,27 @@ module.exports = function (fastify, opts, done) {
       }
 
       try {
-        // TO DO
+        const result = await db.StripePurchase.findOne({
+          where: { customerStripeId: customer_id },
+        });
+
+        const user = await db.User.findOne({
+          where: {
+            id: result.dataValues.user_id,
+          },
+        });
+
+        if (user === null) {
+          reply.code(500).send("Couldn't find user");
+          Bugsnag.notify(
+            new Error("Couldn't find user in subscription cancelation endpoint")
+          );
+          return;
+        }
+
         // mailing the user
-        // get user "real" id, get his mail/locale and mail him
+        // TO DO
+        // get his mail/locale and mail him
 
         reply.code(200).send();
       } catch (e) {
