@@ -32,7 +32,7 @@ module.exports = function (fastify, opts, done) {
       } catch (e) {
         console.log("error when getting stripe user id", e);
         Bugsnag.notify(new Error(e));
-        reply.code(500).send();
+        reply.code(500).send("Couldn't find stripe user id");
       }
     }
   );
