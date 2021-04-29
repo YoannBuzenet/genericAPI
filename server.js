@@ -27,8 +27,14 @@ fastify.register(require("./routes/contentGeneration"), {
 fastify.register(require("./routes/stripePurchases"), {
   prefix: "/api/stripePurchases",
 });
+fastify.register(require("./routes/customer_portal"), {
+  prefix: "/api/customer_portal",
+});
 fastify.register(require("./routes/contact-us"), {
   prefix: "/api/mail/contact-us",
+});
+fastify.register(require("./routes/stripeSubscriptions"), {
+  prefix: "/api/subscription/",
 });
 if (process.env.NODE_ENV !== "production") {
   fastify.register(require("./routes/testRoutes"), {
