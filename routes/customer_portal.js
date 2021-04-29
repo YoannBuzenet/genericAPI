@@ -6,9 +6,11 @@ module.exports = function (fastify, opts, done) {
     "/get_stripe_user_id",
     {
       schema: {
-        required: ["idUser"],
-        properties: {
-          idUser: { type: "string" },
+        body: {
+          required: ["idUser"],
+          properties: {
+            idUser: { type: "string" },
+          },
         },
       },
     },
