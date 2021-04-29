@@ -33,7 +33,7 @@ function getMailTitle(action, locale) {
         translations[locale].mailTitle["contactForm.user.contactedUs"];
       break;
     }
-    case "userContactUsForm": {
+    case "subscription.canceled": {
       mailTitle = translations[locale].mailTitle["subscription.canceled"];
       break;
     }
