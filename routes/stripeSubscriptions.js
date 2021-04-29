@@ -9,11 +9,9 @@ module.exports = function (fastify, opts, done) {
     "/cancel",
     {
       schema: {
-        querystring: {
-          required: ["customer_id"],
-          properties: {
-            customer_id: { type: "string" },
-          },
+        required: ["customer_id"],
+        properties: {
+          customer_id: { type: "string" },
         },
       },
     },
