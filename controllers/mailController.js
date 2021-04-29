@@ -45,12 +45,7 @@ function getMailTitle(action, locale) {
   return mailTitle;
 }
 
-// TO DO Yoann
-// créer le chemin pour subscription.canceled
-
 function buildTemplateData(action, params, locale) {
-  // param for cancelation : userFirstName
-
   console.log("in building template data, action is :", action);
   //each case of witch should verify the params it needs and throw an error
   let templateData;
@@ -58,6 +53,11 @@ function buildTemplateData(action, params, locale) {
     case "userContactUsForm": {
       const { fullName, company, telephone, mail, message } = params;
       templateData = { fullName, company, telephone, mail, message };
+      break;
+    }
+    case "subscription.canceled": {
+      const { userFirstName } = params;
+      templateData = { userFirstName };
       break;
     }
     default: {
