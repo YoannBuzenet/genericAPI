@@ -10,6 +10,9 @@ if (result.error) {
   }
 }
 
+// Global variable
+global.__basedir = __dirname;
+
 var Bugsnag = require("@bugsnag/js");
 Bugsnag.start({ apiKey: process.env.BUGSNAG_KEY });
 
