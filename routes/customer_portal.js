@@ -21,9 +21,14 @@ module.exports = function (fastify, opts, done) {
       }
 
       try {
-        // TO DO
-        console.log("getting the call");
-        reply.code(200).send();
+        //get user stripe id in StripePurchase table and send it back
+        const result = await db.StripePurchase.findOne({
+          where: { user_id: req.body.idUser },
+        });
+
+        const stripeUserId = result.dataValues.customerStripeId;
+
+        reply.code(200).send(stripeUserId);
       } catch (e) {
         console.log("error when getting stripe user id", e);
         Bugsnag.notify(new Error(e));
