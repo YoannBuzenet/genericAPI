@@ -25,7 +25,7 @@ module.exports = function (fastify, opts, done) {
 
       try {
         const result = await db.StripePurchase.findOne({
-          where: { customerStripeId: customer_id },
+          where: { customerStripeId: req.body.customer_id },
         });
 
         const user = await db.User.findOne({
