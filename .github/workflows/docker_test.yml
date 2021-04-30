@@ -15,11 +15,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: cd
-        run: cd k8s/flask
-
       - name: Build image
-        run: docker build . --file Dockerfile --tag $IMAGE_NAME
+        run: cd k8s/flask && docker build . --file Dockerfile --tag $IMAGE_NAME
 
       - name: Log into registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
