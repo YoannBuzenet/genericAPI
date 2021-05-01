@@ -126,6 +126,7 @@ module.exports = function (fastify, opts, done) {
       { userFirstName: "Yoyo Annan" },
       "en-US"
     );
+    return;
   });
 
   done();
