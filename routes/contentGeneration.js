@@ -1,7 +1,7 @@
 const { generateContent } = require("../controllers/contentGeneration");
 const { langReverted } = require("../services/langs");
 const db = require("../models/index");
-const { checkIfLogged } = require("../services/userCheck");
+const { checkIfLogged, isUserSubscribed } = require("../services/userCheck");
 const { FREE_LIMIT_NUMBER_OF_WORDS } = require("../config/settings");
 
 module.exports = function (fastify, opts, done) {
@@ -72,18 +72,38 @@ module.exports = function (fastify, opts, done) {
 
       // Checking that user is under free limit if he is on free access
       if (userToCheck.dataValues.isOnFreeAccess === 1) {
-        const totalWordsForThisUserThisMonth = await db.NumberOfWords.returnCompleteUserConsumption(
+        const totalWordsForThisUser = await db.NumberOfWords.returnCompleteUserConsumption(
           userToCheck.dataValues.id
         );
 
-        if (totalWordsForThisUserThisMonth >= FREE_LIMIT_NUMBER_OF_WORDS) {
+        if (totalWordsForThisUser >= FREE_LIMIT_NUMBER_OF_WORDS) {
           reply.code(406).send("Maximum access already reached.");
           return;
         }
       } else {
-        // If user is not on free access, we check if he is subscribed
-        // STEP 2 : Check User is still subscribed and if he still has words
-        // TO DO yoann
+        const isUserSubbed = isUserSubscribed(
+          userToCheck.dataValues.isSubscribedUntil
+        );
+
+        // Preparing data to check if user still has words to use
+        const userBaseWord = userToCheck.dataValues.baseMaxWords;
+        const userBoost = await db.MaxWordsIncrease.getBoostForLast30DaysForThisUser(
+          userToCheck.dataValues.id
+        );
+        const userConsumptionThisPeriod = await db.NumberOfWords.getConsumptionforCurrentDynamicMonthlyPeriod(
+          userToCheck.dataValues.id,
+          userToCheck.dataValues.isSubscribedUntil
+        );
+
+        const doesUserStillHaveWords =
+          userBaseWord + userBoost - userConsumptionThisPeriod > 0;
+        if (!isUserSubbed) {
+          reply.code(406).send("User is not subscribed and not free access.");
+          return;
+        } else if (isUserSubbed && !doesUserStillHaveWords) {
+          reply.code(406).send("Maximum access already reached.");
+          return;
+        }
       }
 
       // Check if category exists

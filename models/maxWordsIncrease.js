@@ -47,9 +47,12 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
 
-      // console.log("ok resultWords7Days", resultWords7Days);
-      return resultBoostThisMonth;
+      if (isNaN(parseInt(resultBoostThisMonth?.[0]?.dataValues?.totalAmount))) {
+        return 0;
+      }
+      return resultBoostThisMonth?.[0]?.dataValues?.totalAmount;
     }
+
     static async getBoostThisUser(userID) {
       const createdBoost = MaxWordsIncrease.create({
         user_id: userID,

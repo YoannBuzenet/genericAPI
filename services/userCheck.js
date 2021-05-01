@@ -54,4 +54,19 @@ async function checkIfLogged(userId, hashedUserAccessToken, provider) {
   }
 }
 
-module.exports = { checkIfLogged };
+const isUserSubscribed = (userIsSubscribedUntil) => {
+  if (
+    userIsSubscribedUntil === "" ||
+    userIsSubscribedUntil === undefined ||
+    userIsSubscribedUntil === null
+  ) {
+    return false;
+  }
+
+  const nowUTC = getTodayFromMidnightInUTC();
+  const userSubscribeUTC = new Date(userIsSubscribedUntil);
+
+  return userSubscribeUTC > nowUTC;
+};
+
+module.exports = { checkIfLogged, isUserSubscribed };
