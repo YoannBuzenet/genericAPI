@@ -104,8 +104,7 @@ module.exports = function (fastify, opts, done) {
         );
 
         let totalMaxWordsUserThisMonth = 0;
-        const boostForThisMonth =
-          allBoostsWordsThisMonthForThisUser[0].dataValues.totalAmount;
+        const boostForThisMonth = allBoostsWordsThisMonthForThisUser;
         const intBoost = parseInt(boostForThisMonth, 10);
 
         if (!isNaN(intBoost)) {
@@ -328,8 +327,7 @@ module.exports = function (fastify, opts, done) {
       );
 
       let totalMaxWordsUserThisMonth = 0;
-      const boostForThisMonth =
-        allBoostsWordsThisMonthForThisUser[0].dataValues.totalAmount;
+      const boostForThisMonth = allBoostsWordsThisMonthForThisUser;
       const intBoost = parseInt(boostForThisMonth, 10);
 
       if (!isNaN(intBoost)) {
