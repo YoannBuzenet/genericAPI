@@ -2,6 +2,7 @@ const userCheck = require("../services/userCheck");
 const db = require("../models/index");
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
+const { sendEmail } = require("../controllers/mailController");
 
 module.exports = function (fastify, opts, done) {
   fastify.post(
@@ -117,6 +118,14 @@ module.exports = function (fastify, opts, done) {
       1
     );
     return numberOfWords;
+  });
+  fastify.get("/sendmail", async () => {
+    sendEmail(
+      "subscription.canceled",
+      "ybuzenet@gmail.com",
+      { userFirstName: "Yoyo Annan" },
+      "en-US"
+    );
   });
 
   done();
