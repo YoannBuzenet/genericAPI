@@ -6,7 +6,7 @@ module.exports = function (fastify, opts, done) {
   middlewarePassPhraseCheck(fastify);
 
   fastify.post(
-    "/createStripePurchase",
+    "/stripePurchase",
     {
       schema: {
         required: ["stripePurchaseObject"],
@@ -38,8 +38,10 @@ module.exports = function (fastify, opts, done) {
     }
   );
 
-  fastify.post(
-    "/sessionLink",
+  // Create subscription and remove session id from our DB
+  // This endpoint is triggered after stripe ckeckout event
+  fastify.patch(
+    "/stripePurchase",
     {
       schema: {
         required: ["session", "userID"],
@@ -51,9 +53,6 @@ module.exports = function (fastify, opts, done) {
     },
     async (req, reply) => {
       try {
-        console.log(
-          "get the right session, update it, empty session id, then get the right user, update it"
-        );
         // get the right session, update userID, erase field session id
         const session = await db.StripePurchase.findOne({
           where: {
@@ -94,12 +93,12 @@ module.exports = function (fastify, opts, done) {
           const updatedYearlyUser = await db.User.subscribeOneYear(
             req.body.userID
           );
-        } else if (pricePaid === 4400) {
+        } else if (pricePaid === 3900) {
           console.log("monthly subscription");
           const updatedMonthly = await db.User.subscribeOneMonth(
             req.body.userID
           );
-        } else if (pricePaid === 1900) {
+        } else if (pricePaid === 2500) {
           console.log("reload payment");
           const oneMonthReload = await db.MaxWordsIncrease.getBoostThisUser(
             req.body.userID
@@ -117,6 +116,7 @@ module.exports = function (fastify, opts, done) {
     }
   );
 
+  // This endpoint is triggered after stripe automatic payment event
   fastify.post(
     "/updateSubscription",
     {
@@ -175,7 +175,7 @@ module.exports = function (fastify, opts, done) {
       } else if (req.body.billing_reason === "subscription_cycle") {
         if (req.body.total === 34800) {
           const updatedYearlyUser = await db.User.subscribeOneYear(userID);
-        } else if (req.body.total === 4400) {
+        } else if (req.body.total === 3900) {
           const updatedMonthly = await db.User.subscribeOneMonth(userID);
         }
       } else {
