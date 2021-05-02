@@ -135,7 +135,7 @@ module.exports = function (fastify, opts, done) {
   );
 
   fastify.post(
-    "/EnableFreeAccess",
+    "/enable-free-access",
     {
       schema: {
         body: {

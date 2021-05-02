@@ -79,6 +79,21 @@ module.exports = (sequelize, DataTypes) => {
       // console.log("ok resultWords7Days", resultWords7Days);
       return resultWords7Days;
     }
+
+    static async getAllDataFor7lastDays(userID) {
+      const date7DaysFromNow = getDays7DaysFromNowInUTC();
+
+      const resultWords7Days = await NumberOfWords.findAll({
+        where: {
+          user_id: userID,
+          date: {
+            [Op.gte]: date7DaysFromNow,
+          },
+        },
+        order: [["date", "ASC"]],
+      });
+      return resultWords7Days;
+    }
     static async getWordsConsumptionOf30days(userID) {
       const date1MonthFromNow = getDate1MonthFromNowInUTC();
       const nowInUTC = getNowInUTC();
@@ -136,21 +151,6 @@ module.exports = (sequelize, DataTypes) => {
       // console.log("ok resultWordsFromThisMonth", resultWordsFromThisMonth);
 
       return resultWordsFromThisMonth;
-    }
-
-    static async getAllDataFor7lastDays(userID) {
-      const date7DaysFromNow = getDays7DaysFromNowInUTC();
-
-      const resultWords7Days = await NumberOfWords.findAll({
-        where: {
-          user_id: userID,
-          date: {
-            [Op.gte]: date7DaysFromNow,
-          },
-        },
-        order: [["date", "ASC"]],
-      });
-      return resultWords7Days;
     }
 
     // This function calculates user consumption on the dynamuc user month (not the real current month but the period he chose, that is likely to be splitted on 2 months)
