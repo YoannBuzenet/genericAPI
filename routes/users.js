@@ -7,7 +7,7 @@ module.exports = function (fastify, opts, done) {
   middlewarePassPhraseCheck(fastify);
 
   fastify.post(
-    "/loginAndRegisterIfNeeded",
+    "/login-and-register-if-needed",
     {
       schema: {
         body: {
@@ -260,18 +260,17 @@ module.exports = function (fastify, opts, done) {
       }
     }
   );
-  // Get by ID
-  fastify.post(
-    "/getById",
+
+  // Get User by ID
+  fastify.get(
+    "/:userId",
     {
       schema: {
-        body: {
-          type: "object",
-          required: ["passphrase", "userID"],
-          properties: {
-            passphrase: { type: "string" },
-            userID: { type: "string" },
-          },
+        query: {
+          required: ["userId"],
+        },
+        properties: {
+          userId: { type: "integer" },
         },
       },
     },
@@ -279,7 +278,7 @@ module.exports = function (fastify, opts, done) {
       // Checking if user already exists
       const userToFind = await db.User.findOne({
         where: {
-          id: req.body.userID,
+          id: req.query.userId,
         },
       });
 

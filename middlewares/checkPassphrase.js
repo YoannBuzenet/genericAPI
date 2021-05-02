@@ -4,7 +4,7 @@ function middlewarePassPhraseCheck(fastify) {
       request?.headers?.authorization !==
       `Bearer ${process.env.FRONT_APP_PASSPHRASE}`
     ) {
-      reply.code(406).send("Passphrase doesn't match.");
+      reply.code(406).send("Auth doesn't match.");
       return;
     }
   });
