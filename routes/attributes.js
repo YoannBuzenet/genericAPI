@@ -3,7 +3,7 @@ const db = require("../models/index");
 module.exports = function (fastify, opts, done) {
   // Public endpoint
   fastify.get(
-    "/getByCategoryId",
+    "/ByCategoryId",
     {
       schema: {
         querystring: {
