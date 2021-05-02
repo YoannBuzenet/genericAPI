@@ -1,8 +1,11 @@
 const { FREE_LIMIT_NUMBER_OF_WORDS } = require("../config/settings");
 const db = require("../models/index");
 const utils = require("../services/utils");
+const { middlewarePassPhraseCheck } = require("../middlewares/checkPassphrase");
 
 module.exports = function (fastify, opts, done) {
+  middlewarePassPhraseCheck(fastify);
+
   fastify.post(
     "/loginAndRegisterIfNeeded",
     {
@@ -19,11 +22,6 @@ module.exports = function (fastify, opts, done) {
       },
     },
     async (req, reply) => {
-      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
-        reply.code(406).send("Passphrase doesn't match.");
-        return;
-      }
-
       // This endpoint is coded to work with google auth only for now.
       if (req.body.provider === "google") {
         // Checking for mandatory fields presence for google Auth
@@ -153,11 +151,6 @@ module.exports = function (fastify, opts, done) {
       },
     },
     async (req, reply) => {
-      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
-        reply.code(406).send("Passphrase doesn't match.");
-        return;
-      }
-
       let idUser;
       let idUserName;
       if (req.body.provider === "google") {
@@ -219,11 +212,6 @@ module.exports = function (fastify, opts, done) {
       },
     },
     async (req, reply) => {
-      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
-        reply.code(406).send("Passphrase doesn't match.");
-        return;
-      }
-
       let idUser;
       let idUserName;
       if (req.body.provider === "google") {
@@ -288,11 +276,6 @@ module.exports = function (fastify, opts, done) {
       },
     },
     async (req, reply) => {
-      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
-        reply.code(406).send("Passphrase doesn't match.");
-        return;
-      }
-
       // Checking if user already exists
       const userToFind = await db.User.findOne({
         where: {

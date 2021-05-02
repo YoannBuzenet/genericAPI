@@ -3,8 +3,11 @@ const { langReverted } = require("../services/langs");
 const db = require("../models/index");
 const { checkIfLogged, isUserSubscribed } = require("../services/userCheck");
 const { FREE_LIMIT_NUMBER_OF_WORDS } = require("../config/settings");
+const { middlewarePassPhraseCheck } = require("../middlewares/checkPassphrase");
 
 module.exports = function (fastify, opts, done) {
+  middlewarePassPhraseCheck(fastify);
+
   fastify.post(
     "/",
     {

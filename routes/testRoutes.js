@@ -3,8 +3,11 @@ const db = require("../models/index");
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const { sendEmail } = require("../controllers/mailController");
+const { middlewarePassPhraseCheck } = require("../middlewares/checkPassphrase");
 
 module.exports = function (fastify, opts, done) {
+  middlewarePassPhraseCheck(fastify);
+
   fastify.post(
     "/checkIfLogged",
     {
@@ -75,7 +78,7 @@ module.exports = function (fastify, opts, done) {
     const snippets = await db.Snippet.getSnippetByCategoryID(1);
     return snippets;
   });
-  fastify.get("/getUserConsumptionForThisUserPeriod", async () => {
+  fastify.post("/getUserConsumptionForThisUserPeriod", async () => {
     const userID = 1;
     const isSubscribedUntil = "2021-04-26";
 
@@ -126,7 +129,7 @@ module.exports = function (fastify, opts, done) {
       { userFirstName: "Yoyo Annan" },
       "en-US"
     );
-    return;
+    reply.code(200).send();
   });
 
   done();

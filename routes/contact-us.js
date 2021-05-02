@@ -4,6 +4,7 @@ const { sendEmail } = require("../controllers/mailController");
 
 module.exports = function (fastify, opts, done) {
   //TODO add middleware that checks passphrase
+  // yo
 
   fastify.post(
     "/",
@@ -25,7 +26,7 @@ module.exports = function (fastify, opts, done) {
       try {
         const sendingMail = await sendEmail(
           "userContactUsForm",
-          "ybuzenet@gmail.com",
+          "contact@easyflow.ai",
           {
             params: {
               fullName: req.body.fullName,

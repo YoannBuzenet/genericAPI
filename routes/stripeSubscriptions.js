@@ -2,8 +2,11 @@ const db = require("../models/index");
 var Bugsnag = require("@bugsnag/js");
 const { sendEmail } = require("../controllers/mailController");
 const { langReverted } = require("../services/langs");
+const { middlewarePassPhraseCheck } = require("../middlewares/checkPassphrase");
 
 module.exports = function (fastify, opts, done) {
+  middlewarePassPhraseCheck(fastify);
+
   // User canceled subscription, we mail him to say goodbye
   fastify.post(
     "/cancel",
@@ -18,11 +21,6 @@ module.exports = function (fastify, opts, done) {
       },
     },
     async (req, reply) => {
-      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
-        reply.code(406).send("Passphrase doesn't match.");
-        return;
-      }
-
       try {
         const result = await db.StripePurchase.findOne({
           where: { customerStripeId: req.body.customer_id },
@@ -72,11 +70,6 @@ module.exports = function (fastify, opts, done) {
       },
     },
     async (req, reply) => {
-      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
-        reply.code(406).send("Passphrase doesn't match.");
-        return;
-      }
-
       try {
         const result = await db.StripePurchase.findOne({
           where: { customerStripeId: req.body.customer_id },
