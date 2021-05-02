@@ -1,0 +1,14 @@
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: http-ingress
+spec:
+  rules:
+    - host: cloud.swan-blanc.fr
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: api-server
+              servicePort: http

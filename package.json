@@ -1,33 +1,16 @@
 {
-  "name": "genericapi",
-  "version": "1.0.0",
-  "description": "Node based Generic API",
-  "main": "index.js",
-  "scripts": {
-    "debug": "node ./server.js",
-    "start:server:dev:windows": "node ./server.js",
-    "start:server:prod:linux": "NODE_ENV=production node ./server.js",
-    "start:server:dev:linux": "node ./server.js",
-    "resetDBseed:dev:windows": "SET NODE_ENV=development& npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all --debug",
-    "resetDBseed:test:windows": "SET NODE_ENV=test& npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all --debug",
-    "prod:db:migrate": "sudo NODE_ENV=production npx sequelize-cli db:migrate",
-    "dev:db:migrate": "npx sequelize-cli db:migrate"
-  },
-  "author": "Yoann Buzenet",
-  "license": "ISC",
-  "dependencies": {
-    "@bugsnag/js": "^7.9.2",
-    "axios": "^0.21.1",
-    "dotenv": "^8.2.0",
-    "ejs": "^3.1.6",
-    "fastify": "^3.14.0",
-    "mysql2": "^2.2.5",
-    "nodemailer": "^6.5.0",
-    "sequelize": "^6.5.1",
-    "sequelize-cli": "^6.2.0",
-    "stripe": "^8.138.0"
-  },
-  "devDependencies": {
-    "semantic-release": "^17.4.2"
+  "auths":{
+    "https://registry.infomaniak.com:443":{
+      "username":"leopold.jacquot@infomaniak.com",
+      "password":"96-CCTX-CKyTXQpHGpr5",
+      "email":"leopold.jacquot@infomaniak.com",
+      "auth":"bGVvcG9sZC5qYWNxdW90QGluZm9tYW5pYWsuY29tOjk2LUNDVFgtQ0t5VFhRcEhHcHI1"
+    },
+    "https://gitlab.infomaniak.ch:4567":{
+      "username":"leopold.jacquot@infomaniak.com",
+      "password":"96-CCTX-CKyTXQpHGpr5",
+      "email":"leopold.jacquot@infomaniak.com",
+      "auth":"bGVvcG9sZC5qYWNxdW90QGluZm9tYW5pYWsuY29tOjk2LUNDVFgtQ0t5VFhRcEhHcHI1"
+    }
   }
 }

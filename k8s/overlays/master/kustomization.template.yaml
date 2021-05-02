@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: default
+resources:
+  - ../../bases/api-server
+  - ../../bases/mysql
+  - ../../bases/phpmyadmin
+transformers:
+  - labels.yaml
+images:
+  - name: docker.pkg.github.com/the-deepgen/genericapi/app_test
+    newTag: ${VERSION}
