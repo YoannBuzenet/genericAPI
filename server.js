@@ -51,6 +51,7 @@ const start = async () => {
     await fastify.listen(3001);
   } catch (err) {
     Bugsnag.notify(new Error(err));
+    console.log("err", err);
     fastify.log.error("Server Error", err);
     process.exit(1);
   }

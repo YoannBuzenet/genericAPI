@@ -12,9 +12,8 @@ module.exports = function (fastify, opts, done) {
       schema: {
         body: {
           type: "object",
-          required: ["passphrase", "provider", "user"],
+          required: ["provider", "user"],
           properties: {
-            passphrase: { type: "string" },
             provider: { type: "string" },
             user: { type: "object" },
           },
@@ -141,9 +140,8 @@ module.exports = function (fastify, opts, done) {
       schema: {
         body: {
           type: "object",
-          required: ["passphrase", "provider", "user"],
+          required: ["provider", "user"],
           properties: {
-            passphrase: { type: "string" },
             provider: { type: "string" },
             user: { type: "object" },
           },
@@ -201,9 +199,8 @@ module.exports = function (fastify, opts, done) {
       schema: {
         body: {
           type: "object",
-          required: ["passphrase", "provider", "user", "subscription"],
+          required: ["provider", "user", "subscription"],
           properties: {
-            passphrase: { type: "string" },
             subscription: { type: "string" },
             provider: { type: "string" },
             user: { type: "object" },
@@ -263,14 +260,15 @@ module.exports = function (fastify, opts, done) {
 
   // Get User by ID
   fastify.get(
-    "/:userId",
+    "/:id",
     {
       schema: {
         query: {
-          required: ["userId"],
+          type: "object",
+          required: ["id"],
         },
         properties: {
-          userId: { type: "integer" },
+          id: { type: "integer" },
         },
       },
     },
@@ -278,7 +276,7 @@ module.exports = function (fastify, opts, done) {
       // Checking if user already exists
       const userToFind = await db.User.findOne({
         where: {
-          id: req.query.userId,
+          id: req.query.id,
         },
       });
 
