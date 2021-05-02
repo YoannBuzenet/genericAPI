@@ -5,6 +5,8 @@ const path = require("path");
 var Bugsnag = require("@bugsnag/js");
 const { translations } = require("../translations/translations");
 
+// subscription.failed
+
 function getTemplate(action, locale) {
   let template;
   switch (action) {
