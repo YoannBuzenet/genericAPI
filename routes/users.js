@@ -262,21 +262,16 @@ module.exports = function (fastify, opts, done) {
   fastify.get(
     "/:id",
     {
-      schema: {
-        query: {
-          type: "object",
-          required: ["id"],
-        },
-        properties: {
-          id: { type: "integer" },
-        },
+      type: "object",
+      properties: {
+        id: { type: "number" },
       },
     },
     async (req, reply) => {
       // Checking if user already exists
       const userToFind = await db.User.findOne({
         where: {
-          id: req.query.id,
+          id: req.params.id,
         },
       });
 
