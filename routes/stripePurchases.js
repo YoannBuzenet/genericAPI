@@ -1,7 +1,10 @@
 const db = require("../models/index");
 var Bugsnag = require("@bugsnag/js");
+const { middlewarePassPhraseCheck } = require("../middlewares/checkPassphrase");
 
 module.exports = function (fastify, opts, done) {
+  middlewarePassPhraseCheck(fastify);
+
   fastify.post(
     "/createStripePurchase",
     {
@@ -14,11 +17,6 @@ module.exports = function (fastify, opts, done) {
       },
     },
     async (req, reply) => {
-      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
-        reply.code(406).send("Passphrase doesn't match.");
-        return;
-      }
-
       try {
         const newStripePurchase = await db.StripePurchase.create({
           session_id: req.body.stripePurchaseObject.session_id,
@@ -53,12 +51,6 @@ module.exports = function (fastify, opts, done) {
       },
     },
     async (req, reply) => {
-      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
-        console.log("Passphrase doesn't match.");
-        reply.code(406).send("Passphrase doesn't match.");
-        return;
-      }
-
       try {
         console.log(
           "get the right session, update it, empty session id, then get the right user, update it"
@@ -146,11 +138,6 @@ module.exports = function (fastify, opts, done) {
       },
     },
     async (req, reply) => {
-      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
-        reply.code(406).send("Passphrase doesn't match.");
-        return;
-      }
-
       // trouver le customerID dans les session et en déduire l'user ID
       const sessionWithCustomerId = await db.StripePurchase.findOne({
         where: {

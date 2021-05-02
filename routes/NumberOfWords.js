@@ -1,7 +1,10 @@
 const db = require("../models/index");
 const { checkIfLogged } = require("../services/userCheck");
+const { middlewarePassPhraseCheck } = require("../middlewares/checkPassphrase");
 
 module.exports = function (fastify, opts, done) {
+  middlewarePassPhraseCheck(fastify);
+
   fastify.post(
     "/userTotalConsumption",
     {
@@ -18,11 +21,6 @@ module.exports = function (fastify, opts, done) {
       },
     },
     async (req, reply) => {
-      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
-        reply.code(406).send("Passphrase doesn't match.");
-        return;
-      }
-
       // USER CHECK
       let idToCheck;
       if (req.body.provider === "google") {
@@ -76,11 +74,6 @@ module.exports = function (fastify, opts, done) {
       },
     },
     async (req, reply) => {
-      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
-        reply.code(406).send("Passphrase doesn't match.");
-        return;
-      }
-
       // USER CHECK
       let idToCheck;
       if (req.body.provider === "google") {
@@ -134,11 +127,6 @@ module.exports = function (fastify, opts, done) {
       },
     },
     async (req, reply) => {
-      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
-        reply.code(406).send("Passphrase doesn't match.");
-        return;
-      }
-
       // USER CHECK
       let idToCheck;
       if (req.body.provider === "google") {
@@ -193,11 +181,6 @@ module.exports = function (fastify, opts, done) {
       },
     },
     async (req, reply) => {
-      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
-        reply.code(406).send("Passphrase doesn't match.");
-        return;
-      }
-
       // USER CHECK
       let idToCheck;
       if (req.body.provider === "google") {
