@@ -5,8 +5,6 @@ const path = require("path");
 var Bugsnag = require("@bugsnag/js");
 const { translations } = require("../translations/translations");
 
-// subscription.failed
-
 function getTemplate(action, locale) {
   let template;
   switch (action) {
@@ -18,6 +16,11 @@ function getTemplate(action, locale) {
     case "subscription.canceled": {
       template =
         __basedir + "/mail_templates/" + locale + "/subscriptionCanceled.ejs";
+      break;
+    }
+    case "subscription.failed": {
+      template =
+        __basedir + "/mail_templates/" + locale + "/subscriptionFailed.ejs";
       break;
     }
     default: {
@@ -37,6 +40,10 @@ function getMailTitle(action, locale) {
     }
     case "subscription.canceled": {
       mailTitle = translations[locale].mailTitle["subscription.canceled"];
+      break;
+    }
+    case "subscription.failed": {
+      mailTitle = translations[locale].mailTitle["subscription.failed"];
       break;
     }
     default: {
@@ -62,6 +69,11 @@ function buildTemplateData(action, params, locale) {
       templateData = { userFirstName };
       break;
     }
+    case "subscription.failed": {
+      const { userFirstName } = params;
+      templateData = { userFirstName };
+      break;
+    }
     default: {
       throw new Error(
         "Could not find corresponding action for building templateData."
@@ -79,6 +91,10 @@ function getMailAdressFrom(action) {
       break;
     }
     case "subscription.canceled": {
+      mailAdress = "support@easyflow.ai";
+      break;
+    }
+    case "subscription.failed": {
       mailAdress = "support@easyflow.ai";
       break;
     }
