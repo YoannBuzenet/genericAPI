@@ -7,14 +7,13 @@ module.exports = function (fastify, opts, done) {
   middlewarePassPhraseCheck(fastify);
 
   fastify.post(
-    "/loginAndRegisterIfNeeded",
+    "/login-and-register-if-needed",
     {
       schema: {
         body: {
           type: "object",
-          required: ["passphrase", "provider", "user"],
+          required: ["provider", "user"],
           properties: {
-            passphrase: { type: "string" },
             provider: { type: "string" },
             user: { type: "object" },
           },
@@ -141,9 +140,8 @@ module.exports = function (fastify, opts, done) {
       schema: {
         body: {
           type: "object",
-          required: ["passphrase", "provider", "user"],
+          required: ["provider", "user"],
           properties: {
-            passphrase: { type: "string" },
             provider: { type: "string" },
             user: { type: "object" },
           },
@@ -201,9 +199,8 @@ module.exports = function (fastify, opts, done) {
       schema: {
         body: {
           type: "object",
-          required: ["passphrase", "provider", "user", "subscription"],
+          required: ["provider", "user", "subscription"],
           properties: {
-            passphrase: { type: "string" },
             subscription: { type: "string" },
             provider: { type: "string" },
             user: { type: "object" },
@@ -260,26 +257,21 @@ module.exports = function (fastify, opts, done) {
       }
     }
   );
-  // Get by ID
-  fastify.post(
-    "/getById",
+
+  // Get User by ID
+  fastify.get(
+    "/:id",
     {
-      schema: {
-        body: {
-          type: "object",
-          required: ["passphrase", "userID"],
-          properties: {
-            passphrase: { type: "string" },
-            userID: { type: "string" },
-          },
-        },
+      type: "object",
+      properties: {
+        id: { type: "number" },
       },
     },
     async (req, reply) => {
       // Checking if user already exists
       const userToFind = await db.User.findOne({
         where: {
-          id: req.body.userID,
+          id: req.params.id,
         },
       });
 
@@ -343,6 +335,40 @@ module.exports = function (fastify, opts, done) {
 
       reply.send(userToFind);
       return;
+    }
+  );
+
+  // Get user Stripe Id thanks to its uer id
+  fastify.get(
+    "/:id/stripeId",
+    {
+      type: "object",
+      properties: {
+        id: { type: "number" },
+      },
+    },
+    async (req, reply) => {
+      try {
+        //get user stripe id in StripePurchase table and send it back
+        const result = await db.StripePurchase.findOne({
+          where: {
+            user_id: {
+              type: "object",
+              properties: {
+                id: { type: "number" },
+              },
+            },
+          },
+        });
+
+        const stripeUserId = result.dataValues.customerStripeId;
+
+        reply.code(200).send(stripeUserId);
+      } catch (e) {
+        console.log("error when getting stripe user id", e);
+        Bugsnag.notify(new Error(e));
+        reply.code(500).send("Couldn't find stripe user id");
+      }
     }
   );
 

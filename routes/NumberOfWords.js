@@ -11,9 +11,8 @@ module.exports = function (fastify, opts, done) {
       schema: {
         body: {
           type: "object",
-          required: ["passphrase", "idUser", "provider"],
+          required: ["idUser", "provider"],
           properties: {
-            passphrase: { type: "string" },
             idUser: { type: "string" },
             provider: { type: "string" },
           },
@@ -64,9 +63,8 @@ module.exports = function (fastify, opts, done) {
       schema: {
         body: {
           type: "object",
-          required: ["passphrase", "idUser", "provider"],
+          required: ["idUser", "provider"],
           properties: {
-            passphrase: { type: "string" },
             idUser: { type: "string" },
             provider: { type: "string" },
           },
@@ -117,9 +115,8 @@ module.exports = function (fastify, opts, done) {
       schema: {
         body: {
           type: "object",
-          required: ["passphrase", "idUser", "provider"],
+          required: ["idUser", "provider"],
           properties: {
-            passphrase: { type: "string" },
             idUser: { type: "string" },
             provider: { type: "string" },
           },
@@ -171,9 +168,8 @@ module.exports = function (fastify, opts, done) {
       schema: {
         body: {
           type: "object",
-          required: ["passphrase", "idUser", "provider"],
+          required: ["idUser", "provider"],
           properties: {
-            passphrase: { type: "string" },
             idUser: { type: "string" },
             provider: { type: "string" },
           },

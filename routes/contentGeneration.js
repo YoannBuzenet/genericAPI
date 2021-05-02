@@ -14,19 +14,11 @@ module.exports = function (fastify, opts, done) {
       schema: {
         body: {
           type: "object",
-          required: [
-            "category",
-            "lang",
-            "userInput",
-            "passphrase",
-            "idUser",
-            "provider",
-          ],
+          required: ["category", "lang", "userInput", "idUser", "provider"],
           properties: {
             category: { type: "integer" },
             lang: { type: "string", minLength: 2 },
             userInput: { type: "array" },
-            passphrase: { type: "string", minLength: 5 },
             idUser: { type: "string" },
             provider: { type: "string" },
           },
@@ -34,11 +26,6 @@ module.exports = function (fastify, opts, done) {
       },
     },
     async (req, reply) => {
-      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
-        reply.code(406).send("Passphrase doesn't match.");
-        return;
-      }
-
       //Checking user Input
       for (let i = 0; i < req.body.userInput.length; i++) {
         if (req.body.userInput[i].length === 0) {

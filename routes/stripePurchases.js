@@ -9,9 +9,8 @@ module.exports = function (fastify, opts, done) {
     "/createStripePurchase",
     {
       schema: {
-        required: ["passphrase", "stripePurchaseObject"],
+        required: ["stripePurchaseObject"],
         properties: {
-          passphrase: { type: "string" },
           stripePurchaseObject: { type: "string" },
         },
       },
@@ -38,13 +37,13 @@ module.exports = function (fastify, opts, done) {
       }
     }
   );
+
   fastify.post(
     "/sessionLink",
     {
       schema: {
-        required: ["passphrase", "session", "userID"],
+        required: ["session", "userID"],
         properties: {
-          passphrase: { type: "string" },
           session: { type: "string" },
           userID: { type: "string" },
         },
@@ -122,9 +121,8 @@ module.exports = function (fastify, opts, done) {
     "/updateSubscription",
     {
       schema: {
-        required: ["passphrase", "session", "userID"],
+        required: ["session", "userID"],
         properties: {
-          passphrase: { type: "string" },
           customerID: { type: "string" },
           amount: { type: "string" },
           billing_reason: { type: "string" },

@@ -2,9 +2,10 @@ const db = require("../models/index");
 var Bugsnag = require("@bugsnag/js");
 const { sendEmail } = require("../controllers/mailController");
 
+const { middlewarePassPhraseCheck } = require("../middlewares/checkPassphrase");
+
 module.exports = function (fastify, opts, done) {
-  //TODO add middleware that checks passphrase
-  // yo
+  middlewarePassPhraseCheck(fastify);
 
   fastify.post(
     "/",
