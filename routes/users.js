@@ -338,5 +338,39 @@ module.exports = function (fastify, opts, done) {
     }
   );
 
+  // Get user Stripe Id thanks to its uer id
+  fastify.get(
+    "/:id/stripeId",
+    {
+      type: "object",
+      properties: {
+        id: { type: "number" },
+      },
+    },
+    async (req, reply) => {
+      try {
+        //get user stripe id in StripePurchase table and send it back
+        const result = await db.StripePurchase.findOne({
+          where: {
+            user_id: {
+              type: "object",
+              properties: {
+                id: { type: "number" },
+              },
+            },
+          },
+        });
+
+        const stripeUserId = result.dataValues.customerStripeId;
+
+        reply.code(200).send(stripeUserId);
+      } catch (e) {
+        console.log("error when getting stripe user id", e);
+        Bugsnag.notify(new Error(e));
+        reply.code(500).send("Couldn't find stripe user id");
+      }
+    }
+  );
+
   done();
 };

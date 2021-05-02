@@ -37,6 +37,7 @@ module.exports = function (fastify, opts, done) {
       }
     }
   );
+
   fastify.post(
     "/sessionLink",
     {
