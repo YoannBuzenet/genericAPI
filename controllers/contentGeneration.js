@@ -177,7 +177,7 @@ const generateContent = async (
     return {
       apiResp: finalAIOutput,
       numberOfWordsUsedInResp,
-      wasAllInputFiltered: true,
+      wasAllInputFiltered,
     };
   });
 };
