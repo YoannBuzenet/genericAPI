@@ -66,7 +66,10 @@ module.exports = function (fastify, opts, done) {
           userToCheck.dataValues.id
         );
 
-        if (totalWordsForThisUser >= FREE_LIMIT_NUMBER_OF_WORDS) {
+        if (
+          totalWordsForThisUser[0].dataValues.totalAmount >=
+          FREE_LIMIT_NUMBER_OF_WORDS
+        ) {
           reply.code(406).send("Maximum access already reached.");
           return;
         }
