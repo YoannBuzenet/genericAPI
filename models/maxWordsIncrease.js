@@ -61,6 +61,14 @@ module.exports = (sequelize, DataTypes) => {
 
       return createdBoost;
     }
+    static async getBoostThisUserForSpecificAmount(userID, amount) {
+      const createdBoost = MaxWordsIncrease.create({
+        user_id: userID,
+        amount: amount,
+      });
+
+      return createdBoost;
+    }
   }
   MaxWordsIncrease.init(
     {

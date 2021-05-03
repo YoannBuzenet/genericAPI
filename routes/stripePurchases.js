@@ -95,7 +95,7 @@ module.exports = function (fastify, opts, done) {
           const numberToAdd = FREE_LIMIT_NUMBER_OF_WORDS - userTotalConsumption;
 
           if (numberToAdd > 0) {
-            const addedWords = await db.NumberOfWords.addNumberOfWordsToday(
+            const addedWords = await db.MaxWordsIncrease.getBoostThisUserForSpecificAmount(
               userToUpdate.dataValues.id,
               numberToAdd
             );
