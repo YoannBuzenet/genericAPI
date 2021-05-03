@@ -35,7 +35,9 @@ module.exports = function (fastify, opts, done) {
         if (user === null) {
           reply.code(500).send("Couldn't find user");
           Bugsnag.notify(
-            new Error("Couldn't find user in subscription cancelation endpoint")
+            new Error(
+              "Subscription Canceled : Couldn't find user in subscription cancelation endpoint"
+            )
           );
           return;
         }
@@ -84,7 +86,9 @@ module.exports = function (fastify, opts, done) {
         if (user === null) {
           reply.code(500).send("Couldn't find user");
           Bugsnag.notify(
-            new Error("Couldn't find user in subscription cancelation endpoint")
+            new Error(
+              "Payment Failed : Couldn't find user in subscription cancelation endpoint"
+            )
           );
           return;
         }

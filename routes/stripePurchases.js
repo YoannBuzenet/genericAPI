@@ -1,6 +1,7 @@
 const db = require("../models/index");
 var Bugsnag = require("@bugsnag/js");
 const { middlewarePassPhraseCheck } = require("../middlewares/checkPassphrase");
+const { FREE_LIMIT_NUMBER_OF_WORDS } = require("../config/settings");
 
 module.exports = function (fastify, opts, done) {
   middlewarePassPhraseCheck(fastify);
@@ -84,10 +85,25 @@ module.exports = function (fastify, opts, done) {
           return;
         }
 
+        //If user never subscribed, we offer him free words he would have gotten though Free Access, or the one he had remaining on his Free Access.
+        if (userToUpdate.dataValues.hasSubscribedOnce === 0) {
+          const result = await db.NumberOfWords.returnCompleteUserConsumption(
+            userToUpdate.dataValues.id
+          );
+          const userTotalConsumption = result[0].dataValues.totalAmount;
+
+          const numberToAdd = FREE_LIMIT_NUMBER_OF_WORDS - userTotalConsumption;
+
+          if (numberToAdd > 0) {
+            const addedWords = await db.NumberOfWords.addNumberOfWordsToday(
+              userToUpdate.dataValues.id,
+              numberToAdd
+            );
+          }
+        }
         const pricePaid = parseInt(session.dataValues.amount, 10);
 
-        // pricepaid allows us to know duration to add as subscription
-
+        // price paid allows us to know duration to add as subscription (as we do not have product in DB for now)
         if (pricePaid === 34800) {
           console.log("yearly subscription");
           const updatedYearlyUser = await db.User.subscribeOneYear(
