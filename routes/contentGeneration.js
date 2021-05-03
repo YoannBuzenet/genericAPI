@@ -129,18 +129,20 @@ module.exports = function (fastify, opts, done) {
         userToCheck.dataValues.id
       );
 
-      const MonthlyWordsForThisUser = await db.NumberOfWords.getWordsConsumptionForCurrentMonth(
-        userToCheck.dataValues.id
+      const MonthlyWordsForThisUser = await db.NumberOfWords.getConsumptionforCurrentDynamicMonthlyPeriod(
+        userToCheck.dataValues.id,
+        userToCheck.dataValues.isSubscribedUntil
       );
 
       return {
         response: aiResponse.apiResp,
+        wasAllAIOutputFiltered: aiResponse.wasAllInputFiltered,
+        numberOfWordsUsedInResp: aiResponse.numberOfWordsUsedInResp,
         numberOfWords: totalWordsForThisUser[0].dataValues.totalAmount,
         userCanStillUseService:
           totalWordsForThisUser[0].dataValues.totalAmount <=
           FREE_LIMIT_NUMBER_OF_WORDS,
-        userMonthlyConsumption:
-          MonthlyWordsForThisUser[0].dataValues.totalAmount || 0,
+        userMonthlyConsumption: MonthlyWordsForThisUser,
       };
     }
   );

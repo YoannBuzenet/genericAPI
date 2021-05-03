@@ -176,8 +176,8 @@ const generateContent = async (
     // 5 . Return AI output
     return {
       apiResp: finalAIOutput,
-      numberOfWords: numberOfWordsUsedInResp,
-      wasAllInputFiltered,
+      numberOfWordsUsedInResp,
+      wasAllInputFiltered: true,
     };
   });
 };
