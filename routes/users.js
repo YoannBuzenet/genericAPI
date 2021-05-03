@@ -291,8 +291,8 @@ module.exports = function (fastify, opts, done) {
           totalWordsForThisUser[0].dataValues.totalAmount || 0;
 
         userToFind.dataValues.userHasStillAccess =
-          totalWordsForThisUser[0].dataValues.totalAmount ||
-          0 <= FREE_LIMIT_NUMBER_OF_WORDS;
+          (totalWordsForThisUser[0].dataValues.totalAmount || 0) <=
+          FREE_LIMIT_NUMBER_OF_WORDS;
       }
 
       // USER OWN MAX WORDS FOR THIS MONTH

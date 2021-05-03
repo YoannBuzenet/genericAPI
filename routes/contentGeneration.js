@@ -122,7 +122,7 @@ module.exports = function (fastify, opts, done) {
 
       const updatedUser = await db.NumberOfWords.addNumberOfWordsToday(
         userToCheck.dataValues.id,
-        aiResponse.numberOfWords
+        aiResponse.numberOfWordsUsedInResp
       );
 
       const totalWordsForThisUser = await db.NumberOfWords.returnCompleteUserConsumption(
