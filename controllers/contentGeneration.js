@@ -158,8 +158,7 @@ const generateContent = async (
     const numberOfFilteredOutputs = results.filter((result) => result === false)
       .length;
 
-    const wasAllInputFiltered =
-      numberOfFilteredOutputs === filteredTexts.length;
+    const wasAllInputFiltered = numberOfFilteredOutputs === cleanedTexts.length;
 
     if (numberOfFilteredOutputs > 0) {
       const savedFilteredOutput = await db.FilteredOpenAIInput.create({
@@ -176,7 +175,7 @@ const generateContent = async (
     // 5 . Return AI output
     return {
       apiResp: finalAIOutput,
-      numberOfWords: numberOfWordsUsedInResp,
+      numberOfWordsUsedInResp,
       wasAllInputFiltered,
     };
   });
