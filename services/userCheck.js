@@ -63,7 +63,7 @@ const isUserSubscribed = (userIsSubscribedUntil) => {
     return false;
   }
 
-  const nowUTC = getTodayFromMidnightInUTC();
+  const nowUTC = utils.getTodayFromMidnightInUTC();
   const userSubscribeUTC = new Date(userIsSubscribedUntil);
 
   return userSubscribeUTC > nowUTC;
