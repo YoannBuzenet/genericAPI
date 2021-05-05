@@ -109,7 +109,7 @@ module.exports = function (fastify, opts, done) {
           const updatedYearlyUser = await db.User.subscribeOneYear(
             req.body.userID
           );
-        } else if (pricePaid === 3900) {
+        } else if (pricePaid === 2900) {
           console.log("monthly subscription");
           const updatedMonthly = await db.User.subscribeOneMonth(
             req.body.userID
@@ -191,7 +191,7 @@ module.exports = function (fastify, opts, done) {
       } else if (req.body.billing_reason === "subscription_cycle") {
         if (req.body.total === 34800) {
           const updatedYearlyUser = await db.User.subscribeOneYear(userID);
-        } else if (req.body.total === 3900) {
+        } else if (req.body.total === 2900) {
           const updatedMonthly = await db.User.subscribeOneMonth(userID);
         }
       } else {
