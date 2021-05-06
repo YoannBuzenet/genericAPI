@@ -100,7 +100,7 @@ const generateContent = async (
     })
     .catch((error) => {
       console.log("error while contacting Open AI : ", error);
-      Bugsnag.notify(new Error(err));
+      Bugsnag.notify(new Error(error));
     });
 
   // 4. Get back AI output, cut it at the first \n
