@@ -4,6 +4,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: mysql-data-disk
 spec:
+  storageClassName: microk8s-hostpath
   accessModes:
     - ReadWriteOnce
   resources:
@@ -36,6 +37,8 @@ spec:
               subPath: "mysql"
               name: mysql-data
           env:
+            - name: MYSQL_DATABASE
+              value: easyflow
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
