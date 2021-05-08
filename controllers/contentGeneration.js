@@ -100,7 +100,7 @@ const generateContent = async (
     })
     .catch((error) => {
       console.log("error while contacting Open AI : ", error);
-      Bugsnag.notify(new Error(err));
+      Bugsnag.notify(new Error(error));
     });
 
   // 4. Get back AI output, cut it at the first \n
@@ -158,8 +158,7 @@ const generateContent = async (
     const numberOfFilteredOutputs = results.filter((result) => result === false)
       .length;
 
-    const wasAllInputFiltered =
-      numberOfFilteredOutputs === filteredTexts.length;
+    const wasAllInputFiltered = numberOfFilteredOutputs === cleanedTexts.length;
 
     if (numberOfFilteredOutputs > 0) {
       const savedFilteredOutput = await db.FilteredOpenAIInput.create({
@@ -176,7 +175,7 @@ const generateContent = async (
     // 5 . Return AI output
     return {
       apiResp: finalAIOutput,
-      numberOfWords: numberOfWordsUsedInResp,
+      numberOfWordsUsedInResp,
       wasAllInputFiltered,
     };
   });

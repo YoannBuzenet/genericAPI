@@ -2,8 +2,10 @@ const db = require("../models/index");
 var Bugsnag = require("@bugsnag/js");
 const { sendEmail } = require("../controllers/mailController");
 
+const { middlewarePassPhraseCheck } = require("../middlewares/checkPassphrase");
+
 module.exports = function (fastify, opts, done) {
-  //TODO add middleware that checks passphrase
+  middlewarePassPhraseCheck(fastify);
 
   fastify.post(
     "/",
@@ -25,7 +27,7 @@ module.exports = function (fastify, opts, done) {
       try {
         const sendingMail = await sendEmail(
           "userContactUsForm",
-          "ybuzenet@gmail.com",
+          "contact@easyflow.ai",
           {
             params: {
               fullName: req.body.fullName,

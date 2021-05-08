@@ -1,29 +1,24 @@
 const { generateContent } = require("../controllers/contentGeneration");
 const { langReverted } = require("../services/langs");
 const db = require("../models/index");
-const { checkIfLogged } = require("../services/userCheck");
+const { checkIfLogged, isUserSubscribed } = require("../services/userCheck");
 const { FREE_LIMIT_NUMBER_OF_WORDS } = require("../config/settings");
+const { middlewarePassPhraseCheck } = require("../middlewares/checkPassphrase");
 
 module.exports = function (fastify, opts, done) {
+  middlewarePassPhraseCheck(fastify);
+
   fastify.post(
     "/",
     {
       schema: {
         body: {
           type: "object",
-          required: [
-            "category",
-            "lang",
-            "userInput",
-            "passphrase",
-            "idUser",
-            "provider",
-          ],
+          required: ["category", "lang", "userInput", "idUser", "provider"],
           properties: {
             category: { type: "integer" },
             lang: { type: "string", minLength: 2 },
             userInput: { type: "array" },
-            passphrase: { type: "string", minLength: 5 },
             idUser: { type: "string" },
             provider: { type: "string" },
           },
@@ -31,11 +26,6 @@ module.exports = function (fastify, opts, done) {
       },
     },
     async (req, reply) => {
-      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
-        reply.code(406).send("Passphrase doesn't match.");
-        return;
-      }
-
       //Checking user Input
       for (let i = 0; i < req.body.userInput.length; i++) {
         if (req.body.userInput[i].length === 0) {
@@ -72,18 +62,41 @@ module.exports = function (fastify, opts, done) {
 
       // Checking that user is under free limit if he is on free access
       if (userToCheck.dataValues.isOnFreeAccess === 1) {
-        const totalWordsForThisUserThisMonth = await db.NumberOfWords.returnCompleteUserConsumption(
+        const totalWordsForThisUser = await db.NumberOfWords.returnCompleteUserConsumption(
           userToCheck.dataValues.id
         );
 
-        if (totalWordsForThisUserThisMonth >= FREE_LIMIT_NUMBER_OF_WORDS) {
+        if (
+          totalWordsForThisUser[0].dataValues.totalAmount >=
+          FREE_LIMIT_NUMBER_OF_WORDS
+        ) {
           reply.code(406).send("Maximum access already reached.");
           return;
         }
       } else {
-        // If user is not on free access, we check if he is subscribed
-        // STEP 2 : Check User is still subscribed and if he still has words
-        // TO DO yoann
+        const isUserSubbed = isUserSubscribed(
+          userToCheck.dataValues.isSubscribedUntil
+        );
+
+        // Preparing data to check if user still has words to use
+        const userBaseWord = userToCheck.dataValues.baseMaxWords;
+        const userBoost = await db.MaxWordsIncrease.getBoostForLast30DaysForThisUser(
+          userToCheck.dataValues.id
+        );
+        const userConsumptionThisPeriod = await db.NumberOfWords.getConsumptionforCurrentDynamicMonthlyPeriod(
+          userToCheck.dataValues.id,
+          userToCheck.dataValues.isSubscribedUntil
+        );
+
+        const doesUserStillHaveWords =
+          userBaseWord + userBoost - userConsumptionThisPeriod > 0;
+        if (!isUserSubbed) {
+          reply.code(406).send("User is not subscribed and not free access.");
+          return;
+        } else if (isUserSubbed && !doesUserStillHaveWords) {
+          reply.code(406).send("Maximum access already reached.");
+          return;
+        }
       }
 
       // Check if category exists
@@ -112,25 +125,27 @@ module.exports = function (fastify, opts, done) {
 
       const updatedUser = await db.NumberOfWords.addNumberOfWordsToday(
         userToCheck.dataValues.id,
-        aiResponse.numberOfWords
+        aiResponse.numberOfWordsUsedInResp
       );
 
       const totalWordsForThisUser = await db.NumberOfWords.returnCompleteUserConsumption(
         userToCheck.dataValues.id
       );
 
-      const MonthlyWordsForThisUser = await db.NumberOfWords.getWordsConsumptionForCurrentMonth(
-        userToCheck.dataValues.id
+      const MonthlyWordsForThisUser = await db.NumberOfWords.getConsumptionforCurrentDynamicMonthlyPeriod(
+        userToCheck.dataValues.id,
+        userToCheck.dataValues.isSubscribedUntil
       );
 
       return {
         response: aiResponse.apiResp,
+        wasAllAIOutputFiltered: aiResponse.wasAllInputFiltered,
+        numberOfWordsUsedInResp: aiResponse.numberOfWordsUsedInResp,
         numberOfWords: totalWordsForThisUser[0].dataValues.totalAmount,
         userCanStillUseService:
           totalWordsForThisUser[0].dataValues.totalAmount <=
           FREE_LIMIT_NUMBER_OF_WORDS,
-        userMonthlyConsumption:
-          MonthlyWordsForThisUser[0].dataValues.totalAmount || 0,
+        userMonthlyConsumption: MonthlyWordsForThisUser,
       };
     }
   );
