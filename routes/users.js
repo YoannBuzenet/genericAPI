@@ -25,24 +25,24 @@ module.exports = function (fastify, opts, done) {
       if (req.body.provider === "google") {
         // Checking for mandatory fields presence for google Auth
 
-        if (
-          !utils.propCheckInObject(
-            [
-              "googleId",
-              "fullName",
-              "firstName",
-              "lastName",
-              "avatar",
-              "userLocale",
-              "accessToken",
-              "expiresIn",
-            ],
-            req.body.user
-          )
-        ) {
-          reply.code(400).send("Missing Parameters in Google Auth.");
-          return;
-        }
+        // if (
+        //   !utils.propCheckInObject(
+        //     [
+        //       "googleId",
+        //       "fullName",
+        //       "firstName",
+        //       "lastName",
+        //       "avatar",
+        //       "userLocale",
+        //       "accessToken",
+        //       "expiresIn",
+        //     ],
+        //     req.body.user
+        //   )
+        // ) {
+        //   reply.code(400).send("Missing Parameters in Google Auth.");
+        //   return;
+        // }
 
         // Checking if user already exists
         const userToFind = await db.User.findOne({
