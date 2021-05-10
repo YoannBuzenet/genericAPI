@@ -44,7 +44,7 @@ module.exports = {
             shouldRemoveUnfinishedSentenceInResults: 1,
             temperature: 0.7,
             userMaxInputLength: 100,
-            maxLengthTokens: 100,
+            maxLengthTokens: 120,
             numberOfUserInputs: 1,
             numberOfAIOutput: 3,
             createdAt: new Date(),
