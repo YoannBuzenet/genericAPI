@@ -8,6 +8,8 @@ const {
 } = require("../services/utils");
 const { ENDPOINT_FILTER_OPEN_AI } = require("../config/settings");
 var Bugsnag = require("@bugsnag/js");
+var FormData = require("form-data");
+const fetch = require("node-fetch");
 
 const generateContent = async (
   categoryId,
@@ -44,20 +46,54 @@ const generateContent = async (
 
   const numberOfInputs = category.dataValues.numberOfUserInputs;
 
-  const currentSnippet = snippet.dataValues[langReverted[lang]];
+  // Translations of user input into english to maximize output by english trained AI
+  let translatedInput = userInput;
+  if (lang !== "en-US") {
+    var bodyFormData = new FormData();
+
+    for (let i = 0; i < numberOfInputs; i++) {
+      bodyFormData.append("text", userInput[i].value);
+    }
+
+    bodyFormData.append("target_lang", "EN");
+
+    const response = await fetch(
+      `${process.env.DEEPL_ADRESS}?auth_key=${process.env.DEEPL_KEY}`,
+      {
+        method: "POST",
+        body: bodyFormData,
+      }
+    );
+    const result = await response.json();
+
+    if (numberOfInputs === 1) {
+      for (let i = 0; i < result.translations.length; i++) {
+        translatedInput[i] = { value: result.translations[i].text };
+      }
+    } else {
+      for (let i = 0; i < result.translations.length; i++) {
+        translatedInput[i] = { ["value" + i + 1]: result.translations[i].text };
+      }
+    }
+
+    console.log("translated inputs", translatedInput);
+  }
+
+  // const currentSnippet = snippet.dataValues[langReverted[lang]]; Commented, with translations we always use EN snippet
+  const currentSnippet = snippet.dataValues["en"];
 
   // 2. Replace the variable in the snippet with the user Input
   let snippetWithUserInput = currentSnippet;
   if (numberOfInputs === 1) {
     snippetWithUserInput = snippetWithUserInput.replace(
       "{{value}}",
-      userInput[0].value
+      translatedInput[0].value
     );
   } else {
-    for (let i = 0; i < numberOfInputs; i++) {
+    for (let i = 0; i < translatedInput; i++) {
       const keyToFind = `value${i + 1}`;
 
-      const relevantValue = userInput.find((input) =>
+      const relevantValue = translatedInput.find((input) =>
         input.hasOwnProperty(keyToFind)
       );
 
@@ -155,8 +191,9 @@ const generateContent = async (
     }
 
     //Saving filtered AI outputs for statistics purpose
-    const numberOfFilteredOutputs = results.filter((result) => result === false)
-      .length;
+    const numberOfFilteredOutputs = results.filter(
+      (result) => result === false
+    ).length;
 
     const wasAllInputFiltered = numberOfFilteredOutputs === cleanedTexts.length;
 
@@ -168,6 +205,30 @@ const generateContent = async (
         numberOfOutputsFiltered: numberOfFilteredOutputs,
         wasFullyFiltered: wasAllInputFiltered,
       });
+    }
+
+    // Translated any output that is not english in the targeted language
+    if (lang !== "en-US") {
+      var bodyFormData = new FormData();
+
+      for (let i = 0; i < finalAIOutput.length; i++) {
+        bodyFormData.append("text", finalAIOutput[i]);
+      }
+
+      bodyFormData.append("target_lang", "FR");
+
+      const response = await fetch(
+        `${process.env.DEEPL_ADRESS}?auth_key=${process.env.DEEPL_KEY}`,
+        {
+          method: "POST",
+          body: bodyFormData,
+        }
+      );
+      const result = await response.json();
+
+      for (let i = 0; i < result.translations.length; i++) {
+        finalAIOutput[i] = result.translations[i].text;
+      }
     }
 
     console.log("final AI output", finalAIOutput);
