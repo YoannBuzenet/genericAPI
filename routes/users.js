@@ -272,7 +272,87 @@ module.exports = function (fastify, opts, done) {
     }
   );
 
-  // Get user Stripe Id thanks to its uer id
+  // Get User by access Token
+  fastify.get(
+    "/googleId/:googleId",
+    {
+      type: "object",
+      properties: {
+        googleId: { type: "number" },
+      },
+    },
+    async (req, reply) => {
+      // Checking if user already exists
+      const userToFind = await db.User.findOne({
+        where: {
+          googleId: req.params.googleId,
+        },
+      });
+
+      if (userToFind === null) {
+        reply.code(406).send("User doesnt exist.");
+        return;
+      }
+
+      // FREE ACCESS CONTROL
+      // Adding number of words if the user is on free access
+      if (userToFind.dataValues.isOnFreeAccess === 1) {
+        const totalWordsForThisUser = await db.NumberOfWords.returnCompleteUserConsumption(
+          userToFind.dataValues.id
+        );
+
+        userToFind.dataValues.totalWordsConsumption =
+          totalWordsForThisUser[0].dataValues.totalAmount || 0;
+
+        userToFind.dataValues.userHasStillAccess =
+          (totalWordsForThisUser[0].dataValues.totalAmount || 0) <=
+          FREE_LIMIT_NUMBER_OF_WORDS;
+      }
+
+      // USER OWN MAX WORDS FOR THIS MONTH
+      const baseWordsUser = userToFind.dataValues.baseMaxWords;
+      const allBoostsWordsThisMonthForThisUser = await db.MaxWordsIncrease.getBoostForLast30DaysForThisUser(
+        userToFind.dataValues.id
+      );
+
+      let totalMaxWordsUserThisMonth = 0;
+      const boostForThisMonth = allBoostsWordsThisMonthForThisUser;
+      const intBoost = parseInt(boostForThisMonth, 10);
+
+      if (!isNaN(intBoost)) {
+        totalMaxWordsUserThisMonth =
+          totalMaxWordsUserThisMonth + intBoost + baseWordsUser;
+        userToFind.dataValues.boostThisMonth = intBoost;
+      } else {
+        totalMaxWordsUserThisMonth = baseWordsUser;
+        userToFind.dataValues.boostThisMonth = boostForThisMonth || 0;
+      }
+
+      userToFind.dataValues.totalMaxWordsUserThisMonth = totalMaxWordsUserThisMonth;
+
+      //Getting user consumption this dynamic month
+      const totalConsumptionThisMonth = await db.NumberOfWords.getConsumptionforCurrentDynamicMonthlyPeriod(
+        userToFind.dataValues.id,
+        userToFind.dataValues.isSubscribedUntil
+      );
+
+      userToFind.dataValues.consumptionThisMonth = totalConsumptionThisMonth;
+
+      // CALCULATING NEXT DATE OF SUBSCRIPTION RENEW
+      const renewSubscriptionDate = db.User.getNextDateOfRenew(userToFind);
+      userToFind.dataValues.renewSubscriptionDate = renewSubscriptionDate;
+
+      // Removing properties we don't want to see on Front-End
+      delete userToFind.dataValues.temporarySecret;
+      delete userToFind.dataValues.temporaryLastProductPaid;
+      delete userToFind.dataValues.nonce;
+
+      reply.send(userToFind);
+      return;
+    }
+  );
+
+  // Get user Stripe Id thanks to its user id
   fastify.get(
     "/:id/stripeId",
     {

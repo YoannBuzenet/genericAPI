@@ -200,7 +200,7 @@ module.exports = {
             userMaxInputLength: 100,
             shouldRemoveUnfinishedSentenceInResults: 1,
             temperature: 0.8,
-            maxLengthTokens: 140,
+            maxLengthTokens: 160,
             numberOfUserInputs: 1,
             numberOfAIOutput: 3,
             createdAt: new Date(),
