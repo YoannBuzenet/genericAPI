@@ -111,8 +111,8 @@ const generateContent = async (
   if (isNaN(parseInt(numberOutputAI))) {
     numberOutputAI = 1;
   }
-  if (numberOutputAI > 3) {
-    numberOutputAI = 3;
+  if (numberOutputAI > 5) {
+    numberOutputAI = 5;
   }
 
   const finalObject = {
