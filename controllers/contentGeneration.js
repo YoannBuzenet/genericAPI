@@ -51,8 +51,14 @@ const generateContent = async (
   if (lang !== "en-US") {
     var bodyFormData = new FormData();
 
-    for (let i = 0; i < numberOfInputs; i++) {
-      bodyFormData.append("text", userInput[i]?.["value" + (i + 1)]);
+    if (numberOfInputs === 1) {
+      for (let i = 0; i < numberOfInputs; i++) {
+        bodyFormData.append("text", userInput[i]?.value);
+      }
+    } else {
+      for (let i = 0; i < numberOfInputs; i++) {
+        bodyFormData.append("text", userInput[i]?.["value" + (i + 1)]);
+      }
     }
 
     bodyFormData.append("target_lang", "EN");
