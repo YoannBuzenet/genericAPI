@@ -52,7 +52,7 @@ const generateContent = async (
     var bodyFormData = new FormData();
 
     for (let i = 0; i < numberOfInputs; i++) {
-      bodyFormData.append("text", userInput[i].value);
+      bodyFormData.append("text", userInput[i]?.["value" + (i + 1)]);
     }
 
     bodyFormData.append("target_lang", "EN");
@@ -72,7 +72,9 @@ const generateContent = async (
       }
     } else {
       for (let i = 0; i < result.translations.length; i++) {
-        translatedInput[i] = { ["value" + i + 1]: result.translations[i].text };
+        translatedInput[i] = {
+          ["value" + (i + 1)]: result.translations[i].text,
+        };
       }
     }
 
@@ -90,7 +92,7 @@ const generateContent = async (
       translatedInput[0].value
     );
   } else {
-    for (let i = 0; i < translatedInput; i++) {
+    for (let i = 0; i < numberOfInputs; i++) {
       const keyToFind = `value${i + 1}`;
 
       const relevantValue = translatedInput.find((input) =>
@@ -222,8 +224,8 @@ const generateContent = async (
       );
       const result = await response.json();
 
-      for (let i = 0; i < result.translations.length; i++) {
-        finalAIOutput[i] = result.translations[i].text;
+      for (let i = 0; i < result.translations?.length; i++) {
+        finalAIOutput[i] = result.translations?.[i]?.text;
       }
     }
 
