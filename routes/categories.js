@@ -122,5 +122,61 @@ module.exports = function (fastify, opts, done) {
       }
     }
   );
+
+  // Create one category
+  fastify.post(
+    "/",
+    {
+      schema: {
+        body: {
+          type: "object",
+          required: [
+            "userMaxInputLength",
+            "maxLengthTokens",
+            "numberOfAIOutput",
+            "parentCategoryName",
+            "shouldRemoveUnfinishedSentenceInResults",
+            "isActive",
+            "temperature",
+            "numberOfUserInputs",
+          ],
+          properties: {
+            userMaxInputLength: { type: "integer" },
+            maxLengthTokens: { type: "integer" },
+            numberOfAIOutput: { type: "integer" },
+            parentCategoryName: { type: "string" },
+            shouldRemoveUnfinishedSentenceInResults: { type: "integer" },
+            isActive: { type: "integer" },
+            temperature: { type: "integer" },
+            numberOfUserInputs: { type: "integer" },
+          },
+        },
+      },
+    },
+    async (req, reply) => {
+      const neWcategory = {
+        userMaxInputLength: req.body.userMaxInputLength,
+        maxLengthTokens: req.body.maxLengthTokens,
+        numberOfAIOutput: req.body.numberOfAIOutput,
+        parentCategoryName: req.body.parentCategoryName,
+        shouldRemoveUnfinishedSentenceInResults:
+          req.body.shouldRemoveUnfinishedSentenceInResults,
+        isActive: req.body.isActive,
+        temperature: req.body.temperature,
+        numberOfUserInputs: req.body.numberOfUserInputs,
+      };
+
+      try {
+        const savedCategory = await db.Category.create(neWcategory);
+
+        reply.code(200).send(savedCategory);
+        return;
+      } catch (e) {
+        console.log("error when creating a category", e);
+        Bugsnag.notify(new Error(e));
+        reply.code(500).send("Error when creating a category");
+      }
+    }
+  );
   done();
 };

@@ -87,5 +87,44 @@ module.exports = function (fastify, opts, done) {
       }
     }
   );
+
+  // Create one snippet
+  fastify.post(
+    "/",
+    {
+      schema: {
+        body: {
+          type: "object",
+          required: ["fr", "en", "categoryId", "isDefault"],
+          properties: {
+            fr: { type: "string" },
+            en: { type: "string" },
+            categoryId: { type: "integer" },
+            isDefault: { type: "integer" },
+          },
+        },
+      },
+    },
+    async (req, reply) => {
+      const newSnippet = {
+        fr: req.body.fr,
+        en: req.body.en,
+        categoryId: req.body.categoryId,
+        isDefault: req.body.isDefault,
+      };
+
+      try {
+        const savedCategory = await db.Snippet.create(newSnippet);
+
+        reply.code(200).send(savedCategory);
+        return;
+      } catch (e) {
+        console.log("error when creating a category", e);
+        Bugsnag.notify(new Error(e));
+        reply.code(500).send("Error when creating a category");
+      }
+    }
+  );
+
   done();
 };
