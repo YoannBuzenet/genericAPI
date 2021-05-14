@@ -10,7 +10,7 @@ module.exports = {
      */
     return Promise.all([
       queryInterface.addColumn(
-        "categories", // table name
+        "Categories", // table name
         "isActive", // new field name
         {
           type: Sequelize.INTEGER,
@@ -27,6 +27,6 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    return Promise.all([queryInterface.removeColumn("categories", "isActive")]);
+    return Promise.all([queryInterface.removeColumn("Categories", "isActive")]);
   },
 };
