@@ -20,6 +20,8 @@ Bugsnag.start({ apiKey: process.env.BUGSNAG_KEY });
 const fastify = require("fastify")({ logger: true });
 
 fastify.register(require("./routes/users"), { prefix: "/api/users" });
+fastify.register(require("./routes/categories"), { prefix: "/api/category" });
+fastify.register(require("./routes/snippets"), { prefix: "/api/snippet" });
 fastify.register(require("./routes/NumberOfWords"), {
   prefix: "/api/numberOfWords",
 });
