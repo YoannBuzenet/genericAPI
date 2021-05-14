@@ -64,6 +64,11 @@ module.exports = function (fastify, opts, done) {
         } else {
           // If user doesn't exit in db, we register it
           const userCreated = await db.User.registerFromGoogle(req.body.user);
+          // We pass user in free access directly
+          const userhasNowFreeAccess = await db.User.subscribeFreeAccess(
+            userCreated.dataValues.id
+          );
+
           userToReturn = userCreated;
         }
 
