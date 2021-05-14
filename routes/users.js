@@ -2,6 +2,7 @@ const { FREE_LIMIT_NUMBER_OF_WORDS } = require("../config/settings");
 const db = require("../models/index");
 const utils = require("../services/utils");
 const { middlewarePassPhraseCheck } = require("../middlewares/checkPassphrase");
+var Bugsnag = require("@bugsnag/js");
 
 module.exports = function (fastify, opts, done) {
   middlewarePassPhraseCheck(fastify);
@@ -69,9 +70,10 @@ module.exports = function (fastify, opts, done) {
         // FREE ACCESS CONTROL
         // Adding number of words if the user is on free access
         if (userToReturn.dataValues.isOnFreeAccess === 1) {
-          const totalWordsForThisUser = await db.NumberOfWords.returnCompleteUserConsumption(
-            userToReturn.dataValues.id
-          );
+          const totalWordsForThisUser =
+            await db.NumberOfWords.returnCompleteUserConsumption(
+              userToReturn.dataValues.id
+            );
 
           userToReturn.dataValues.totalWordsConsumption =
             totalWordsForThisUser[0].dataValues.totalAmount || 0;
@@ -83,10 +85,11 @@ module.exports = function (fastify, opts, done) {
 
         // DYNAMIC MONTHLY CONSUMPTION
 
-        const MonthlyWordsForThisUser = await db.NumberOfWords.getConsumptionforCurrentDynamicMonthlyPeriod(
-          userToReturn.dataValues.id,
-          userToReturn.dataValues.isSubscribedUntil
-        );
+        const MonthlyWordsForThisUser =
+          await db.NumberOfWords.getConsumptionforCurrentDynamicMonthlyPeriod(
+            userToReturn.dataValues.id,
+            userToReturn.dataValues.isSubscribedUntil
+          );
 
         userToReturn.dataValues.consumptionThisMonth = MonthlyWordsForThisUser;
 
@@ -96,9 +99,10 @@ module.exports = function (fastify, opts, done) {
 
         // USER OWN MAX WORDS FOR THIS MONTH
         const baseWordsUser = userToReturn.dataValues.baseMaxWords;
-        const allBoostsWordsThisMonthForThisUser = await db.MaxWordsIncrease.getBoostForLast30DaysForThisUser(
-          userToReturn.dataValues.id
-        );
+        const allBoostsWordsThisMonthForThisUser =
+          await db.MaxWordsIncrease.getBoostForLast30DaysForThisUser(
+            userToReturn.dataValues.id
+          );
 
         let totalMaxWordsUserThisMonth = 0;
         const boostForThisMonth = allBoostsWordsThisMonthForThisUser;
@@ -113,7 +117,8 @@ module.exports = function (fastify, opts, done) {
           console.log("there");
         }
 
-        userToReturn.dataValues.totalMaxWordsUserThisMonth = totalMaxWordsUserThisMonth;
+        userToReturn.dataValues.totalMaxWordsUserThisMonth =
+          totalMaxWordsUserThisMonth;
         userToReturn.dataValues.boostThisMonth = boostForThisMonth || 0;
 
         // Removing properties we don't want to see on Front-End
@@ -217,9 +222,10 @@ module.exports = function (fastify, opts, done) {
       // FREE ACCESS CONTROL
       // Adding number of words if the user is on free access
       if (userToFind.dataValues.isOnFreeAccess === 1) {
-        const totalWordsForThisUser = await db.NumberOfWords.returnCompleteUserConsumption(
-          userToFind.dataValues.id
-        );
+        const totalWordsForThisUser =
+          await db.NumberOfWords.returnCompleteUserConsumption(
+            userToFind.dataValues.id
+          );
 
         userToFind.dataValues.totalWordsConsumption =
           totalWordsForThisUser[0].dataValues.totalAmount || 0;
@@ -231,9 +237,10 @@ module.exports = function (fastify, opts, done) {
 
       // USER OWN MAX WORDS FOR THIS MONTH
       const baseWordsUser = userToFind.dataValues.baseMaxWords;
-      const allBoostsWordsThisMonthForThisUser = await db.MaxWordsIncrease.getBoostForLast30DaysForThisUser(
-        userToFind.dataValues.id
-      );
+      const allBoostsWordsThisMonthForThisUser =
+        await db.MaxWordsIncrease.getBoostForLast30DaysForThisUser(
+          userToFind.dataValues.id
+        );
 
       let totalMaxWordsUserThisMonth = 0;
       const boostForThisMonth = allBoostsWordsThisMonthForThisUser;
@@ -248,13 +255,15 @@ module.exports = function (fastify, opts, done) {
         userToFind.dataValues.boostThisMonth = boostForThisMonth || 0;
       }
 
-      userToFind.dataValues.totalMaxWordsUserThisMonth = totalMaxWordsUserThisMonth;
+      userToFind.dataValues.totalMaxWordsUserThisMonth =
+        totalMaxWordsUserThisMonth;
 
       //Getting user consumption this dynamic month
-      const totalConsumptionThisMonth = await db.NumberOfWords.getConsumptionforCurrentDynamicMonthlyPeriod(
-        userToFind.dataValues.id,
-        userToFind.dataValues.isSubscribedUntil
-      );
+      const totalConsumptionThisMonth =
+        await db.NumberOfWords.getConsumptionforCurrentDynamicMonthlyPeriod(
+          userToFind.dataValues.id,
+          userToFind.dataValues.isSubscribedUntil
+        );
 
       userToFind.dataValues.consumptionThisMonth = totalConsumptionThisMonth;
 
@@ -297,9 +306,10 @@ module.exports = function (fastify, opts, done) {
       // FREE ACCESS CONTROL
       // Adding number of words if the user is on free access
       if (userToFind.dataValues.isOnFreeAccess === 1) {
-        const totalWordsForThisUser = await db.NumberOfWords.returnCompleteUserConsumption(
-          userToFind.dataValues.id
-        );
+        const totalWordsForThisUser =
+          await db.NumberOfWords.returnCompleteUserConsumption(
+            userToFind.dataValues.id
+          );
 
         userToFind.dataValues.totalWordsConsumption =
           totalWordsForThisUser[0].dataValues.totalAmount || 0;
@@ -311,9 +321,10 @@ module.exports = function (fastify, opts, done) {
 
       // USER OWN MAX WORDS FOR THIS MONTH
       const baseWordsUser = userToFind.dataValues.baseMaxWords;
-      const allBoostsWordsThisMonthForThisUser = await db.MaxWordsIncrease.getBoostForLast30DaysForThisUser(
-        userToFind.dataValues.id
-      );
+      const allBoostsWordsThisMonthForThisUser =
+        await db.MaxWordsIncrease.getBoostForLast30DaysForThisUser(
+          userToFind.dataValues.id
+        );
 
       let totalMaxWordsUserThisMonth = 0;
       const boostForThisMonth = allBoostsWordsThisMonthForThisUser;
@@ -328,13 +339,15 @@ module.exports = function (fastify, opts, done) {
         userToFind.dataValues.boostThisMonth = boostForThisMonth || 0;
       }
 
-      userToFind.dataValues.totalMaxWordsUserThisMonth = totalMaxWordsUserThisMonth;
+      userToFind.dataValues.totalMaxWordsUserThisMonth =
+        totalMaxWordsUserThisMonth;
 
       //Getting user consumption this dynamic month
-      const totalConsumptionThisMonth = await db.NumberOfWords.getConsumptionforCurrentDynamicMonthlyPeriod(
-        userToFind.dataValues.id,
-        userToFind.dataValues.isSubscribedUntil
-      );
+      const totalConsumptionThisMonth =
+        await db.NumberOfWords.getConsumptionforCurrentDynamicMonthlyPeriod(
+          userToFind.dataValues.id,
+          userToFind.dataValues.isSubscribedUntil
+        );
 
       userToFind.dataValues.consumptionThisMonth = totalConsumptionThisMonth;
 
