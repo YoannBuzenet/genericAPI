@@ -284,6 +284,19 @@ module.exports = {
             createdAt: new Date(),
             updatedAt: new Date(),
           },
+          {
+            name: "Bullet Point Generator",
+            parentCategoryName: "Content",
+            isShort: 1,
+            userMaxInputLength: 100,
+            shouldRemoveUnfinishedSentenceInResults: 0,
+            temperature: 0.9,
+            maxLengthTokens: 100,
+            numberOfUserInputs: 1,
+            numberOfAIOutput: 5,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
         ]);
       });
   },
