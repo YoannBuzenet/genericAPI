@@ -225,7 +225,7 @@ module.exports = {
             isShort: 1,
             userMaxInputLength: 100,
             shouldRemoveUnfinishedSentenceInResults: 1,
-            temperature: 0.9,
+            temperature: 0.8,
             maxLengthTokens: 150,
             numberOfUserInputs: 1,
             numberOfAIOutput: 5,
