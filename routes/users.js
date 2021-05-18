@@ -63,13 +63,18 @@ module.exports = function (fastify, opts, done) {
           userToReturn = userToUpdate[0];
         } else {
           // If user doesn't exit in db, we register it
-          const userCreated = await db.User.registerFromGoogle(req.body.user);
-          // We pass user in free access directly
-          const userhasNowFreeAccess = await db.User.subscribeFreeAccess(
-            userCreated.dataValues.id
-          );
+          try {
+            const userCreated = await db.User.registerFromGoogle(req.body.user);
+            // We pass user in free access directly
+            const userhasNowFreeAccess = await db.User.subscribeFreeAccess(
+              userCreated.dataValues.id
+            );
 
-          userToReturn = userCreated;
+            userToReturn = userCreated;
+          } catch (e) {
+            console.error("error when registering user from google", e);
+            Bugsnag.notify(new Error(e));
+          }
         }
 
         // FREE ACCESS CONTROL
