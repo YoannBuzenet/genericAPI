@@ -54,4 +54,27 @@ async function checkIfLogged(userId, hashedUserAccessToken, provider) {
   }
 }
 
-module.exports = { checkIfLogged };
+const isUserSubscribed = (userIsSubscribedUntil) => {
+  if (
+    userIsSubscribedUntil === "" ||
+    userIsSubscribedUntil === undefined ||
+    userIsSubscribedUntil === null
+  ) {
+    return false;
+  }
+
+  const nowUTC = utils.getTodayFromMidnightInUTC();
+  const userSubscribeUTC = new Date(userIsSubscribedUntil);
+
+  return userSubscribeUTC > nowUTC;
+};
+
+const hasAdminAccess = (rightsCentralAPI) => {
+  if (rightsCentralAPI > 1) {
+    return true;
+  }
+
+  return false;
+};
+
+module.exports = { checkIfLogged, isUserSubscribed, hasAdminAccess };

@@ -1,24 +1,22 @@
 const db = require("../models/index");
 var Bugsnag = require("@bugsnag/js");
+const { middlewarePassPhraseCheck } = require("../middlewares/checkPassphrase");
+const { FREE_LIMIT_NUMBER_OF_WORDS } = require("../config/settings");
 
 module.exports = function (fastify, opts, done) {
+  middlewarePassPhraseCheck(fastify);
+
   fastify.post(
-    "/createStripePurchase",
+    "/stripePurchase",
     {
       schema: {
-        required: ["passphrase", "stripePurchaseObject"],
+        required: ["stripePurchaseObject"],
         properties: {
-          passphrase: { type: "string" },
           stripePurchaseObject: { type: "string" },
         },
       },
     },
     async (req, reply) => {
-      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
-        reply.code(406).send("Passphrase doesn't match.");
-        return;
-      }
-
       try {
         const newStripePurchase = await db.StripePurchase.create({
           session_id: req.body.stripePurchaseObject.session_id,
@@ -40,29 +38,22 @@ module.exports = function (fastify, opts, done) {
       }
     }
   );
-  fastify.post(
-    "/sessionLink",
+
+  // Create subscription and remove session id from our DB
+  // This endpoint is triggered after stripe ckeckout event
+  fastify.patch(
+    "/stripePurchase",
     {
       schema: {
-        required: ["passphrase", "session", "userID"],
+        required: ["session", "userID"],
         properties: {
-          passphrase: { type: "string" },
           session: { type: "string" },
           userID: { type: "string" },
         },
       },
     },
     async (req, reply) => {
-      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
-        console.log("Passphrase doesn't match.");
-        reply.code(406).send("Passphrase doesn't match.");
-        return;
-      }
-
       try {
-        console.log(
-          "get the right session, update it, empty session id, then get the right user, update it"
-        );
         // get the right session, update userID, erase field session id
         const session = await db.StripePurchase.findOne({
           where: {
@@ -94,21 +85,36 @@ module.exports = function (fastify, opts, done) {
           return;
         }
 
+        //If user never subscribed, we offer him free words he would have gotten though Free Access, or the one he had remaining on his Free Access.
+        if (userToUpdate.dataValues.hasSubscribedOnce === 0) {
+          const result = await db.NumberOfWords.returnCompleteUserConsumption(
+            userToUpdate.dataValues.id
+          );
+          const userTotalConsumption = result[0].dataValues.totalAmount;
+
+          const numberToAdd = FREE_LIMIT_NUMBER_OF_WORDS - userTotalConsumption;
+
+          if (numberToAdd > 0) {
+            const addedWords = await db.MaxWordsIncrease.getBoostThisUserForSpecificAmount(
+              userToUpdate.dataValues.id,
+              numberToAdd
+            );
+          }
+        }
         const pricePaid = parseInt(session.dataValues.amount, 10);
 
-        // pricepaid allows us to know duration to add as subscription
-
+        // price paid allows us to know duration to add as subscription (as we do not have product in DB for now)
         if (pricePaid === 34800) {
           console.log("yearly subscription");
           const updatedYearlyUser = await db.User.subscribeOneYear(
             req.body.userID
           );
-        } else if (pricePaid === 4400) {
+        } else if (pricePaid === 2900) {
           console.log("monthly subscription");
           const updatedMonthly = await db.User.subscribeOneMonth(
             req.body.userID
           );
-        } else if (pricePaid === 1900) {
+        } else if (pricePaid === 2500) {
           console.log("reload payment");
           const oneMonthReload = await db.MaxWordsIncrease.getBoostThisUser(
             req.body.userID
@@ -126,13 +132,13 @@ module.exports = function (fastify, opts, done) {
     }
   );
 
+  // This endpoint is triggered after stripe automatic payment event
   fastify.post(
     "/updateSubscription",
     {
       schema: {
-        required: ["passphrase", "session", "userID"],
+        required: ["session", "userID"],
         properties: {
-          passphrase: { type: "string" },
           customerID: { type: "string" },
           amount: { type: "string" },
           billing_reason: { type: "string" },
@@ -146,11 +152,6 @@ module.exports = function (fastify, opts, done) {
       },
     },
     async (req, reply) => {
-      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
-        reply.code(406).send("Passphrase doesn't match.");
-        return;
-      }
-
       // trouver le customerID dans les session et en déduire l'user ID
       const sessionWithCustomerId = await db.StripePurchase.findOne({
         where: {
@@ -190,7 +191,7 @@ module.exports = function (fastify, opts, done) {
       } else if (req.body.billing_reason === "subscription_cycle") {
         if (req.body.total === 34800) {
           const updatedYearlyUser = await db.User.subscribeOneYear(userID);
-        } else if (req.body.total === 4400) {
+        } else if (req.body.total === 2900) {
           const updatedMonthly = await db.User.subscribeOneMonth(userID);
         }
       } else {

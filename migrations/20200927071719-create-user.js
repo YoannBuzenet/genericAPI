@@ -20,7 +20,7 @@ module.exports = {
       googleAccessToken: { type: Sequelize.STRING(300) },
       googleRefreshToken: { type: Sequelize.STRING(500) },
       isLoggedUntil: { type: Sequelize.STRING },
-      avatar: { type: Sequelize.STRING },
+      avatar: { type: Sequelize.TEXT },
       userLocale: { type: Sequelize.STRING },
       email: {
         allowNull: false,

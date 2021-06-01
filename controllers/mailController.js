@@ -18,6 +18,11 @@ function getTemplate(action, locale) {
         __basedir + "/mail_templates/" + locale + "/subscriptionCanceled.ejs";
       break;
     }
+    case "subscription.failed": {
+      template =
+        __basedir + "/mail_templates/" + locale + "/subscriptionFailed.ejs";
+      break;
+    }
     default: {
       throw new Error("Could not find corresponding template.");
     }
@@ -35,6 +40,10 @@ function getMailTitle(action, locale) {
     }
     case "subscription.canceled": {
       mailTitle = translations[locale].mailTitle["subscription.canceled"];
+      break;
+    }
+    case "subscription.failed": {
+      mailTitle = translations[locale].mailTitle["subscription.failed"];
       break;
     }
     default: {
@@ -60,6 +69,11 @@ function buildTemplateData(action, params, locale) {
       templateData = { userFirstName };
       break;
     }
+    case "subscription.failed": {
+      const { userFirstName } = params;
+      templateData = { userFirstName };
+      break;
+    }
     default: {
       throw new Error(
         "Could not find corresponding action for building templateData."
@@ -67,6 +81,30 @@ function buildTemplateData(action, params, locale) {
     }
   }
   return templateData;
+}
+
+function getMailAdressFrom(action) {
+  let mailAdress;
+  switch (action) {
+    case "userContactUsForm": {
+      mailAdress = "contact@easyflow.ai";
+      break;
+    }
+    case "subscription.canceled": {
+      mailAdress = "support@easyflow.ai";
+      break;
+    }
+    case "subscription.failed": {
+      mailAdress = "support@easyflow.ai";
+      break;
+    }
+    default: {
+      throw new Error(
+        "Could not find corresponding action for building mailAdress."
+      );
+    }
+  }
+  return mailAdress;
 }
 
 async function sendEmail(
@@ -92,6 +130,8 @@ async function sendEmail(
 
   const templateData = buildTemplateData(action, params, locale);
 
+  const mailAdressFrom = getMailAdressFrom(action);
+
   let htmlToSend;
   try {
     htmlToSend = await ejs.renderFile(templatePath, templateData, {
@@ -105,7 +145,7 @@ async function sendEmail(
   console.log("html of the mail :", htmlToSend);
 
   let mailOpts = {
-    from: process.env.MAIL_SENDING,
+    from: mailAdressFrom,
     to: mailAdressDestination,
     subject: mailTitle,
     html: htmlToSend,

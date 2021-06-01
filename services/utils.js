@@ -157,6 +157,16 @@ const getTodayinDATEONLYInUTC = () => {
   return now_DATEONLY;
 };
 
+const getTodayFromMidnightInUTC = () => {
+  var date = new Date();
+  var now_utc = Date.UTC(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate()
+  );
+  return new Date(now_utc);
+};
+
 const countWordsInString = (string) => {
   return string.split(" ").length;
 };
@@ -170,7 +180,7 @@ const removeUnfinishedSentenceInString = (string) => {
     return string;
   }
 
-  const regexpPunctuation = /[.!?\\]/;
+  const regexpPunctuation = /[.!?)\\]/;
 
   while (
     newString[newString.length - 1] !== undefined &&
@@ -252,4 +262,5 @@ module.exports = {
   get12MonthsFutureFromNowUTC,
   get1200MonthsFutureFromNowUTC,
   getCurrentMonthUTC,
+  getTodayFromMidnightInUTC,
 };

@@ -1,17 +1,20 @@
 const { FREE_LIMIT_NUMBER_OF_WORDS } = require("../config/settings");
 const db = require("../models/index");
 const utils = require("../services/utils");
+const { middlewarePassPhraseCheck } = require("../middlewares/checkPassphrase");
+var Bugsnag = require("@bugsnag/js");
 
 module.exports = function (fastify, opts, done) {
+  middlewarePassPhraseCheck(fastify);
+
   fastify.post(
-    "/loginAndRegisterIfNeeded",
+    "/login-and-register-if-needed",
     {
       schema: {
         body: {
           type: "object",
-          required: ["passphrase", "provider", "user"],
+          required: ["provider", "user"],
           properties: {
-            passphrase: { type: "string" },
             provider: { type: "string" },
             user: { type: "object" },
           },
@@ -19,33 +22,28 @@ module.exports = function (fastify, opts, done) {
       },
     },
     async (req, reply) => {
-      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
-        reply.code(406).send("Passphrase doesn't match.");
-        return;
-      }
-
       // This endpoint is coded to work with google auth only for now.
       if (req.body.provider === "google") {
         // Checking for mandatory fields presence for google Auth
 
-        if (
-          !utils.propCheckInObject(
-            [
-              "googleId",
-              "fullName",
-              "firstName",
-              "lastName",
-              "avatar",
-              "userLocale",
-              "accessToken",
-              "expiresIn",
-            ],
-            req.body.user
-          )
-        ) {
-          reply.code(400).send("Missing Parameters in Google Auth.");
-          return;
-        }
+        // if (
+        //   !utils.propCheckInObject(
+        //     [
+        //       "googleId",
+        //       "fullName",
+        //       "firstName",
+        //       "lastName",
+        //       "avatar",
+        //       "userLocale",
+        //       "accessToken",
+        //       "expiresIn",
+        //     ],
+        //     req.body.user
+        //   )
+        // ) {
+        //   reply.code(400).send("Missing Parameters in Google Auth.");
+        //   return;
+        // }
 
         // Checking if user already exists
         const userToFind = await db.User.findOne({
@@ -65,16 +63,27 @@ module.exports = function (fastify, opts, done) {
           userToReturn = userToUpdate[0];
         } else {
           // If user doesn't exit in db, we register it
-          const userCreated = await db.User.registerFromGoogle(req.body.user);
-          userToReturn = userCreated;
+          try {
+            const userCreated = await db.User.registerFromGoogle(req.body.user);
+            // We pass user in free access directly
+            const userhasNowFreeAccess = await db.User.subscribeFreeAccess(
+              userCreated.dataValues.id
+            );
+
+            userToReturn = userCreated;
+          } catch (e) {
+            console.error("error when registering user from google", e);
+            Bugsnag.notify(new Error(e));
+          }
         }
 
         // FREE ACCESS CONTROL
         // Adding number of words if the user is on free access
         if (userToReturn.dataValues.isOnFreeAccess === 1) {
-          const totalWordsForThisUser = await db.NumberOfWords.returnCompleteUserConsumption(
-            userToReturn.dataValues.id
-          );
+          const totalWordsForThisUser =
+            await db.NumberOfWords.returnCompleteUserConsumption(
+              userToReturn.dataValues.id
+            );
 
           userToReturn.dataValues.totalWordsConsumption =
             totalWordsForThisUser[0].dataValues.totalAmount || 0;
@@ -86,10 +95,11 @@ module.exports = function (fastify, opts, done) {
 
         // DYNAMIC MONTHLY CONSUMPTION
 
-        const MonthlyWordsForThisUser = await db.NumberOfWords.getConsumptionforCurrentDynamicMonthlyPeriod(
-          userToReturn.dataValues.id,
-          userToReturn.dataValues.isSubscribedUntil
-        );
+        const MonthlyWordsForThisUser =
+          await db.NumberOfWords.getConsumptionforCurrentDynamicMonthlyPeriod(
+            userToReturn.dataValues.id,
+            userToReturn.dataValues.isSubscribedUntil
+          );
 
         userToReturn.dataValues.consumptionThisMonth = MonthlyWordsForThisUser;
 
@@ -99,13 +109,13 @@ module.exports = function (fastify, opts, done) {
 
         // USER OWN MAX WORDS FOR THIS MONTH
         const baseWordsUser = userToReturn.dataValues.baseMaxWords;
-        const allBoostsWordsThisMonthForThisUser = await db.MaxWordsIncrease.getBoostForLast30DaysForThisUser(
-          userToReturn.dataValues.id
-        );
+        const allBoostsWordsThisMonthForThisUser =
+          await db.MaxWordsIncrease.getBoostForLast30DaysForThisUser(
+            userToReturn.dataValues.id
+          );
 
         let totalMaxWordsUserThisMonth = 0;
-        const boostForThisMonth =
-          allBoostsWordsThisMonthForThisUser[0].dataValues.totalAmount;
+        const boostForThisMonth = allBoostsWordsThisMonthForThisUser;
         const intBoost = parseInt(boostForThisMonth, 10);
 
         if (!isNaN(intBoost)) {
@@ -117,7 +127,8 @@ module.exports = function (fastify, opts, done) {
           console.log("there");
         }
 
-        userToReturn.dataValues.totalMaxWordsUserThisMonth = totalMaxWordsUserThisMonth;
+        userToReturn.dataValues.totalMaxWordsUserThisMonth =
+          totalMaxWordsUserThisMonth;
         userToReturn.dataValues.boostThisMonth = boostForThisMonth || 0;
 
         // Removing properties we don't want to see on Front-End
@@ -139,14 +150,13 @@ module.exports = function (fastify, opts, done) {
   );
 
   fastify.post(
-    "/EnableFreeAccess",
+    "/enable-free-access",
     {
       schema: {
         body: {
           type: "object",
-          required: ["passphrase", "provider", "user"],
+          required: ["provider", "user"],
           properties: {
-            passphrase: { type: "string" },
             provider: { type: "string" },
             user: { type: "object" },
           },
@@ -154,11 +164,6 @@ module.exports = function (fastify, opts, done) {
       },
     },
     async (req, reply) => {
-      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
-        reply.code(406).send("Passphrase doesn't match.");
-        return;
-      }
-
       let idUser;
       let idUserName;
       if (req.body.provider === "google") {
@@ -202,102 +207,20 @@ module.exports = function (fastify, opts, done) {
     }
   );
 
-  // subscription endpoint, can be yearly or monthly
-  fastify.post(
-    "/subscribe",
+  // Get User by ID
+  fastify.get(
+    "/:id",
     {
-      schema: {
-        body: {
-          type: "object",
-          required: ["passphrase", "provider", "user", "subscription"],
-          properties: {
-            passphrase: { type: "string" },
-            subscription: { type: "string" },
-            provider: { type: "string" },
-            user: { type: "object" },
-          },
-        },
+      type: "object",
+      properties: {
+        id: { type: "number" },
       },
     },
     async (req, reply) => {
-      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
-        reply.code(406).send("Passphrase doesn't match.");
-        return;
-      }
-
-      let idUser;
-      let idUserName;
-      if (req.body.provider === "google") {
-        idUser = req.body.user.googleId;
-        idUserName = "googleId";
-      }
-
       // Checking if user already exists
       const userToFind = await db.User.findOne({
         where: {
-          [idUser]: idUser,
-        },
-      });
-
-      if (userToFind === null) {
-        reply.code(406).send("User doesnt exist.");
-      }
-
-      const wasUserOnFreeAccess = userToFind.dataValues.isOnFreeAccess === 1;
-
-      if (req.body.subscription === "yearly") {
-        // 1 year
-        const isSubscribedYearly = await db.User.subscribeOneYear(idUser);
-      } else if (req.body.subscription === "monthly") {
-        // 1 month
-        const isSubscribedMonthly = await db.User.subscribeOneMonth(idUser);
-      } else {
-        reply.code(406).send("Subscription duration not handled.");
-      }
-
-      //If user had remaining words on his free access, we add them to his new account
-      if (wasUserOnFreeAccess) {
-        const result = await db.NumberOfWords.returnCompleteUserConsumption(
-          idUser
-        );
-        const usedWordsForUser = result[0].dataValues.totalAmount;
-        const remainingWordsToAdd =
-          FREE_LIMIT_NUMBER_OF_WORDS - usedWordsForUser;
-
-        if (remainingWordsToAdd > 0) {
-          const addedWords = await db.NumberOfWords.addNumberOfWordsToday(
-            idUser,
-            remainingWordsToAdd
-          );
-        }
-      }
-    }
-  );
-  // Get by ID
-  fastify.post(
-    "/getById",
-    {
-      schema: {
-        body: {
-          type: "object",
-          required: ["passphrase", "userID"],
-          properties: {
-            passphrase: { type: "string" },
-            userID: { type: "string" },
-          },
-        },
-      },
-    },
-    async (req, reply) => {
-      if (req.body.passphrase !== process.env.FRONT_APP_PASSPHRASE) {
-        reply.code(406).send("Passphrase doesn't match.");
-        return;
-      }
-
-      // Checking if user already exists
-      const userToFind = await db.User.findOne({
-        where: {
-          id: req.body.userID,
+          id: req.params.id,
         },
       });
 
@@ -309,27 +232,28 @@ module.exports = function (fastify, opts, done) {
       // FREE ACCESS CONTROL
       // Adding number of words if the user is on free access
       if (userToFind.dataValues.isOnFreeAccess === 1) {
-        const totalWordsForThisUser = await db.NumberOfWords.returnCompleteUserConsumption(
-          userToFind.dataValues.id
-        );
+        const totalWordsForThisUser =
+          await db.NumberOfWords.returnCompleteUserConsumption(
+            userToFind.dataValues.id
+          );
 
         userToFind.dataValues.totalWordsConsumption =
           totalWordsForThisUser[0].dataValues.totalAmount || 0;
 
         userToFind.dataValues.userHasStillAccess =
-          totalWordsForThisUser[0].dataValues.totalAmount ||
-          0 <= FREE_LIMIT_NUMBER_OF_WORDS;
+          (totalWordsForThisUser[0].dataValues.totalAmount || 0) <=
+          FREE_LIMIT_NUMBER_OF_WORDS;
       }
 
       // USER OWN MAX WORDS FOR THIS MONTH
       const baseWordsUser = userToFind.dataValues.baseMaxWords;
-      const allBoostsWordsThisMonthForThisUser = await db.MaxWordsIncrease.getBoostForLast30DaysForThisUser(
-        userToFind.dataValues.id
-      );
+      const allBoostsWordsThisMonthForThisUser =
+        await db.MaxWordsIncrease.getBoostForLast30DaysForThisUser(
+          userToFind.dataValues.id
+        );
 
       let totalMaxWordsUserThisMonth = 0;
-      const boostForThisMonth =
-        allBoostsWordsThisMonthForThisUser[0].dataValues.totalAmount;
+      const boostForThisMonth = allBoostsWordsThisMonthForThisUser;
       const intBoost = parseInt(boostForThisMonth, 10);
 
       if (!isNaN(intBoost)) {
@@ -341,13 +265,15 @@ module.exports = function (fastify, opts, done) {
         userToFind.dataValues.boostThisMonth = boostForThisMonth || 0;
       }
 
-      userToFind.dataValues.totalMaxWordsUserThisMonth = totalMaxWordsUserThisMonth;
+      userToFind.dataValues.totalMaxWordsUserThisMonth =
+        totalMaxWordsUserThisMonth;
 
       //Getting user consumption this dynamic month
-      const totalConsumptionThisMonth = await db.NumberOfWords.getConsumptionforCurrentDynamicMonthlyPeriod(
-        userToFind.dataValues.id,
-        userToFind.dataValues.isSubscribedUntil
-      );
+      const totalConsumptionThisMonth =
+        await db.NumberOfWords.getConsumptionforCurrentDynamicMonthlyPeriod(
+          userToFind.dataValues.id,
+          userToFind.dataValues.isSubscribedUntil
+        );
 
       userToFind.dataValues.consumptionThisMonth = totalConsumptionThisMonth;
 
@@ -362,6 +288,124 @@ module.exports = function (fastify, opts, done) {
 
       reply.send(userToFind);
       return;
+    }
+  );
+
+  // Get User by access Token
+  fastify.get(
+    "/googleId/:googleId",
+    {
+      type: "object",
+      properties: {
+        googleId: { type: "number" },
+      },
+    },
+    async (req, reply) => {
+      // Checking if user already exists
+      const userToFind = await db.User.findOne({
+        where: {
+          googleId: req.params.googleId,
+        },
+      });
+
+      if (userToFind === null) {
+        reply.code(406).send("User doesnt exist.");
+        return;
+      }
+
+      // FREE ACCESS CONTROL
+      // Adding number of words if the user is on free access
+      if (userToFind.dataValues.isOnFreeAccess === 1) {
+        const totalWordsForThisUser =
+          await db.NumberOfWords.returnCompleteUserConsumption(
+            userToFind.dataValues.id
+          );
+
+        userToFind.dataValues.totalWordsConsumption =
+          totalWordsForThisUser[0].dataValues.totalAmount || 0;
+
+        userToFind.dataValues.userHasStillAccess =
+          (totalWordsForThisUser[0].dataValues.totalAmount || 0) <=
+          FREE_LIMIT_NUMBER_OF_WORDS;
+      }
+
+      // USER OWN MAX WORDS FOR THIS MONTH
+      const baseWordsUser = userToFind.dataValues.baseMaxWords;
+      const allBoostsWordsThisMonthForThisUser =
+        await db.MaxWordsIncrease.getBoostForLast30DaysForThisUser(
+          userToFind.dataValues.id
+        );
+
+      let totalMaxWordsUserThisMonth = 0;
+      const boostForThisMonth = allBoostsWordsThisMonthForThisUser;
+      const intBoost = parseInt(boostForThisMonth, 10);
+
+      if (!isNaN(intBoost)) {
+        totalMaxWordsUserThisMonth =
+          totalMaxWordsUserThisMonth + intBoost + baseWordsUser;
+        userToFind.dataValues.boostThisMonth = intBoost;
+      } else {
+        totalMaxWordsUserThisMonth = baseWordsUser;
+        userToFind.dataValues.boostThisMonth = boostForThisMonth || 0;
+      }
+
+      userToFind.dataValues.totalMaxWordsUserThisMonth =
+        totalMaxWordsUserThisMonth;
+
+      //Getting user consumption this dynamic month
+      const totalConsumptionThisMonth =
+        await db.NumberOfWords.getConsumptionforCurrentDynamicMonthlyPeriod(
+          userToFind.dataValues.id,
+          userToFind.dataValues.isSubscribedUntil
+        );
+
+      userToFind.dataValues.consumptionThisMonth = totalConsumptionThisMonth;
+
+      // CALCULATING NEXT DATE OF SUBSCRIPTION RENEW
+      const renewSubscriptionDate = db.User.getNextDateOfRenew(userToFind);
+      userToFind.dataValues.renewSubscriptionDate = renewSubscriptionDate;
+
+      // Removing properties we don't want to see on Front-End
+      delete userToFind.dataValues.temporarySecret;
+      delete userToFind.dataValues.temporaryLastProductPaid;
+      delete userToFind.dataValues.nonce;
+
+      reply.send(userToFind);
+      return;
+    }
+  );
+
+  // Get user Stripe Id thanks to its user id
+  fastify.get(
+    "/:id/stripeId",
+    {
+      type: "object",
+      properties: {
+        id: { type: "number" },
+      },
+    },
+    async (req, reply) => {
+      try {
+        //get user stripe id in StripePurchase table and send it back
+        const result = await db.StripePurchase.findOne({
+          where: {
+            user_id: {
+              type: "object",
+              properties: {
+                id: { type: "number" },
+              },
+            },
+          },
+        });
+
+        const stripeUserId = result.dataValues.customerStripeId;
+
+        reply.code(200).send(stripeUserId);
+      } catch (e) {
+        console.log("error when getting stripe user id", e);
+        Bugsnag.notify(new Error(e));
+        reply.code(500).send("Couldn't find stripe user id");
+      }
     }
   );
 

@@ -196,7 +196,7 @@ module.exports = (sequelize, DataTypes) => {
       googleAccessToken: { type: DataTypes.STRING(300) },
       googleRefreshToken: { type: DataTypes.STRING(500) },
       isLoggedUntil: { type: DataTypes.STRING },
-      avatar: { type: DataTypes.STRING },
+      avatar: { type: DataTypes.TEXT },
       userLocale: { type: DataTypes.STRING },
       isSubscribedUntil: {
         type: DataTypes.DATEONLY,
