@@ -140,11 +140,16 @@ kubectl rollout restart deployment api-server
 Restart preproduction
 
 ```bash
-kustomize build ./overlays/alpha | kubectl rollout restart deployment -f -
+kustomize build ./overlays/master | kubectl rollout restart deployment -f -
 ```
 
 Port forwarding
 
 ```bash
 kubectl port-forward <pod name> 3306:3306
+```
+Gett all namepsace
+
+```bash
+kubectl get all --all-namespaces
 ```
