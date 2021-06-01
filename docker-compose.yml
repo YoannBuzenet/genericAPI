@@ -10,8 +10,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_USER: aiuser
-      MYSQL_DATABASE: database_generic_api_production
+      MYSQL_USER: ${MYSQL_DATABASE}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     volumes:
       - ./docker_volumes/mysql/:/var/lib/mysql
 
