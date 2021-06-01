@@ -1,0 +1,26 @@
+version: '3.2'
+
+services:
+  db:
+    image: mysql:8.0.25
+    container_name: appsDB
+    restart: always
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: aiSaaS2021
+      MYSQL_USER: aiuser
+      MYSQL_DATABASE: database_generic_api_production
+    volumes:
+      - ./docker_volumes/mysql/:/var/lib/mysql
+
+  app:
+    depends_on:
+      - db
+    image: phpmyadmin/phpmyadmin:5.1.0
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - '8080:80'
+    environment:
+      PMA_HOST: db
