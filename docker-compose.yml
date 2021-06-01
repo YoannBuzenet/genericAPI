@@ -8,7 +8,7 @@ services:
     ports:
       - '3306:3306'
     environment:
-      MYSQL_ROOT_PASSWORD: aiSaaS2021
+      MYSQL_ROOT_PASSWORD: toto
       MYSQL_USER: aiuser
       MYSQL_DATABASE: database_generic_api_production
     volumes:
