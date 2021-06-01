@@ -8,6 +8,7 @@ services:
     ports:
       - '3306:3306'
     environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_USER: aiuser
       MYSQL_DATABASE: database_generic_api_production
